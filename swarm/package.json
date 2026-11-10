@@ -1,0 +1,20 @@
+{
+  "name": "swarm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Deterministic swarm simulator + vitest key-figure lock",
+  "scripts": {
+    "test": "vitest run",
+    "sim": "python3 deterministic_simulator.py",
+    "sandbox:round": "node scripts/sandbox_round.mjs",
+    "verify:swarm": "vitest run && python3 deterministic_simulator.py && node scripts/sandbox_round.mjs",
+    "client:sandbox": "node scripts/client_worker.mjs"
+  },
+  "devDependencies": {
+    "near-kit": "^0.20.2",
+    "vitest": "^2.0.0"
+  },
+  "dependencies": {
+    "near-api-js": "^7.4.0"
+  }
+}

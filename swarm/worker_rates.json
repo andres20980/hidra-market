@@ -1,0 +1,25 @@
+{
+  "source": "hidra-conocimiento ledgers (19945 filas, 473 workers)",
+  "tasa_locked": {
+    "worker-320": 0.0,
+    "worker-208": 0.33333333,
+    "worker-84": 0.0,
+    "worker-343": 0.0,
+    "worker-275": 0.0,
+    "worker-257": 0.0,
+    "worker-243": 0.0,
+    "worker-319": 0.0,
+    "worker-224": 0.0,
+    "worker-312": 0.0,
+    "worker-137": 0.0,
+    "worker-87": 0.0,
+    "worker-247": 0.13636364,
+    "worker-111": 0.0,
+    "worker-459": 0.0,
+    "worker-402": 0.0,
+    "worker-270": 0.0,
+    "worker-82": 0.0,
+    "worker-43": 0.0,
+    "worker-4": 0.0
+  }
+}

@@ -1,0 +1,2481 @@
+{
+  "seed": 42,
+  "rounds": [
+    {
+      "round": 1,
+      "commitments": {
+        "worker-320": {
+          "price": 299,
+          "salt": 2294336542,
+          "commitment": "29220a1c44fb73ed58b106734403d6eab17e158567ab7a7bf988b8dfd02eb3f2"
+        },
+        "worker-208": {
+          "price": 277,
+          "salt": 2189166069,
+          "commitment": "de2021f6bcfcf8ec6fd9be311aadae0cb06bd9778f7134846cf5d56dfa23f841"
+        },
+        "worker-84": {
+          "price": 140,
+          "salt": 1542875156,
+          "commitment": "c063458db302837a8e207c69ce6f3c1cb14c3ca867e3e10241d142d016209743"
+        },
+        "worker-343": {
+          "price": 184,
+          "salt": 666508396,
+          "commitment": "d89e00b553b60962f160da60b595f798cb6e8e7a375968b67902647e1ec909e5"
+        },
+        "worker-275": {
+          "price": 50,
+          "salt": 20576091,
+          "commitment": "b3d649378cd75ef27ef45c2fc1b01e9ce60ce6c6b5c93dd6b47cd9f33d82a505"
+        },
+        "worker-257": {
+          "price": 516,
+          "salt": 2286192094,
+          "commitment": "c351a4fd71309062141304030542b93171b1fdc48aec36a354ce4a46db0da13a"
+        },
+        "worker-243": {
+          "price": 721,
+          "salt": 1370891096,
+          "commitment": "9163f81e6f5db2c59c5688f68fa01f4e6cf9cce53f082d3eda1a07b2382809d5"
+        },
+        "worker-319": {
+          "price": 351,
+          "salt": 3440456514,
+          "commitment": "7676ba0e5ecb40f0df2f95083402fb275671e13d7c982cec9ddf75b9d455007e"
+        },
+        "worker-224": {
+          "price": 579,
+          "salt": 2405102941,
+          "commitment": "3f819e0748900775e0989694f5c9d6a5062942ae9d95c670389e1f00ddcae70d"
+        },
+        "worker-312": {
+          "price": 367,
+          "salt": 905241701,
+          "commitment": "1fd1e85af73d7af0a0fc8247c2b578e6e345a87598d30596313e47993d387fd5"
+        },
+        "worker-137": {
+          "price": 384,
+          "salt": 4256528529,
+          "commitment": "2a57b665d1d44bf244055330e6b053eecf069af4564bd935b46ab48bcb083262"
+        },
+        "worker-87": {
+          "price": 886,
+          "salt": 1037954826,
+          "commitment": "1e9c7d16d9be8b43f27b1012c86d5f276415d7edcfc9cf6814c08d1619d285ee"
+        },
+        "worker-247": {
+          "price": 850,
+          "salt": 4139307353,
+          "commitment": "aed55092e591a0eb7e9e95bdbc222381a8574f435bc059a3349b786e3e6818ae"
+        },
+        "worker-111": {
+          "price": 957,
+          "salt": 883519279,
+          "commitment": "964aa334fe8da4248d643043a7c22f240906d294eae06d0face8f7bdcfe9f509"
+        },
+        "worker-459": {
+          "price": 754,
+          "salt": 1892021140,
+          "commitment": "f077dbb1ce24f5d3b2194914b886e06e321cd75170e6a8e0d401317e850a0f76"
+        },
+        "worker-402": {
+          "price": 518,
+          "salt": 486967572,
+          "commitment": "b4e9403ffed93f59bd11133bb01af0cdffd629a68a062cadb92861423b3bf9f9"
+        },
+        "worker-270": {
+          "price": 192,
+          "salt": 3596532227,
+          "commitment": "692ef5a232d89a77ddcf404ca73a0119cdd7c4c07d5a6202b66c7d79befba747"
+        },
+        "worker-82": {
+          "price": 42,
+          "salt": 3496146017,
+          "commitment": "772becd24e08965701e615937467888c91613649f988e7bd35385fec8cd3d1de"
+        },
+        "worker-43": {
+          "price": 424,
+          "salt": 383962944,
+          "commitment": "933b69b7baa7bb13fc13b9b8c257a7152b6e56e35573929047e5d0970acf81ad"
+        },
+        "worker-4": {
+          "price": 341,
+          "salt": 1397141088,
+          "commitment": "481c2b57a80dd4176071c4e18a8b14b7c609d1c0f580e60c960a101958d7b728"
+        }
+      },
+      "reveals": {
+        "worker-320": {
+          "price": 299,
+          "salt": 2294336542,
+          "commitment_ok": true
+        },
+        "worker-208": {
+          "price": 277,
+          "salt": 2189166069,
+          "commitment_ok": true
+        },
+        "worker-84": {
+          "price": 140,
+          "salt": 1542875156,
+          "commitment_ok": true
+        },
+        "worker-343": {
+          "price": 184,
+          "salt": 666508396,
+          "commitment_ok": true
+        },
+        "worker-275": {
+          "price": 50,
+          "salt": 20576091,
+          "commitment_ok": true
+        },
+        "worker-257": {
+          "price": 516,
+          "salt": 2286192094,
+          "commitment_ok": true
+        },
+        "worker-243": {
+          "price": 721,
+          "salt": 1370891096,
+          "commitment_ok": true
+        },
+        "worker-319": {
+          "price": 351,
+          "salt": 3440456514,
+          "commitment_ok": true
+        },
+        "worker-224": {
+          "price": 579,
+          "salt": 2405102941,
+          "commitment_ok": true
+        },
+        "worker-312": {
+          "price": 367,
+          "salt": 905241701,
+          "commitment_ok": true
+        },
+        "worker-137": {
+          "price": 384,
+          "salt": 4256528529,
+          "commitment_ok": true
+        },
+        "worker-87": {
+          "price": 886,
+          "salt": 1037954826,
+          "commitment_ok": true
+        },
+        "worker-247": {
+          "price": 850,
+          "salt": 4139307353,
+          "commitment_ok": true
+        },
+        "worker-111": {
+          "price": 957,
+          "salt": 883519279,
+          "commitment_ok": true
+        },
+        "worker-459": {
+          "price": 754,
+          "salt": 1892021140,
+          "commitment_ok": true
+        },
+        "worker-402": {
+          "price": 518,
+          "salt": 486967572,
+          "commitment_ok": true
+        },
+        "worker-270": {
+          "price": 192,
+          "salt": 3596532227,
+          "commitment_ok": true
+        },
+        "worker-82": {
+          "price": 42,
+          "salt": 3496146017,
+          "commitment_ok": true
+        },
+        "worker-43": {
+          "price": 424,
+          "salt": 383962944,
+          "commitment_ok": true
+        },
+        "worker-4": {
+          "price": 341,
+          "salt": 1397141088,
+          "commitment_ok": true
+        }
+      },
+      "winner": "worker-82",
+      "adjusted_prices": {
+        "worker-320": 598.0,
+        "worker-208": 554.0,
+        "worker-84": 280.0,
+        "worker-343": 368.0,
+        "worker-275": 100.0,
+        "worker-257": 1032.0,
+        "worker-243": 1442.0,
+        "worker-319": 702.0,
+        "worker-224": 1158.0,
+        "worker-312": 734.0,
+        "worker-137": 768.0,
+        "worker-87": 1772.0,
+        "worker-247": 1700.0,
+        "worker-111": 1914.0,
+        "worker-459": 1508.0,
+        "worker-402": 1036.0,
+        "worker-270": 384.0,
+        "worker-82": 84.0,
+        "worker-43": 848.0,
+        "worker-4": 682.0
+      },
+      "state": "refunded",
+      "attest": false,
+      "payment": 0,
+      "submitted": true
+    },
+    {
+      "round": 2,
+      "commitments": {
+        "worker-320": {
+          "price": 831,
+          "salt": 3817910605,
+          "commitment": "807bfdb64f4e1ba798449796e3ee7da809c6b9157d16ad5e539cf7a5df797853"
+        },
+        "worker-208": {
+          "price": 6,
+          "salt": 777511748,
+          "commitment": "e3eed05207bb81309436d78e2a0ac20a781c6cf3ba83795d790defb96b471219"
+        },
+        "worker-84": {
+          "price": 245,
+          "salt": 407773967,
+          "commitment": "c1a47146f6ecedc8724b1a16197fc5f07ae9e26ea49804825b5907f4a55f4d20"
+        },
+        "worker-343": {
+          "price": 661,
+          "salt": 2748430677,
+          "commitment": "1664b3ef52acd5b51e07a9eb0c9f49d69ede018dd284a8a8d2cef85b825b4256"
+        },
+        "worker-275": {
+          "price": 700,
+          "salt": 1803960022,
+          "commitment": "866f060bc0991bf28144c97544b7fcc59bbbf538f54107f24ce7e69449e540e9"
+        },
+        "worker-257": {
+          "price": 679,
+          "salt": 1286549924,
+          "commitment": "9fb9e7b7d85edd7c0c16ff29dbe2b8c6d5e9e537a861e8569d3c20aef755f9ac"
+        },
+        "worker-243": {
+          "price": 233,
+          "salt": 2712403346,
+          "commitment": "0aee3967d290c0ab77f891b8c6b03787cc52cb8781c7d403e178c48e512bf8be"
+        },
+        "worker-319": {
+          "price": 915,
+          "salt": 201568030,
+          "commitment": "f3f0eb1fe2cbe525562055f025d8ae793e3c3b3b2964f0c347b23584da9469ea"
+        },
+        "worker-224": {
+          "price": 494,
+          "salt": 3922209373,
+          "commitment": "875002bc9eb4569215465063d18ea55ba46deb9f92a5634b2ac2ae7c783afea8"
+        },
+        "worker-312": {
+          "price": 854,
+          "salt": 1269499483,
+          "commitment": "2c06bdb138952bc761f8e5e56b546716c86d653931460496a89f89692fd998a7"
+        },
+        "worker-137": {
+          "price": 98,
+          "salt": 3571877619,
+          "commitment": "7380a2eb20aa12f54d051d9aaaa3e1458a7ba4337d47e3e15379ed7234b23712"
+        },
+        "worker-87": {
+          "price": 651,
+          "salt": 3104949361,
+          "commitment": "927eedbd917b93d9de3a06d4f28578e5f315f588803d4b6fec422d748630b9f8"
+        },
+        "worker-247": {
+          "price": 458,
+          "salt": 1770693470,
+          "commitment": "9fc4c594933db310810dae2fda2ccf848e65d7c34e31d7c1fa13e978b8baec2f"
+        },
+        "worker-111": {
+          "price": 832,
+          "salt": 4019612985,
+          "commitment": "3a2ead3aadcce7975a4d744f12f7f3e74e23dc7bd1a525da97477614cf8ebc5c"
+        },
+        "worker-459": {
+          "price": 525,
+          "salt": 2896201244,
+          "commitment": "e6a9b92b3f9d1803fce92efc2b33aa232c5e3916d97a188abbb9f9c4bae75ebd"
+        },
+        "worker-402": {
+          "price": 853,
+          "salt": 872205289,
+          "commitment": "40ea9873d12487af2e199a2b5c63ae530146e941764976c2dd52c1e16ff4960a"
+        },
+        "worker-270": {
+          "price": 564,
+          "salt": 3141295196,
+          "commitment": "a4d7e71b99225f7683011482c8120aad4edfa1bbadb47383b9e8987a924c2543"
+        },
+        "worker-82": {
+          "price": 394,
+          "salt": 1533550854,
+          "commitment": "01ee10c6679e22a740a2b5ccf21230064d0e1373b639c76f84e526f8be7abad1"
+        },
+        "worker-43": {
+          "price": 665,
+          "salt": 1657256146,
+          "commitment": "7053a656122ea79be9436c9254bc9c5f496835c68b210a9b3c581c2d9d3b7aee"
+        },
+        "worker-4": {
+          "price": 513,
+          "salt": 138803309,
+          "commitment": "b8ec81fb942a2b2b4e5d22f37e47864f93c8655aa9fd03798c7fbb37e665f17e"
+        }
+      },
+      "reveals": {
+        "worker-320": {
+          "price": 831,
+          "salt": 3817910605,
+          "commitment_ok": true
+        },
+        "worker-208": {
+          "price": 6,
+          "salt": 777511748,
+          "commitment_ok": true
+        },
+        "worker-84": {
+          "price": 245,
+          "salt": 407773967,
+          "commitment_ok": true
+        },
+        "worker-343": {
+          "price": 661,
+          "salt": 2748430677,
+          "commitment_ok": true
+        },
+        "worker-275": {
+          "price": 700,
+          "salt": 1803960022,
+          "commitment_ok": true
+        },
+        "worker-257": {
+          "price": 679,
+          "salt": 1286549924,
+          "commitment_ok": true
+        },
+        "worker-243": {
+          "price": 233,
+          "salt": 2712403346,
+          "commitment_ok": true
+        },
+        "worker-319": {
+          "price": 915,
+          "salt": 201568030,
+          "commitment_ok": true
+        },
+        "worker-224": {
+          "price": 494,
+          "salt": 3922209373,
+          "commitment_ok": true
+        },
+        "worker-312": {
+          "price": 854,
+          "salt": 1269499483,
+          "commitment_ok": true
+        },
+        "worker-137": {
+          "price": 98,
+          "salt": 3571877619,
+          "commitment_ok": true
+        },
+        "worker-87": {
+          "price": 651,
+          "salt": 3104949361,
+          "commitment_ok": true
+        },
+        "worker-247": {
+          "price": 458,
+          "salt": 1770693470,
+          "commitment_ok": true
+        },
+        "worker-111": {
+          "price": 832,
+          "salt": 4019612985,
+          "commitment_ok": true
+        },
+        "worker-459": {
+          "price": 525,
+          "salt": 2896201244,
+          "commitment_ok": true
+        },
+        "worker-402": {
+          "price": 853,
+          "salt": 872205289,
+          "commitment_ok": true
+        },
+        "worker-270": {
+          "price": 564,
+          "salt": 3141295196,
+          "commitment_ok": true
+        },
+        "worker-82": {
+          "price": 394,
+          "salt": 1533550854,
+          "commitment_ok": true
+        },
+        "worker-43": {
+          "price": 665,
+          "salt": 1657256146,
+          "commitment_ok": true
+        },
+        "worker-4": {
+          "price": 513,
+          "salt": 138803309,
+          "commitment_ok": true
+        }
+      },
+      "winner": "worker-208",
+      "adjusted_prices": {
+        "worker-320": 1662.0,
+        "worker-208": 12.0,
+        "worker-84": 490.0,
+        "worker-343": 1322.0,
+        "worker-275": 1400.0,
+        "worker-257": 1358.0,
+        "worker-243": 466.0,
+        "worker-319": 1830.0,
+        "worker-224": 988.0,
+        "worker-312": 1708.0,
+        "worker-137": 196.0,
+        "worker-87": 1302.0,
+        "worker-247": 916.0,
+        "worker-111": 1664.0,
+        "worker-459": 1050.0,
+        "worker-402": 1706.0,
+        "worker-270": 1128.0,
+        "worker-82": 1182.0,
+        "worker-43": 1330.0,
+        "worker-4": 1026.0
+      },
+      "state": "settled",
+      "attest": true,
+      "payment": 100,
+      "submitted": true
+    },
+    {
+      "round": 3,
+      "commitments": {
+        "worker-320": {
+          "price": 78,
+          "salt": 1931020314,
+          "commitment": "791809e9f3119a0f0b47fe0b21044fb1b5256154e320a918da7c57fa348dc321"
+        },
+        "worker-208": {
+          "price": 13,
+          "salt": 2342006514,
+          "commitment": "aebe4d7c254069ea3a860fffd31edf7ca1846c41fc4a8ee099cd79c099114f4b"
+        },
+        "worker-84": {
+          "price": 864,
+          "salt": 3004067446,
+          "commitment": "51fcf7a3b30e6d90cbbb5f1428c9068dbdbfe18ab46541f7a0583e3b2fd22b27"
+        },
+        "worker-343": {
+          "price": 134,
+          "salt": 2788590914,
+          "commitment": "c8592f9b4b90de550689c0bb2fbc9362681cb326358964e9334f5f54d79a2521"
+        },
+        "worker-275": {
+          "price": 511,
+          "salt": 1668067396,
+          "commitment": "7927f1c26c7ad268a46156ef532153eb7ac01625100eede4e0f18823e864c234"
+        },
+        "worker-257": {
+          "price": 45,
+          "salt": 3869071044,
+          "commitment": "e59ae9cf0ea43c4a8d1a8843e9efe45500e26264ce39d9454bd833ec323ecd60"
+        },
+        "worker-243": {
+          "price": 531,
+          "salt": 2621161391,
+          "commitment": "96670892beb1214eeded9ca1a5cfae70a7593a6c9796817e6ba5d1e26d9e30e0"
+        },
+        "worker-319": {
+          "price": 119,
+          "salt": 88076339,
+          "commitment": "839c4535f440956075d8f8bd0a2b1c963522f8339d312306e4afd0453f0d9d92"
+        },
+        "worker-224": {
+          "price": 278,
+          "salt": 2303059389,
+          "commitment": "49d07e1c9dec1905a187c2a34245ea0beaf795913cfa767a679f76fb1fdade89"
+        },
+        "worker-312": {
+          "price": 476,
+          "salt": 484304721,
+          "commitment": "9c02cd28debb93f7469806349fd70144c302dbd662c26b628aa5ce7ed63c776c"
+        },
+        "worker-137": {
+          "price": 964,
+          "salt": 2000031531,
+          "commitment": "c34ad711463dd586d9b34278bd5c75f592433bdb4fb3520784e264e59dc7a7ac"
+        },
+        "worker-87": {
+          "price": 426,
+          "salt": 1810167215,
+          "commitment": "c391c14e9a3251f39b7b708ed5f042ed69ad0296fdbe3ed1699e6e7376faf805"
+        },
+        "worker-247": {
+          "price": 623,
+          "salt": 3120046089,
+          "commitment": "4bf0da99831bfb2f29e2863cc3f30049841329225d671596fde9e3b3e161abd0"
+        },
+        "worker-111": {
+          "price": 754,
+          "salt": 3278329290,
+          "commitment": "477cbc829a0938dd490ef1d998037e90f8e493d1665ab126c718400201aa2d22"
+        },
+        "worker-459": {
+          "price": 821,
+          "salt": 3821958089,
+          "commitment": "3b4d3c4ff68b27583e0578aff313df036a59c3f9be6797f63653fe0329f50792"
+        },
+        "worker-402": {
+          "price": 266,
+          "salt": 3358706872,
+          "commitment": "57a34bf22acc3fccc7fb83cc301699c293493f346f8b38b30efdca49c7c53205"
+        },
+        "worker-270": {
+          "price": 29,
+          "salt": 3589010030,
+          "commitment": "fa7dafb247089177f5015c0ce6d2937cbd1f4480b08cb630687b0e279199a015"
+        },
+        "worker-82": {
+          "price": 831,
+          "salt": 4112417020,
+          "commitment": "1daab82b383ac7c70f62be43d05b824194d9d1d3181d28baf221061631156fab"
+        },
+        "worker-43": {
+          "price": 123,
+          "salt": 299829956,
+          "commitment": "d97051f1276928ff90cb27fc4054d588d023b034442234320dd895e866733c4b"
+        },
+        "worker-4": {
+          "price": 6,
+          "salt": 2385976078,
+          "commitment": "cfbff4df2c1a328e74b21b8b4a75946ccb5f019747628d8777049ebe6b42e8e0"
+        }
+      },
+      "reveals": {
+        "worker-320": {
+          "price": 78,
+          "salt": 1931020314,
+          "commitment_ok": true
+        },
+        "worker-208": {
+          "price": 13,
+          "salt": 2342006514,
+          "commitment_ok": true
+        },
+        "worker-84": {
+          "price": 864,
+          "salt": 3004067446,
+          "commitment_ok": true
+        },
+        "worker-343": {
+          "price": 134,
+          "salt": 2788590914,
+          "commitment_ok": true
+        },
+        "worker-275": {
+          "price": 511,
+          "salt": 1668067396,
+          "commitment_ok": true
+        },
+        "worker-257": {
+          "price": 45,
+          "salt": 3869071044,
+          "commitment_ok": true
+        },
+        "worker-243": {
+          "price": 531,
+          "salt": 2621161391,
+          "commitment_ok": true
+        },
+        "worker-319": {
+          "price": 119,
+          "salt": 88076339,
+          "commitment_ok": true
+        },
+        "worker-224": {
+          "price": 278,
+          "salt": 2303059389,
+          "commitment_ok": true
+        },
+        "worker-312": {
+          "price": 476,
+          "salt": 484304721,
+          "commitment_ok": true
+        },
+        "worker-137": {
+          "price": 964,
+          "salt": 2000031531,
+          "commitment_ok": true
+        },
+        "worker-87": {
+          "price": 426,
+          "salt": 1810167215,
+          "commitment_ok": true
+        },
+        "worker-247": {
+          "price": 623,
+          "salt": 3120046089,
+          "commitment_ok": true
+        },
+        "worker-111": {
+          "price": 754,
+          "salt": 3278329290,
+          "commitment_ok": true
+        },
+        "worker-459": {
+          "price": 821,
+          "salt": 3821958089,
+          "commitment_ok": true
+        },
+        "worker-402": {
+          "price": 266,
+          "salt": 3358706872,
+          "commitment_ok": true
+        },
+        "worker-270": {
+          "price": 29,
+          "salt": 3589010030,
+          "commitment_ok": true
+        },
+        "worker-82": {
+          "price": 831,
+          "salt": 4112417020,
+          "commitment_ok": true
+        },
+        "worker-43": {
+          "price": 123,
+          "salt": 299829956,
+          "commitment_ok": true
+        },
+        "worker-4": {
+          "price": 6,
+          "salt": 2385976078,
+          "commitment_ok": true
+        }
+      },
+      "winner": "worker-4",
+      "adjusted_prices": {
+        "worker-320": 156.0,
+        "worker-208": 19.5,
+        "worker-84": 1728.0,
+        "worker-343": 268.0,
+        "worker-275": 1022.0,
+        "worker-257": 90.0,
+        "worker-243": 1062.0,
+        "worker-319": 238.0,
+        "worker-224": 556.0,
+        "worker-312": 952.0,
+        "worker-137": 1928.0,
+        "worker-87": 852.0,
+        "worker-247": 1246.0,
+        "worker-111": 1508.0,
+        "worker-459": 1642.0,
+        "worker-402": 532.0,
+        "worker-270": 58.0,
+        "worker-82": 2493.0,
+        "worker-43": 246.0,
+        "worker-4": 12.0
+      },
+      "state": "refunded",
+      "attest": false,
+      "payment": 0,
+      "submitted": true
+    },
+    {
+      "round": 4,
+      "commitments": {
+        "worker-320": {
+          "price": 795,
+          "salt": 1090592167,
+          "commitment": "6f4bbc3b920bdd4690a28079b425208a5b717d9b46ff944955be288a9b031906"
+        },
+        "worker-208": {
+          "price": 619,
+          "salt": 1768496674,
+          "commitment": "77fde42a2a843a41b7d5f7a8e042607ff1dfba56e7ad9d3560bda38de6f9c4af"
+        },
+        "worker-84": {
+          "price": 623,
+          "salt": 293767081,
+          "commitment": "924b722075529f530f0c20ab6753c71f111e0f0550c8bf268cd71669858bdbe7"
+        },
+        "worker-343": {
+          "price": 771,
+          "salt": 3902427932,
+          "commitment": "38ab4a6f1cbdcb87b551c0bc5c212ee389ce697e36660f1fa67a9f86eabebcb8"
+        },
+        "worker-275": {
+          "price": 21,
+          "salt": 1120083682,
+          "commitment": "a511825a80aa5b7440552c38cf9718dbc9ef85bd2b26ca179ec18cb3e113b69c"
+        },
+        "worker-257": {
+          "price": 589,
+          "salt": 2027181544,
+          "commitment": "19dd214efa51ff1201cb49eb85d9db4154f810e1f4e4d252d2a923ae7f99f394"
+        },
+        "worker-243": {
+          "price": 688,
+          "salt": 3376096245,
+          "commitment": "1da9c146851b70eb08e4e6facce7475b810d769c83c5ab18db77a431c0f7d881"
+        },
+        "worker-319": {
+          "price": 428,
+          "salt": 2320729148,
+          "commitment": "6a81ef6a1901c7f52d94c526224eddee02d266cc4d384436576e105f29d66546"
+        },
+        "worker-224": {
+          "price": 718,
+          "salt": 1709323171,
+          "commitment": "a41d0f90e2b4f4dec73a098039c4bef3512be9036d4ef8fbf7f9fa4062089350"
+        },
+        "worker-312": {
+          "price": 114,
+          "salt": 3097021257,
+          "commitment": "5202a4879c0dc9cdce094c316876a1048251f58290a0b732662dd5227519dc65"
+        },
+        "worker-137": {
+          "price": 36,
+          "salt": 389550491,
+          "commitment": "55883b5292d4519e5ccc16b7bee0df969d80af6ed0212ad0178d0ebbc9787c2c"
+        },
+        "worker-87": {
+          "price": 800,
+          "salt": 3660641517,
+          "commitment": "2446baa66c84e363c00e68e06323919363fbbd515f898c772f98de57e09929b3"
+        },
+        "worker-247": {
+          "price": 418,
+          "salt": 529735621,
+          "commitment": "54dec4db41ec594218be0cfaf0501bf4231ac7712788bfcd4e4edfcc4026273a"
+        },
+        "worker-111": {
+          "price": 179,
+          "salt": 779118697,
+          "commitment": "3e0840462cdf6fbc06f8997243c3e751090de669bb1012fd8f1049d4e367fd7c"
+        },
+        "worker-459": {
+          "price": 682,
+          "salt": 3526419585,
+          "commitment": "d7c0c3b4a2ffefc79f2fe0ef82799b4e6630a374f202c0dc24f73afb87bbc633"
+        },
+        "worker-402": {
+          "price": 761,
+          "salt": 2260049841,
+          "commitment": "47f98eca67c254359d6f67126eb86e18b2add58fc3a17e9827631acf42b275cb"
+        },
+        "worker-270": {
+          "price": 119,
+          "salt": 1357781472,
+          "commitment": "0a79a0a16bb33d89e93777a18fc421bf25ec15c9c2c3820a6c234a8b69e974e9"
+        },
+        "worker-82": {
+          "price": 389,
+          "salt": 3375057094,
+          "commitment": "3ed71b9c9e205649ef6d13e2346a728822fb9b89a9ea1aeed4fd937b4f53c271"
+        },
+        "worker-43": {
+          "price": 21,
+          "salt": 456303786,
+          "commitment": "a7d43a8975287d72a5cce28894a1b7c2de4989c238826b346e5e99e339cc7b6c"
+        },
+        "worker-4": {
+          "price": 207,
+          "salt": 2288775573,
+          "commitment": "2b6367f3a9e15acfd63ca79a02ea8a42d812afe969bd63ad18ea5e7bcbe765a4"
+        }
+      },
+      "reveals": {
+        "worker-320": {
+          "price": 795,
+          "salt": 1090592167,
+          "commitment_ok": true
+        },
+        "worker-208": {
+          "price": 619,
+          "salt": 1768496674,
+          "commitment_ok": true
+        },
+        "worker-84": {
+          "price": 623,
+          "salt": 293767081,
+          "commitment_ok": true
+        },
+        "worker-343": {
+          "price": 771,
+          "salt": 3902427932,
+          "commitment_ok": true
+        },
+        "worker-275": {
+          "price": 21,
+          "salt": 1120083682,
+          "commitment_ok": true
+        },
+        "worker-257": {
+          "price": 589,
+          "salt": 2027181544,
+          "commitment_ok": true
+        },
+        "worker-243": {
+          "price": 688,
+          "salt": 3376096245,
+          "commitment_ok": true
+        },
+        "worker-319": {
+          "price": 428,
+          "salt": 2320729148,
+          "commitment_ok": true
+        },
+        "worker-224": {
+          "price": 718,
+          "salt": 1709323171,
+          "commitment_ok": true
+        },
+        "worker-312": {
+          "price": 114,
+          "salt": 3097021257,
+          "commitment_ok": true
+        },
+        "worker-137": {
+          "price": 36,
+          "salt": 389550491,
+          "commitment_ok": true
+        },
+        "worker-87": {
+          "price": 800,
+          "salt": 3660641517,
+          "commitment_ok": true
+        },
+        "worker-247": {
+          "price": 418,
+          "salt": 529735621,
+          "commitment_ok": true
+        },
+        "worker-111": {
+          "price": 179,
+          "salt": 779118697,
+          "commitment_ok": true
+        },
+        "worker-459": {
+          "price": 682,
+          "salt": 3526419585,
+          "commitment_ok": true
+        },
+        "worker-402": {
+          "price": 761,
+          "salt": 2260049841,
+          "commitment_ok": true
+        },
+        "worker-270": {
+          "price": 119,
+          "salt": 1357781472,
+          "commitment_ok": true
+        },
+        "worker-82": {
+          "price": 389,
+          "salt": 3375057094,
+          "commitment_ok": true
+        },
+        "worker-43": {
+          "price": 21,
+          "salt": 456303786,
+          "commitment_ok": true
+        },
+        "worker-4": {
+          "price": 207,
+          "salt": 2288775573,
+          "commitment_ok": true
+        }
+      },
+      "winner": "worker-275",
+      "adjusted_prices": {
+        "worker-320": 1590.0,
+        "worker-208": 928.5,
+        "worker-84": 1246.0,
+        "worker-343": 1542.0,
+        "worker-275": 42.0,
+        "worker-257": 1178.0,
+        "worker-243": 1376.0,
+        "worker-319": 856.0,
+        "worker-224": 1436.0,
+        "worker-312": 228.0,
+        "worker-137": 72.0,
+        "worker-87": 1600.0,
+        "worker-247": 836.0,
+        "worker-111": 358.0,
+        "worker-459": 1364.0,
+        "worker-402": 1522.0,
+        "worker-270": 238.0,
+        "worker-82": 1167.0,
+        "worker-43": 42.0,
+        "worker-4": 621.0
+      },
+      "state": "refunded",
+      "attest": false,
+      "payment": 0,
+      "submitted": true
+    },
+    {
+      "round": 5,
+      "commitments": {
+        "worker-320": {
+          "price": 816,
+          "salt": 4055268481,
+          "commitment": "711c7e33f528f234c82a017995d6327c54dae49eb4181eae0f6bdb979456c3dc"
+        },
+        "worker-208": {
+          "price": 27,
+          "salt": 3097388085,
+          "commitment": "be0650849bd98f16011d5dbf57928206fa172c5a164ea70ae35590b3d9693763"
+        },
+        "worker-84": {
+          "price": 946,
+          "salt": 4186722203,
+          "commitment": "59d757b5d58efef27c0a848720eef862321efd48a1127eac73073f564be1c2a3"
+        },
+        "worker-343": {
+          "price": 333,
+          "salt": 98048375,
+          "commitment": "9ccb0a04b28c317e7ab1bc3039982972d5ad29ff752ff95c89348daa17227d9e"
+        },
+        "worker-275": {
+          "price": 187,
+          "salt": 4012895347,
+          "commitment": "a3dcefe86f197833f3cf6cd38eb8c0b8e962aa499b182061e0ea7dd4721f38eb"
+        },
+        "worker-257": {
+          "price": 185,
+          "salt": 2326890027,
+          "commitment": "de543e216d40d23ecaaae698417b4e4356474ea9fe3936f8a59de4015dd98051"
+        },
+        "worker-243": {
+          "price": 862,
+          "salt": 3557720328,
+          "commitment": "f92e3b4d6ab62123e57de18124e7da8eac5c4b5d2c7a5338298712e9839cc486"
+        },
+        "worker-319": {
+          "price": 437,
+          "salt": 2882888542,
+          "commitment": "416fbb849aebb214fd58f90049587048f3ef6ea311c1f2cb7f0761026a98452b"
+        },
+        "worker-224": {
+          "price": 36,
+          "salt": 747827349,
+          "commitment": "8b2ed9f2c5e440fe19cf9808f06c3c8147bf7430d79382e3f8779ffd87fe0bc1"
+        },
+        "worker-312": {
+          "price": 546,
+          "salt": 1657669481,
+          "commitment": "d762d7f4cbbe78fc88e1e4f1153904a1291bccc6be2c43a2d40d403e6772c03c"
+        },
+        "worker-137": {
+          "price": 772,
+          "salt": 3421992986,
+          "commitment": "e036b34a09a0bc332ec71324f2950352c1cf2923345034562adeafc241996a22"
+        },
+        "worker-87": {
+          "price": 982,
+          "salt": 3584304800,
+          "commitment": "feea72be220e2ca65be31fb76e81f114c6ae04762a7730f8d442b78af018d90c"
+        },
+        "worker-247": {
+          "price": 494,
+          "salt": 2285794250,
+          "commitment": "739e451f582332597fc6ba28c51b9e75ba266ef827e6d3d15ee6804b882d36a5"
+        },
+        "worker-111": {
+          "price": 778,
+          "salt": 195538577,
+          "commitment": "d9027df031f71345eac6584e31f5d81bb197a957bbc146a10656182aea3eb241"
+        },
+        "worker-459": {
+          "price": 82,
+          "salt": 1915130384,
+          "commitment": "55d6fabab23bb36649e620cb6da189329b66a2e749ddc11a9708d1c67ffa5ec2"
+        },
+        "worker-402": {
+          "price": 322,
+          "salt": 1707176076,
+          "commitment": "d9bb9e5c300dc39be029ea9ef862036b0f6a5b091c4ef0d5b6ba2a1d419fcb4e"
+        },
+        "worker-270": {
+          "price": 153,
+          "salt": 693955949,
+          "commitment": "c85c99627658b3a539e96bacf8a18e6a867c91522bfd9114cbd1b10b60cce863"
+        },
+        "worker-82": {
+          "price": 903,
+          "salt": 1676363904,
+          "commitment": "c8beda81264585b9d1682ed58cac08e237007400998f61ab98ff74bff0aa1469"
+        },
+        "worker-43": {
+          "price": 819,
+          "salt": 3051616551,
+          "commitment": "e311aba5b1bf73711bc2890aeb56c917a7807f3cbc43afea34044f34a031d7fd"
+        },
+        "worker-4": {
+          "price": 662,
+          "salt": 2051004690,
+          "commitment": "3237773cd5289903d8753a07825731873d5af652e96727a10e3abaf325fad7f8"
+        }
+      },
+      "reveals": {
+        "worker-320": {
+          "price": 816,
+          "salt": 4055268481,
+          "commitment_ok": true
+        },
+        "worker-208": {
+          "price": 27,
+          "salt": 3097388085,
+          "commitment_ok": true
+        },
+        "worker-84": {
+          "price": 946,
+          "salt": 4186722203,
+          "commitment_ok": true
+        },
+        "worker-343": {
+          "price": 333,
+          "salt": 98048375,
+          "commitment_ok": true
+        },
+        "worker-275": {
+          "price": 187,
+          "salt": 4012895347,
+          "commitment_ok": true
+        },
+        "worker-257": {
+          "price": 185,
+          "salt": 2326890027,
+          "commitment_ok": true
+        },
+        "worker-243": {
+          "price": 862,
+          "salt": 3557720328,
+          "commitment_ok": true
+        },
+        "worker-319": {
+          "price": 437,
+          "salt": 2882888542,
+          "commitment_ok": true
+        },
+        "worker-224": {
+          "price": 36,
+          "salt": 747827349,
+          "commitment_ok": true
+        },
+        "worker-312": {
+          "price": 546,
+          "salt": 1657669481,
+          "commitment_ok": true
+        },
+        "worker-137": {
+          "price": 772,
+          "salt": 3421992986,
+          "commitment_ok": true
+        },
+        "worker-87": {
+          "price": 982,
+          "salt": 3584304800,
+          "commitment_ok": true
+        },
+        "worker-247": {
+          "price": 494,
+          "salt": 2285794250,
+          "commitment_ok": true
+        },
+        "worker-111": {
+          "price": 778,
+          "salt": 195538577,
+          "commitment_ok": true
+        },
+        "worker-459": {
+          "price": 82,
+          "salt": 1915130384,
+          "commitment_ok": true
+        },
+        "worker-402": {
+          "price": 322,
+          "salt": 1707176076,
+          "commitment_ok": true
+        },
+        "worker-270": {
+          "price": 153,
+          "salt": 693955949,
+          "commitment_ok": true
+        },
+        "worker-82": {
+          "price": 903,
+          "salt": 1676363904,
+          "commitment_ok": true
+        },
+        "worker-43": {
+          "price": 819,
+          "salt": 3051616551,
+          "commitment_ok": true
+        },
+        "worker-4": {
+          "price": 662,
+          "salt": 2051004690,
+          "commitment_ok": true
+        }
+      },
+      "winner": "worker-208",
+      "adjusted_prices": {
+        "worker-320": 1632.0,
+        "worker-208": 40.5,
+        "worker-84": 1892.0,
+        "worker-343": 666.0,
+        "worker-275": 561.0,
+        "worker-257": 370.0,
+        "worker-243": 1724.0,
+        "worker-319": 874.0,
+        "worker-224": 72.0,
+        "worker-312": 1092.0,
+        "worker-137": 1544.0,
+        "worker-87": 1964.0,
+        "worker-247": 988.0,
+        "worker-111": 1556.0,
+        "worker-459": 164.0,
+        "worker-402": 644.0,
+        "worker-270": 306.0,
+        "worker-82": 2709.0,
+        "worker-43": 1638.0,
+        "worker-4": 1986.0
+      },
+      "state": "refunded",
+      "attest": false,
+      "payment": 0,
+      "submitted": true
+    },
+    {
+      "round": 6,
+      "commitments": {
+        "worker-320": {
+          "price": 2,
+          "salt": 1584066226,
+          "commitment": "de0a4b26add18f2abf1f97a1a9f686e7b1b2500d1bf650a28539fab9d354fee8"
+        },
+        "worker-208": {
+          "price": 582,
+          "salt": 1661124493,
+          "commitment": "03e9ae2098c91a898800972d07a68490a859a2b5acc9b8c5df711073c2013891"
+        },
+        "worker-84": {
+          "price": 540,
+          "salt": 2256808349,
+          "commitment": "d8c654d05a5f6467fa3186f85c24cfbd9549ad602cf7b67ff512bab06b6f9953"
+        },
+        "worker-343": {
+          "price": 48,
+          "salt": 1626935497,
+          "commitment": "feb09b20753afb82bf8e0d1552987b59396cc33a6b2a61f9ee204d90cd093e0c"
+        },
+        "worker-275": {
+          "price": 236,
+          "salt": 1553062666,
+          "commitment": "45f41c47f51e3e9409d5df5bf4d2198d2766ad89bb18bbe26fee45782de0ce16"
+        },
+        "worker-257": {
+          "price": 796,
+          "salt": 355917889,
+          "commitment": "7391fbd7357b34c6eed3598069dcacf83e993972f359ec9a66965671bae41405"
+        },
+        "worker-243": {
+          "price": 465,
+          "salt": 3590818586,
+          "commitment": "001fba17695127be0dbf26a0f24e7c79a100e189bbfaf9532cb28c39b39a4c26"
+        },
+        "worker-319": {
+          "price": 399,
+          "salt": 1322561360,
+          "commitment": "f5c79d5b99a133c9a40949ab40f1854bb331df6184e9285ffac75bd9b624bbd5"
+        },
+        "worker-224": {
+          "price": 62,
+          "salt": 935035529,
+          "commitment": "c99a6f81cdc9635b19520e8a3d3434a3ade106529031484224c8a335d90932c8"
+        },
+        "worker-312": {
+          "price": 562,
+          "salt": 340867154,
+          "commitment": "a54402122481ded12c5954f8a9ff06329ffbedfd98c73bbf75bb0ac313e55f2e"
+        },
+        "worker-137": {
+          "price": 307,
+          "salt": 3290342373,
+          "commitment": "37fcf1d770d3e6c226bb71ff3360b0c89640bece719965b592cb9f569aee7215"
+        },
+        "worker-87": {
+          "price": 201,
+          "salt": 1126332748,
+          "commitment": "726cd2d52d1ae07b592d01fa9738e0c18fb947e5ec7e64a55c9693c7c6e54a8e"
+        },
+        "worker-247": {
+          "price": 979,
+          "salt": 160939716,
+          "commitment": "be0699efe41c36d35d13b9f2c61d4971382b18cbbe0a41f63e8ff4d1ff0f9a9b"
+        },
+        "worker-111": {
+          "price": 778,
+          "salt": 3169364340,
+          "commitment": "8e5729116a9baabe487438821348795961d70e9d735a7e6e78f66b34f0351c33"
+        },
+        "worker-459": {
+          "price": 737,
+          "salt": 3978255948,
+          "commitment": "bc5ef6c7455ec563a9014663a8320d175675ae7a54f4c9e160a940156f2267ff"
+        },
+        "worker-402": {
+          "price": 437,
+          "salt": 2949523952,
+          "commitment": "8a8f44e73adfcae7d6c5ec7850cf46694fe773efdb5cb7f611da839845abeaaf"
+        },
+        "worker-270": {
+          "price": 606,
+          "salt": 2601074253,
+          "commitment": "5430b393ad41d8cbe73da9ce13e81d9d842505302f15f89a130c705bb73cf915"
+        },
+        "worker-82": {
+          "price": 745,
+          "salt": 2288439370,
+          "commitment": "ff8367080342b1ba094fe0720d583fb73cb09f77f37fd4ce1441ef03f2c4d322"
+        },
+        "worker-43": {
+          "price": 224,
+          "salt": 1213506199,
+          "commitment": "162e60de03bf6524efacbf9cc79bc87c0e3e263d351e611e31972a069dbe01a8"
+        },
+        "worker-4": {
+          "price": 139,
+          "salt": 56633292,
+          "commitment": "817e9a2dcc0fa80f496558675c4719510d99bc9ffbc0b322c18a553fb1a71d52"
+        }
+      },
+      "reveals": {
+        "worker-320": {
+          "price": 2,
+          "salt": 1584066226,
+          "commitment_ok": true
+        },
+        "worker-208": {
+          "price": 582,
+          "salt": 1661124493,
+          "commitment_ok": true
+        },
+        "worker-84": {
+          "price": 540,
+          "salt": 2256808349,
+          "commitment_ok": true
+        },
+        "worker-343": {
+          "price": 48,
+          "salt": 1626935497,
+          "commitment_ok": true
+        },
+        "worker-275": {
+          "price": 236,
+          "salt": 1553062666,
+          "commitment_ok": true
+        },
+        "worker-257": {
+          "price": 796,
+          "salt": 355917889,
+          "commitment_ok": true
+        },
+        "worker-243": {
+          "price": 465,
+          "salt": 3590818586,
+          "commitment_ok": true
+        },
+        "worker-319": {
+          "price": 399,
+          "salt": 1322561360,
+          "commitment_ok": true
+        },
+        "worker-224": {
+          "price": 62,
+          "salt": 935035529,
+          "commitment_ok": true
+        },
+        "worker-312": {
+          "price": 562,
+          "salt": 340867154,
+          "commitment_ok": true
+        },
+        "worker-137": {
+          "price": 307,
+          "salt": 3290342373,
+          "commitment_ok": true
+        },
+        "worker-87": {
+          "price": 201,
+          "salt": 1126332748,
+          "commitment_ok": true
+        },
+        "worker-247": {
+          "price": 979,
+          "salt": 160939716,
+          "commitment_ok": true
+        },
+        "worker-111": {
+          "price": 778,
+          "salt": 3169364340,
+          "commitment_ok": true
+        },
+        "worker-459": {
+          "price": 737,
+          "salt": 3978255948,
+          "commitment_ok": true
+        },
+        "worker-402": {
+          "price": 437,
+          "salt": 2949523952,
+          "commitment_ok": true
+        },
+        "worker-270": {
+          "price": 606,
+          "salt": 2601074253,
+          "commitment_ok": true
+        },
+        "worker-82": {
+          "price": 745,
+          "salt": 2288439370,
+          "commitment_ok": true
+        },
+        "worker-43": {
+          "price": 224,
+          "salt": 1213506199,
+          "commitment_ok": true
+        },
+        "worker-4": {
+          "price": 139,
+          "salt": 56633292,
+          "commitment_ok": true
+        }
+      },
+      "winner": "worker-320",
+      "adjusted_prices": {
+        "worker-320": 4.0,
+        "worker-208": 1164.0,
+        "worker-84": 1080.0,
+        "worker-343": 96.0,
+        "worker-275": 708.0,
+        "worker-257": 1592.0,
+        "worker-243": 930.0,
+        "worker-319": 798.0,
+        "worker-224": 124.0,
+        "worker-312": 1124.0,
+        "worker-137": 614.0,
+        "worker-87": 402.0,
+        "worker-247": 1958.0,
+        "worker-111": 1556.0,
+        "worker-459": 1474.0,
+        "worker-402": 874.0,
+        "worker-270": 1212.0,
+        "worker-82": 2235.0,
+        "worker-43": 448.0,
+        "worker-4": 417.0
+      },
+      "state": "refunded",
+      "attest": false,
+      "payment": 0,
+      "submitted": true
+    },
+    {
+      "round": 7,
+      "commitments": {
+        "worker-320": {
+          "price": 563,
+          "salt": 4151616358,
+          "commitment": "299f2b09b53c5f56fd7e813dd3dac8b1bdda65faf43d3558b075509e528b55a0"
+        },
+        "worker-208": {
+          "price": 870,
+          "salt": 524559575,
+          "commitment": "df9cadf68e4a9905cb876790e02052ac30067deba13ef67e8c5efbb8a9a6f255"
+        },
+        "worker-84": {
+          "price": 782,
+          "salt": 1081153935,
+          "commitment": "ee1656961c0dd787d1c72405888bb31c93aab94888a7f8f4fa6c65f417a59e93"
+        },
+        "worker-343": {
+          "price": 186,
+          "salt": 3965744520,
+          "commitment": "1f1961ba40da2034cd6431541ecc84a2f6018d12e238a7aa3f404fde96418994"
+        },
+        "worker-275": {
+          "price": 115,
+          "salt": 1112616261,
+          "commitment": "64b88e9388497fb417d6f92fde8343c1e9da55f52768b8ab94060e3813f94434"
+        },
+        "worker-257": {
+          "price": 898,
+          "salt": 1021522371,
+          "commitment": "679067246443262e9585204b3428e9426158bc2f08ff8fcb68267f866355ec52"
+        },
+        "worker-243": {
+          "price": 907,
+          "salt": 219995717,
+          "commitment": "8a4e5c5f4158c0b719d64cc5a89ee7570f71939bae3bad30855bf0c6e49d3ac3"
+        },
+        "worker-319": {
+          "price": 769,
+          "salt": 1812584586,
+          "commitment": "578945fad604e33a13dd9eae6a531051ff8f2bb064440513c4e97b08b0fd5370"
+        },
+        "worker-224": {
+          "price": 274,
+          "salt": 1676098624,
+          "commitment": "00ad47e9b7056ca75810f883a391061f7efc3656fd5368c5301cc80aa63aa10b"
+        },
+        "worker-312": {
+          "price": 723,
+          "salt": 1275818700,
+          "commitment": "a9fa95a1fca1b36b552cf397145346b138bdf71e5cf059d3d875b9e9daedb789"
+        },
+        "worker-137": {
+          "price": 726,
+          "salt": 902283126,
+          "commitment": "be360174c4272ec7b43670b606c0e327c08e996ab62b67b011947b97e0dfbbf8"
+        },
+        "worker-87": {
+          "price": 317,
+          "salt": 3371235096,
+          "commitment": "4da4702c6f76536fe5176d787ba7abe8c45f7355ca9dcb89a2adf34c42ada203"
+        },
+        "worker-247": {
+          "price": 437,
+          "salt": 594361053,
+          "commitment": "a359d7e4aa47ae12c19e24ef59ccae3f1ec202a9a3589874f958fe8a64a88180"
+        },
+        "worker-111": {
+          "price": 781,
+          "salt": 655781999,
+          "commitment": "f32b6b6b95d0f4ef09b9b7671c059ca3ecb3fffe59581250c37fd15a6c57ff36"
+        },
+        "worker-459": {
+          "price": 117,
+          "salt": 3209340474,
+          "commitment": "ec36b97974bcfe9966b4f20dde4eed45682ef32d381f5f1c05fe8039d85f461f"
+        },
+        "worker-402": {
+          "price": 169,
+          "salt": 2874445324,
+          "commitment": "f0102be7667ea21c55640ad6b6ddfdac9dbe721c1f6db410b7eabd608a4610b9"
+        },
+        "worker-270": {
+          "price": 846,
+          "salt": 1796301198,
+          "commitment": "7f5630ec9476eda0294b35f5751bc074385dd67b13f6a7ca25306643312372cb"
+        },
+        "worker-82": {
+          "price": 619,
+          "salt": 2935444399,
+          "commitment": "669b2c2b73af44abcd27b33469a338d9e851f4a30176ba3ded86fd3187397703"
+        },
+        "worker-43": {
+          "price": 24,
+          "salt": 3092731912,
+          "commitment": "ab38dcd68475f57d6804d6975e120ee1d448b02ad6b776b85517e581d5f21903"
+        },
+        "worker-4": {
+          "price": 21,
+          "salt": 894490801,
+          "commitment": "e9de883569536389cab108e0d12544263ca33a676242d9b8b2a53753a0328bb3"
+        }
+      },
+      "reveals": {
+        "worker-320": {
+          "price": 563,
+          "salt": 4151616358,
+          "commitment_ok": true
+        },
+        "worker-208": {
+          "price": 870,
+          "salt": 524559575,
+          "commitment_ok": true
+        },
+        "worker-84": {
+          "price": 782,
+          "salt": 1081153935,
+          "commitment_ok": true
+        },
+        "worker-343": {
+          "price": 186,
+          "salt": 3965744520,
+          "commitment_ok": true
+        },
+        "worker-275": {
+          "price": 115,
+          "salt": 1112616261,
+          "commitment_ok": true
+        },
+        "worker-257": {
+          "price": 898,
+          "salt": 1021522371,
+          "commitment_ok": true
+        },
+        "worker-243": {
+          "price": 907,
+          "salt": 219995717,
+          "commitment_ok": true
+        },
+        "worker-319": {
+          "price": 769,
+          "salt": 1812584586,
+          "commitment_ok": true
+        },
+        "worker-224": {
+          "price": 274,
+          "salt": 1676098624,
+          "commitment_ok": true
+        },
+        "worker-312": {
+          "price": 723,
+          "salt": 1275818700,
+          "commitment_ok": true
+        },
+        "worker-137": {
+          "price": 726,
+          "salt": 902283126,
+          "commitment_ok": true
+        },
+        "worker-87": {
+          "price": 317,
+          "salt": 3371235096,
+          "commitment_ok": true
+        },
+        "worker-247": {
+          "price": 437,
+          "salt": 594361053,
+          "commitment_ok": true
+        },
+        "worker-111": {
+          "price": 781,
+          "salt": 655781999,
+          "commitment_ok": true
+        },
+        "worker-459": {
+          "price": 117,
+          "salt": 3209340474,
+          "commitment_ok": true
+        },
+        "worker-402": {
+          "price": 169,
+          "salt": 2874445324,
+          "commitment_ok": true
+        },
+        "worker-270": {
+          "price": 846,
+          "salt": 1796301198,
+          "commitment_ok": true
+        },
+        "worker-82": {
+          "price": 619,
+          "salt": 2935444399,
+          "commitment_ok": true
+        },
+        "worker-43": {
+          "price": 24,
+          "salt": 3092731912,
+          "commitment_ok": true
+        },
+        "worker-4": {
+          "price": 21,
+          "salt": 894490801,
+          "commitment_ok": true
+        }
+      },
+      "winner": "worker-43",
+      "adjusted_prices": {
+        "worker-320": 1689.0,
+        "worker-208": 1740.0,
+        "worker-84": 1564.0,
+        "worker-343": 372.0,
+        "worker-275": 345.0,
+        "worker-257": 1796.0,
+        "worker-243": 1814.0,
+        "worker-319": 1538.0,
+        "worker-224": 548.0,
+        "worker-312": 1446.0,
+        "worker-137": 1452.0,
+        "worker-87": 634.0,
+        "worker-247": 874.0,
+        "worker-111": 1562.0,
+        "worker-459": 234.0,
+        "worker-402": 338.0,
+        "worker-270": 1692.0,
+        "worker-82": 1857.0,
+        "worker-43": 48.0,
+        "worker-4": 63.0
+      },
+      "state": "refunded",
+      "attest": false,
+      "payment": 0,
+      "submitted": true
+    },
+    {
+      "round": 8,
+      "commitments": {
+        "worker-320": {
+          "price": 391,
+          "salt": 1936071187,
+          "commitment": "6c2b1cfa0cd4552d1ec2da14a231704afaec439e1d6db44bfaa4e30926c65b0a"
+        },
+        "worker-208": {
+          "price": 696,
+          "salt": 2147819471,
+          "commitment": "b23b4a8e85af774bb34b5163ce5f39f625a67900a9192aed1477209294f7aa55"
+        },
+        "worker-84": {
+          "price": 520,
+          "salt": 2041447605,
+          "commitment": "0f4facfc6c5ad1aa1660fe6b37526fa47a5cad520743af479ea5d2de867d2965"
+        },
+        "worker-343": {
+          "price": 657,
+          "salt": 3694141883,
+          "commitment": "b68b1f4b5817a5314a1b49c2d2c8c85c41f9b09ea5b0e47589b0041647bfc4d7"
+        },
+        "worker-275": {
+          "price": 678,
+          "salt": 1165566891,
+          "commitment": "9fa7a1f4efe746a10792425673969097036e3ee78d8b8b5cb905a2a637cd1013"
+        },
+        "worker-257": {
+          "price": 780,
+          "salt": 2442315078,
+          "commitment": "59cb4f88225bdeb5ceba7578a8120d6f3d76d9bf628b9c07e9e722be3be52a3f"
+        },
+        "worker-243": {
+          "price": 270,
+          "salt": 1470159885,
+          "commitment": "da7d079554a50c4ec83b281a0eccd6cb41bcfcc33a10528ba43c4f59243f0b4d"
+        },
+        "worker-319": {
+          "price": 643,
+          "salt": 3248474313,
+          "commitment": "fdd94406f119f3bde53d7ecc9e91944b67504792224f534da0ef05b38bc68664"
+        },
+        "worker-224": {
+          "price": 721,
+          "salt": 2455368018,
+          "commitment": "afc498b10b4f91facd86cfd557d6c6644adad956cb8c6dc6b6e5ecf0c4ed0c40"
+        },
+        "worker-312": {
+          "price": 229,
+          "salt": 3240585765,
+          "commitment": "dd1067cecfb2e88b87abd62eedeebf522346fbbe51d3dd3e8200e12193970b9d"
+        },
+        "worker-137": {
+          "price": 975,
+          "salt": 1079580051,
+          "commitment": "025f8f46ea9e72d5f6f62a7f40e05c4ed1944ebaec8b79f926b54f11fe85c7ba"
+        },
+        "worker-87": {
+          "price": 937,
+          "salt": 1911776423,
+          "commitment": "61ac5428d6a5e65f8f4796a551fc4851cdde4081da67f0c19939e16c876f27f1"
+        },
+        "worker-247": {
+          "price": 118,
+          "salt": 4038922278,
+          "commitment": "a1dede0bfe02e6197445b52b62862a6c3791450f13672100dd81648066ddb94f"
+        },
+        "worker-111": {
+          "price": 672,
+          "salt": 436138063,
+          "commitment": "3482706fe00663fee9dcb3e711eec79209db3b2bbb1fc8b997de3a81f7fb391f"
+        },
+        "worker-459": {
+          "price": 707,
+          "salt": 2557432863,
+          "commitment": "9e4fc8d2548fd6b81cc813540656a3ebbf8c40fff432894f22168e17c3c4272a"
+        },
+        "worker-402": {
+          "price": 669,
+          "salt": 4218021171,
+          "commitment": "9f854c43673a473008ca0a1067ffe34350ccb4d96d9ceb9dc1eb909cece31879"
+        },
+        "worker-270": {
+          "price": 959,
+          "salt": 346886800,
+          "commitment": "b600d15f5f57b014ed075868767b9da6a083daec2290355d1a8d6ba30346656e"
+        },
+        "worker-82": {
+          "price": 200,
+          "salt": 690105647,
+          "commitment": "08525df03c463be9d7c87bf29b66f3510afd410648092b0c14fb86e6945ba36a"
+        },
+        "worker-43": {
+          "price": 577,
+          "salt": 1208151511,
+          "commitment": "22de72a8e2382125bc679c8b67ea04c15278635fab368dc28c4189f3ac5508db"
+        },
+        "worker-4": {
+          "price": 434,
+          "salt": 293132622,
+          "commitment": "f7eefe293a034f09dae5b81333a32673266f85a36f523e66ea5fa4f715a9a7bc"
+        }
+      },
+      "reveals": {
+        "worker-320": {
+          "price": 391,
+          "salt": 1936071187,
+          "commitment_ok": true
+        },
+        "worker-208": {
+          "price": 696,
+          "salt": 2147819471,
+          "commitment_ok": true
+        },
+        "worker-84": {
+          "price": 520,
+          "salt": 2041447605,
+          "commitment_ok": true
+        },
+        "worker-343": {
+          "price": 657,
+          "salt": 3694141883,
+          "commitment_ok": true
+        },
+        "worker-275": {
+          "price": 678,
+          "salt": 1165566891,
+          "commitment_ok": true
+        },
+        "worker-257": {
+          "price": 780,
+          "salt": 2442315078,
+          "commitment_ok": true
+        },
+        "worker-243": {
+          "price": 270,
+          "salt": 1470159885,
+          "commitment_ok": true
+        },
+        "worker-319": {
+          "price": 643,
+          "salt": 3248474313,
+          "commitment_ok": true
+        },
+        "worker-224": {
+          "price": 721,
+          "salt": 2455368018,
+          "commitment_ok": true
+        },
+        "worker-312": {
+          "price": 229,
+          "salt": 3240585765,
+          "commitment_ok": true
+        },
+        "worker-137": {
+          "price": 975,
+          "salt": 1079580051,
+          "commitment_ok": true
+        },
+        "worker-87": {
+          "price": 937,
+          "salt": 1911776423,
+          "commitment_ok": true
+        },
+        "worker-247": {
+          "price": 118,
+          "salt": 4038922278,
+          "commitment_ok": true
+        },
+        "worker-111": {
+          "price": 672,
+          "salt": 436138063,
+          "commitment_ok": true
+        },
+        "worker-459": {
+          "price": 707,
+          "salt": 2557432863,
+          "commitment_ok": true
+        },
+        "worker-402": {
+          "price": 669,
+          "salt": 4218021171,
+          "commitment_ok": true
+        },
+        "worker-270": {
+          "price": 959,
+          "salt": 346886800,
+          "commitment_ok": true
+        },
+        "worker-82": {
+          "price": 200,
+          "salt": 690105647,
+          "commitment_ok": true
+        },
+        "worker-43": {
+          "price": 577,
+          "salt": 1208151511,
+          "commitment_ok": true
+        },
+        "worker-4": {
+          "price": 434,
+          "salt": 293132622,
+          "commitment_ok": true
+        }
+      },
+      "winner": "worker-247",
+      "adjusted_prices": {
+        "worker-320": 1173.0,
+        "worker-208": 1392.0,
+        "worker-84": 1040.0,
+        "worker-343": 1314.0,
+        "worker-275": 2034.0,
+        "worker-257": 1560.0,
+        "worker-243": 540.0,
+        "worker-319": 1286.0,
+        "worker-224": 1442.0,
+        "worker-312": 458.0,
+        "worker-137": 1950.0,
+        "worker-87": 1874.0,
+        "worker-247": 236.0,
+        "worker-111": 1344.0,
+        "worker-459": 1414.0,
+        "worker-402": 1338.0,
+        "worker-270": 1918.0,
+        "worker-82": 600.0,
+        "worker-43": 1731.0,
+        "worker-4": 1302.0
+      },
+      "state": "refunded",
+      "attest": false,
+      "payment": 0,
+      "submitted": true
+    },
+    {
+      "round": 9,
+      "commitments": {
+        "worker-320": {
+          "price": 292,
+          "salt": 2444899590,
+          "commitment": "d4f67020ad7133cea29df4818992eb84bd716d07c7d8a5d6fd3400ef3eb25788"
+        },
+        "worker-208": {
+          "price": 576,
+          "salt": 965553121,
+          "commitment": "1a0080750c86ee23afe51db3087869a3e42f8a0e29bfbc6296cc931bc74175f9"
+        },
+        "worker-84": {
+          "price": 518,
+          "salt": 45555023,
+          "commitment": "186f10d66844a615208b000e417e84d52a652f01fa5433963291cba408190987"
+        },
+        "worker-343": {
+          "price": 676,
+          "salt": 3266488435,
+          "commitment": "3f856783d105a11b84324c4ca94c34b182dcbc7181fc62eaba6a027a7d7995d9"
+        },
+        "worker-275": {
+          "price": 980,
+          "salt": 2910170968,
+          "commitment": "b221e370df679aec1d85bc25cc892d6fbd6ae6eb65b415427f2620f7dd523fa5"
+        },
+        "worker-257": {
+          "price": 199,
+          "salt": 1074241869,
+          "commitment": "fb7d34dc87c18d96d5846ae346173728e0ef37439f3458b7883febb6a5240784"
+        },
+        "worker-243": {
+          "price": 734,
+          "salt": 4036804465,
+          "commitment": "d6785735f50863be34e11533035c6cf8a8a519d22fd8e5094191a95c08986e03"
+        },
+        "worker-319": {
+          "price": 106,
+          "salt": 3446348469,
+          "commitment": "dc8239e0b401c418ae99d1bc0143045bfa03b0e7dd36dfbd857a8b6a8a108c39"
+        },
+        "worker-224": {
+          "price": 723,
+          "salt": 2514250411,
+          "commitment": "376b99a5db1f89ecd2991c2d9cfe29004556e768e2c00521ebf05291cd052d92"
+        },
+        "worker-312": {
+          "price": 326,
+          "salt": 1263534365,
+          "commitment": "3888267caafa8eef540adc1abc74f9a472a9dda7d4144fdba5a693c7fc91d605"
+        },
+        "worker-137": {
+          "price": 20,
+          "salt": 1341284142,
+          "commitment": "cea3c619ef32c1133489da03190700eee6298454a1132811b42364222485f6be"
+        },
+        "worker-87": {
+          "price": 720,
+          "salt": 1750011620,
+          "commitment": "343dded8e210b8ef05b5d2733e830ce09c4105f3ffc249ce0ec4ec0a79a24f60"
+        },
+        "worker-247": {
+          "price": 15,
+          "salt": 673505960,
+          "commitment": "91e0397ddb53a35b6c033599c033fbac090c2de4263d97212efdd7cd9f9031e2"
+        },
+        "worker-111": {
+          "price": 824,
+          "salt": 1290730061,
+          "commitment": "bf0ff03001bd97dfe5a6686a0d4ce8682cdab996b63a7cb01ae46c4fda327dec"
+        },
+        "worker-459": {
+          "price": 640,
+          "salt": 2817822745,
+          "commitment": "fa88ebe7faa891375da77291955b35cc514f81db950af8d818f4dd40c0e47b19"
+        },
+        "worker-402": {
+          "price": 460,
+          "salt": 2872170693,
+          "commitment": "dbe374deeff82f6af829aee661a1ebcc4dcb40152f4d48ee47de46e04fc8d138"
+        },
+        "worker-270": {
+          "price": 473,
+          "salt": 1889350419,
+          "commitment": "f2c14df09f2a70386edcc6fdea335e5ec1bed6f29c3d4d5bd0416e45df5d57fa"
+        },
+        "worker-82": {
+          "price": 408,
+          "salt": 3919616864,
+          "commitment": "5317ad6f4a7d75f4d0f9124bff2923d60c86eebd45a51f1dc35bc6f9417b3db0"
+        },
+        "worker-43": {
+          "price": 888,
+          "salt": 2680728405,
+          "commitment": "b4680e301225a0cfa49936081bc638fd96eee8bced4143e67e288ad7642dcd47"
+        },
+        "worker-4": {
+          "price": 167,
+          "salt": 1494781039,
+          "commitment": "e31dc5e98b13c622635d9671b7c90f4e55551d655a88eac64fbbda091b944649"
+        }
+      },
+      "reveals": {
+        "worker-320": {
+          "price": 292,
+          "salt": 2444899590,
+          "commitment_ok": true
+        },
+        "worker-208": {
+          "price": 576,
+          "salt": 965553121,
+          "commitment_ok": true
+        },
+        "worker-84": {
+          "price": 518,
+          "salt": 45555023,
+          "commitment_ok": true
+        },
+        "worker-343": {
+          "price": 676,
+          "salt": 3266488435,
+          "commitment_ok": true
+        },
+        "worker-275": {
+          "price": 980,
+          "salt": 2910170968,
+          "commitment_ok": true
+        },
+        "worker-257": {
+          "price": 199,
+          "salt": 1074241869,
+          "commitment_ok": true
+        },
+        "worker-243": {
+          "price": 734,
+          "salt": 4036804465,
+          "commitment_ok": true
+        },
+        "worker-319": {
+          "price": 106,
+          "salt": 3446348469,
+          "commitment_ok": true
+        },
+        "worker-224": {
+          "price": 723,
+          "salt": 2514250411,
+          "commitment_ok": true
+        },
+        "worker-312": {
+          "price": 326,
+          "salt": 1263534365,
+          "commitment_ok": true
+        },
+        "worker-137": {
+          "price": 20,
+          "salt": 1341284142,
+          "commitment_ok": true
+        },
+        "worker-87": {
+          "price": 720,
+          "salt": 1750011620,
+          "commitment_ok": true
+        },
+        "worker-247": {
+          "price": 15,
+          "salt": 673505960,
+          "commitment_ok": true
+        },
+        "worker-111": {
+          "price": 824,
+          "salt": 1290730061,
+          "commitment_ok": true
+        },
+        "worker-459": {
+          "price": 640,
+          "salt": 2817822745,
+          "commitment_ok": true
+        },
+        "worker-402": {
+          "price": 460,
+          "salt": 2872170693,
+          "commitment_ok": true
+        },
+        "worker-270": {
+          "price": 473,
+          "salt": 1889350419,
+          "commitment_ok": true
+        },
+        "worker-82": {
+          "price": 408,
+          "salt": 3919616864,
+          "commitment_ok": true
+        },
+        "worker-43": {
+          "price": 888,
+          "salt": 2680728405,
+          "commitment_ok": true
+        },
+        "worker-4": {
+          "price": 167,
+          "salt": 1494781039,
+          "commitment_ok": true
+        }
+      },
+      "winner": "worker-137",
+      "adjusted_prices": {
+        "worker-320": 876.0,
+        "worker-208": 1152.0,
+        "worker-84": 1036.0,
+        "worker-343": 1352.0,
+        "worker-275": 2940.0,
+        "worker-257": 398.0,
+        "worker-243": 1468.0,
+        "worker-319": 212.0,
+        "worker-224": 1446.0,
+        "worker-312": 652.0,
+        "worker-137": 40.0,
+        "worker-87": 1440.0,
+        "worker-247": 45.0,
+        "worker-111": 1648.0,
+        "worker-459": 1280.0,
+        "worker-402": 920.0,
+        "worker-270": 946.0,
+        "worker-82": 1224.0,
+        "worker-43": 2664.0,
+        "worker-4": 501.0
+      },
+      "state": "refunded",
+      "attest": false,
+      "payment": 0,
+      "submitted": true
+    },
+    {
+      "round": 10,
+      "commitments": {
+        "worker-320": {
+          "price": 791,
+          "salt": 2577017301,
+          "commitment": "b258fd412fafaf0717b4ee6d2647c2f3f6fcd8c3ad097ff76e4341c3ac5e804a"
+        },
+        "worker-208": {
+          "price": 602,
+          "salt": 663424786,
+          "commitment": "1e4db8903d7e9c3d3d85590f18f179771ace0b62892be27612d90755bb8ab7f6"
+        },
+        "worker-84": {
+          "price": 232,
+          "salt": 98784883,
+          "commitment": "41298fa2a82882336ce76d45e97250847f94827a474cd647babf7dda4f774f7b"
+        },
+        "worker-343": {
+          "price": 716,
+          "salt": 1939262503,
+          "commitment": "87a1328a89e4999f09eb7531a2707f5c25f61180746afa89064dcefe9a4e8efa"
+        },
+        "worker-275": {
+          "price": 257,
+          "salt": 2250201879,
+          "commitment": "01a8a050fc3e2bd8ac9c36c54db7505240eb4e260777dbaef2dc97770c72bca9"
+        },
+        "worker-257": {
+          "price": 774,
+          "salt": 1177064649,
+          "commitment": "7b31419d7cce819302ef03a5f8fe058f8bc5e4525121e6942e585dfdfbb74fff"
+        },
+        "worker-243": {
+          "price": 258,
+          "salt": 863343817,
+          "commitment": "4255be6b474e7985fda195dc801b44dd63176608417f80a7c2cd487efbc22c20"
+        },
+        "worker-319": {
+          "price": 910,
+          "salt": 3035111655,
+          "commitment": "5e5760668d32b93078972a27b64cb29b049f9a953fae0028c665364e4ebd4757"
+        },
+        "worker-224": {
+          "price": 500,
+          "salt": 357699250,
+          "commitment": "a024b374f15b99740ff2053f8a6994d7f119b3f16967cf95aa9819eb881d7d95"
+        },
+        "worker-312": {
+          "price": 78,
+          "salt": 30138283,
+          "commitment": "5d8efc8c7aed6ef1894ed16878b78fdad08bf4b4db3637dbb1c12d2f2bc11d0a"
+        },
+        "worker-137": {
+          "price": 743,
+          "salt": 1863067399,
+          "commitment": "5b63e87dc692443070912535ef0074ff45f805e5b7d8f82ded01fa9e9113f563"
+        },
+        "worker-87": {
+          "price": 141,
+          "salt": 2198048301,
+          "commitment": "66b3a6c0a9d856c6ae9ada30b1c9fc4b6fb50667aeaa9f9e10064a5939f3a7ac"
+        },
+        "worker-247": {
+          "price": 201,
+          "salt": 1128747885,
+          "commitment": "9d3e1b476d77c58513eb42c40055eebe7ef09c43df410a9763f68505d4745ad2"
+        },
+        "worker-111": {
+          "price": 86,
+          "salt": 4034686982,
+          "commitment": "55af37dc10e7489a071c0ad6114fac9759fc9a286237033dd432e00a3cf57ce9"
+        },
+        "worker-459": {
+          "price": 922,
+          "salt": 772900778,
+          "commitment": "2bccf1045a5dfd0994c8f13d6a40678164409336308a12808cc3c829c1c630c6"
+        },
+        "worker-402": {
+          "price": 110,
+          "salt": 2062934073,
+          "commitment": "07db2c14effcf3101ccae4ffd4caaf6d8fe8a35d600ffde08722a1f164c408a8"
+        },
+        "worker-270": {
+          "price": 876,
+          "salt": 4183857800,
+          "commitment": "de57a1c39dca7edc381fc300bcf522081921296c29bf02fa3ec32a15d955290f"
+        },
+        "worker-82": {
+          "price": 937,
+          "salt": 3031974314,
+          "commitment": "a12f50481cac0a33f00d0076f4f6ff21edb84191a890a8a3bfbad38c0173f02b"
+        },
+        "worker-43": {
+          "price": 590,
+          "salt": 1312767697,
+          "commitment": "994f92a37f78c9fbe0238b2ce08f71055f5803454622eda86b9aa8a0e54a601a"
+        },
+        "worker-4": {
+          "price": 432,
+          "salt": 220877131,
+          "commitment": "5f674c4af36b2344edda1047c0809e6833c82f7ff7d9fd48957fa9555dd004f9"
+        }
+      },
+      "reveals": {
+        "worker-320": {
+          "price": 791,
+          "salt": 2577017301,
+          "commitment_ok": true
+        },
+        "worker-208": {
+          "price": 602,
+          "salt": 663424786,
+          "commitment_ok": true
+        },
+        "worker-84": {
+          "price": 232,
+          "salt": 98784883,
+          "commitment_ok": true
+        },
+        "worker-343": {
+          "price": 716,
+          "salt": 1939262503,
+          "commitment_ok": true
+        },
+        "worker-275": {
+          "price": 257,
+          "salt": 2250201879,
+          "commitment_ok": true
+        },
+        "worker-257": {
+          "price": 774,
+          "salt": 1177064649,
+          "commitment_ok": true
+        },
+        "worker-243": {
+          "price": 258,
+          "salt": 863343817,
+          "commitment_ok": true
+        },
+        "worker-319": {
+          "price": 910,
+          "salt": 3035111655,
+          "commitment_ok": true
+        },
+        "worker-224": {
+          "price": 500,
+          "salt": 357699250,
+          "commitment_ok": true
+        },
+        "worker-312": {
+          "price": 78,
+          "salt": 30138283,
+          "commitment_ok": true
+        },
+        "worker-137": {
+          "price": 743,
+          "salt": 1863067399,
+          "commitment_ok": true
+        },
+        "worker-87": {
+          "price": 141,
+          "salt": 2198048301,
+          "commitment_ok": true
+        },
+        "worker-247": {
+          "price": 201,
+          "salt": 1128747885,
+          "commitment_ok": true
+        },
+        "worker-111": {
+          "price": 86,
+          "salt": 4034686982,
+          "commitment_ok": true
+        },
+        "worker-459": {
+          "price": 922,
+          "salt": 772900778,
+          "commitment_ok": true
+        },
+        "worker-402": {
+          "price": 110,
+          "salt": 2062934073,
+          "commitment_ok": true
+        },
+        "worker-270": {
+          "price": 876,
+          "salt": 4183857800,
+          "commitment_ok": true
+        },
+        "worker-82": {
+          "price": 937,
+          "salt": 3031974314,
+          "commitment_ok": true
+        },
+        "worker-43": {
+          "price": 590,
+          "salt": 1312767697,
+          "commitment_ok": true
+        },
+        "worker-4": {
+          "price": 432,
+          "salt": 220877131,
+          "commitment_ok": true
+        }
+      },
+      "winner": "worker-312",
+      "adjusted_prices": {
+        "worker-320": 2373.0,
+        "worker-208": 1204.0,
+        "worker-84": 464.0,
+        "worker-343": 1432.0,
+        "worker-275": 771.0,
+        "worker-257": 1548.0,
+        "worker-243": 516.0,
+        "worker-319": 1820.0,
+        "worker-224": 1000.0,
+        "worker-312": 156.0,
+        "worker-137": 2229.0,
+        "worker-87": 282.0,
+        "worker-247": 603.0,
+        "worker-111": 172.0,
+        "worker-459": 1844.0,
+        "worker-402": 220.0,
+        "worker-270": 1752.0,
+        "worker-82": 2811.0,
+        "worker-43": 1770.0,
+        "worker-4": 1296.0
+      },
+      "state": "refunded",
+      "attest": false,
+      "payment": 0,
+      "submitted": true
+    }
+  ],
+  "reputation": {
+    "worker-320": {
+      "alpha": 1,
+      "beta": 2,
+      "media": 0.3333333333333333
+    },
+    "worker-208": {
+      "alpha": 2,
+      "beta": 2,
+      "media": 0.5
+    },
+    "worker-84": {
+      "alpha": 1,
+      "beta": 1,
+      "media": 0.5
+    },
+    "worker-343": {
+      "alpha": 1,
+      "beta": 1,
+      "media": 0.5
+    },
+    "worker-275": {
+      "alpha": 1,
+      "beta": 2,
+      "media": 0.3333333333333333
+    },
+    "worker-257": {
+      "alpha": 1,
+      "beta": 1,
+      "media": 0.5
+    },
+    "worker-243": {
+      "alpha": 1,
+      "beta": 1,
+      "media": 0.5
+    },
+    "worker-319": {
+      "alpha": 1,
+      "beta": 1,
+      "media": 0.5
+    },
+    "worker-224": {
+      "alpha": 1,
+      "beta": 1,
+      "media": 0.5
+    },
+    "worker-312": {
+      "alpha": 1,
+      "beta": 2,
+      "media": 0.3333333333333333
+    },
+    "worker-137": {
+      "alpha": 1,
+      "beta": 2,
+      "media": 0.3333333333333333
+    },
+    "worker-87": {
+      "alpha": 1,
+      "beta": 1,
+      "media": 0.5
+    },
+    "worker-247": {
+      "alpha": 1,
+      "beta": 2,
+      "media": 0.3333333333333333
+    },
+    "worker-111": {
+      "alpha": 1,
+      "beta": 1,
+      "media": 0.5
+    },
+    "worker-459": {
+      "alpha": 1,
+      "beta": 1,
+      "media": 0.5
+    },
+    "worker-402": {
+      "alpha": 1,
+      "beta": 1,
+      "media": 0.5
+    },
+    "worker-270": {
+      "alpha": 1,
+      "beta": 1,
+      "media": 0.5
+    },
+    "worker-82": {
+      "alpha": 1,
+      "beta": 2,
+      "media": 0.3333333333333333
+    },
+    "worker-43": {
+      "alpha": 1,
+      "beta": 2,
+      "media": 0.3333333333333333
+    },
+    "worker-4": {
+      "alpha": 1,
+      "beta": 2,
+      "media": 0.3333333333333333
+    }
+  },
+  "spent_by_agent": {
+    "worker-320": 0,
+    "worker-208": 100,
+    "worker-84": 0,
+    "worker-343": 0,
+    "worker-275": 0,
+    "worker-257": 0,
+    "worker-243": 0,
+    "worker-319": 0,
+    "worker-224": 0,
+    "worker-312": 0,
+    "worker-137": 0,
+    "worker-87": 0,
+    "worker-247": 0,
+    "worker-111": 0,
+    "worker-459": 0,
+    "worker-402": 0,
+    "worker-270": 0,
+    "worker-82": 0,
+    "worker-43": 0,
+    "worker-4": 0
+  },
+  "metrics": {
+    "mercado": {
+      "coste_total": 100,
+      "verificados": 1,
+      "coste_por_verificado": 100.0
+    },
+    "round_robin": {
+      "coste_total": 1000,
+      "verificados": 1,
+      "coste_por_verificado": 1000.0
+    }
+  }
+}

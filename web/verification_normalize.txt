@@ -1,0 +1,27 @@
+# Verificación: normalizador extraído y contrastado con swarm/out/sim.json real (2026-11-10)
+
+## Cambio
+- src/normalize.ts v1.0 (nuevo): swarmRoundToRound + normalizeSim sacados de main.ts para poder
+  testearlos sin DOM. Mapea estado del enjambre: open->open, refunded->refunded, resto->closed.
+- src/render.ts v0.4: columna estado añade "reembolsada (cayó)" para rondas refunded
+  (antes salía "abierta", engañoso: la ronda ya cayó y se devolvió el depósito).
+- src/sim.ts v1.0: Round.status admite refunded.
+- fixtures/sim.swarm.sample.json: snapshot de ../swarm/out/sim.json (3 rondas de 10 + reputación +
+  spent_by_agent + metrics), 19357 B.
+- test/normalize.test.ts v1.0: 5 tests (formato enjambre, formato fixture, ronda sin ganador,
+  refunded, render+headline).
+
+## Verificador
+- npm test: 12/12 verdes (3 ficheros; antes 7/7).
+- npm run typecheck: sin errores.
+- npm run build: js 7.29 kB (gzip 3.15), css 1.82 kB (gzip 0.85), 1.09 s.
+- dist sirve ambos fixtures (vite preview): index.html 200 432B, sim.swarm.sample.json 200 19357B,
+  sim.sample.json 200 2011B -> ?sim=sim.swarm.sample.json funciona también en el build.
+
+## Dato real observado en swarm/out/sim.json
+- 10 rondas, 20 trabajadores; solo 1 verificado (mercado coste_total 100 vs round_robin 1000;
+  coste por verificado 100 vs 1000 NEAR); 2 de las 3 primeras rondas son refunded sin pago.
+
+## Siguiente paso propuesto
+- Replay animado del modo demo: ?sim= debe pintar ronda a ronda (commit -> reveal -> cierre) al
+  velocidad del control, hoy solo renderiza el estado final. Falta test del replay con temporizador.

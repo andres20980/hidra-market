@@ -1,0 +1,33 @@
+{
+  "sandbox_rpc": "http://127.0.0.1:44687",
+  "root": "test.near",
+  "market": "market.test.near",
+  "worker": "worker-1.test.near",
+  "worker_balance": "4999734617814057600000000",
+  "limited_key": "ed25519:sNmCz2SUdiWEtoYh94vBZwWHocqjKAhhWxp55iPaZU7",
+  "allowance": "0.25 NEAR",
+  "methods": [
+    "register_worker",
+    "commit_bid",
+    "reveal_bid",
+    "submit_result"
+  ],
+  "keys_onchain": [
+    {
+      "public_key": "ed25519:sNmCz2SUdiWEtoYh94vBZwWHocqjKAhhWxp55iPaZU7",
+      "permission": {
+        "FunctionCall": {
+          "allowance": "250000000000000000000000",
+          "method_names": [
+            "register_worker",
+            "commit_bid",
+            "reveal_bid",
+            "submit_result"
+          ],
+          "receiver_id": "market.test.near"
+        }
+      }
+    }
+  ],
+  "ok": true
+}

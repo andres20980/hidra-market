@@ -1,0 +1,24 @@
+# Verificación normalizer con swarm/out/sim.json
+
+## Formato del archivo real
+El archivo `producto/swarm/out/sim.json` tiene un formato diferente al fixture:
+- Usa `rounds[].round` en lugar de `id`
+- Usa `commitments[].commitment` en lugar de commits directos  
+- Usa `reveals[].price` para las reveals
+- Usa `adjusted_prices[].winner` para el precio de cierre
+
+## Normalizer (main.ts v0.3)
+El función `normalizeSim` en `src/main.ts` maneja ambos formatos:
+1. Detecta el formato por la presencia de `commitments` u `bids`
+2. Convierte commitments + reveals a formato de bids
+3. Extrae winner y closePrice correctamente
+4. Normaliza workers y stats
+
+## Resultado verificado
+- Código: `tsc OK` (compilación TypeScript exitosa)
+- Tests: `7/7 tests verdes` con fixture sim.sample.json
+- Formato real: El normalizer mapea correctamente commitments/reveals a bids
+- Stats: marketCostPerVerified y roundRobinCostPerVerified calculados correctamente
+
+## Siguiente paso
+Verificar render con sim real vía ?sim=../swarm/out/sim.json en el modo demo.
