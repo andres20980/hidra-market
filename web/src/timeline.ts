@@ -59,18 +59,19 @@ function viewAt(base: Sim, idx: number, current: Round, closed: number, earned: 
     meta: base.meta,
     rounds: shown,
     workers: workersAt(base, closed, shown, earned),
-    stats: liveStats(shown),
+    stats: liveStats(shown, base.stats),
   };
 }
 
-function liveStats(rounds: Round[]): Sim['stats'] {
+function liveStats(rounds: Round[], base: Sim['stats']): Sim['stats'] {
   const verified = rounds.filter((r) => r.verified).length;
-  const spent = rounds.reduce((s, r) => s + (r.closePrice ?? 0), 0);
+  const spent = rounds.reduce((s, r) => s + (r.payment ?? 0), 0);
   return {
     verifiedResults: verified,
     totalSpent: spent,
-    marketCostPerVerified: verified > 0 ? spent / verified : 0,
-    roundRobinCostPerVerified: rounds.length > 0 && verified > 0 ? spent / (rounds.length * verified) : 0,
+    marketCostPerVerified: verified > 0 ? spent / verified : base.marketCostPerVerified,
+    // round-robin es un benchmark fijo de la simulación, no depende del avance del replay
+    roundRobinCostPerVerified: base.roundRobinCostPerVerified,
   };
 }
 
@@ -108,7 +109,7 @@ export function frames(sim: Sim): Frame[] {
 function earnedOf(base: Sim, closed: number): Map<string, number> {
   const m = new Map<string, number>();
   for (const r of base.rounds.slice(0, closed)) {
-    if (r.winner && r.closePrice != null) m.set(r.winner, (m.get(r.winner) ?? 0) + r.closePrice);
+    if (r.winner && r.payment != null) m.set(r.winner, (m.get(r.winner) ?? 0) + r.payment);
   }
   return m;
 }

@@ -1,6 +1,6 @@
-// replay.ts v1.0
+// replay.ts v1.1
 import { Frame, frames as buildFrames, stepMs } from './timeline';
-import { render } from './render';
+import { render, renderIntro } from './render';
 import { Sim } from './sim';
 
 export interface El {
@@ -25,6 +25,7 @@ export class Replay {
   private idx = -1;
   private playing = false;
   private t: number | null = null;
+  private sim: Sim | null = null;
 
   constructor(private host: Host, private speed: () => number) {}
 
@@ -36,7 +37,8 @@ export class Replay {
     this.stop();
     this.fr = buildFrames(sim);
     this.idx = -1;
-    this.draw(null);
+    this.sim = sim;
+    this.drawIntro();
     this.btn();
   }
 
@@ -55,6 +57,7 @@ export class Replay {
   }
 
   private tick(): void {
+    if (!this.playing) return;
     if (this.idx >= this.fr.length - 1) { this.stop(); return; }
     this.idx += 1;
     this.draw(this.fr[this.idx]);
@@ -62,7 +65,7 @@ export class Replay {
   }
 
   start(): void {
-    if (!this.fr.length) return;
+    if (!this.fr.length || this.playing) return;
     this.playing = true;
     this.btn();
     if (this.idx === -1) { this.idx = 0; this.draw(this.fr[0]); }
@@ -90,5 +93,13 @@ export class Replay {
     if (this.playing) this.stop();
     else if (this.idx >= this.fr.length - 1) { this.idx = -1; this.start(); }
     else this.start();
+  }
+
+  // fichero: replay.ts v1.1
+  private drawIntro(): void {
+    const v = this.host.dom.id('view');
+    if (v && this.sim) v.innerHTML = renderIntro(this.sim);
+    const s = this.host.dom.id('replay-status');
+    if (s) s.textContent = `listo - ${this.fr.length} pasos - pulsa reproducir`;
   }
 }

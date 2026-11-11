@@ -1,4 +1,4 @@
-// main.ts v0.7 — entry: ?contract= → modo en vivo por RPC; si no, demo con replay ?sim=
+// main.ts v0.9 — entry: ?contract= → modo en vivo por RPC; si no, demo con replay ?sim=
 import './style.css';
 
 function themeInit(): void {
@@ -8,14 +8,16 @@ function themeInit(): void {
 }
 
 import { Sim } from './sim';
-import { render, renderToolbar } from './render';
+import { render, renderToolbar, loadingSpinner, esc } from './render';
 import { Replay, Dom } from './replay';
 import { normalizeSim } from './normalize';
+import { LivePoller } from './live';
 import { loadLive, DEFAULT_RPC } from './rpc';
 
 const app = document.getElementById('app')!;
 
 
+const AUTOSTART_MS = 1500; // pausa para leer el resumen antes del replay
 const SPEED_KEY = 'sim-speed';
 let currentSpeed = 1;
 
@@ -64,10 +66,11 @@ const replay = new Replay(
 );
 
 themeInit();
+app.innerHTML = loadingSpinner();
 load().then(({ sim, live }) => {
   app.innerHTML = renderToolbar(sim, currentSpeed)
-    + `<div class="replay"><button id="replay-toggle" type="button">▶ reproducir</button>`
-    + `<button id="replay-restart" type="button">↺ reiniciar</button>`
+    + `<div class="replay"> <button id="replay-toggle" type="button" aria-label="reproducir o pausar simulación">▶ reproducir</button>`
+    + ` <button id="replay-restart" type="button" aria-label="reiniciar simulación">↺ reiniciar</button>`
     + `<span id="replay-status" class="status"></span></div>`
     + `<main id="view">${live ? render(sim) : ''}</main>`;
   initSpeedControl();
@@ -79,21 +82,30 @@ load().then(({ sim, live }) => {
   if (live) {
     const s = document.getElementById('replay-status');
     if (s) s.textContent = 'modo en vivo (testnet)';
-    // sondeo: en vivo la reputación y las rondas se mueven; refrescamos cada 10 s
-    setInterval(async () => {
-      try {
-        const again = await load();
-        const v = document.getElementById('view');
-        if (v) v.innerHTML = render(again.sim);
-        if (s) s.textContent = `modo en vivo (testnet) · actualizado ${new Date().toLocaleTimeString()}`;
-      } catch { /* se reintenta en el siguiente sondeo */ }
-    }, 10000);
+    // sondeo cada 10 s; LivePoller se pausa con la pestaña oculta
+    const poller = new LivePoller(
+      {
+        schedule: (fn, ms) => window.setTimeout(fn, ms),
+        cancel: (t) => window.clearTimeout(t),
+        visible: () => document.visibilityState !== 'hidden',
+      },
+      {
+        update: (x) => { const v = document.getElementById('view'); if (v) v.innerHTML = render(x); },
+        status: (t) => { if (s) s.textContent = t; },
+      },
+      { intervalMs: 10000, label: 'modo en vivo (testnet)', load: async () => (await load()).sim },
+    );
+    poller.start();
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') poller.refresh();
+    });
     return;
   }
   replay.load(sim);
   document.getElementById('replay-toggle')?.addEventListener('click', () => replay.toggle());
   document.getElementById('replay-restart')?.addEventListener('click', () => replay.replay(sim));
-  replay.start();
+  // el resumen inicial se ve unos instantes antes de que el mercado arranque solo
+  setTimeout(() => replay.start(), AUTOSTART_MS);
 }).catch((e) => {
-  if (app) app.innerHTML = `<p class="error">${String(e)}</p>`;
+  if (app) app.innerHTML = `<p class="error" role="alert">${esc(e instanceof Error ? e.message : String(e))}</p>`;
 });

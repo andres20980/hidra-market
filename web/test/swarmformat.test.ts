@@ -33,8 +33,8 @@ describe('swarm/out/sim.json contract', () => {
   });
 
   it('carries the headline metrics of the market vs round-robin', () => {
-    expect(sim.stats.marketCostPerVerified).toBe(raw.metrics.mercado.coste_por_verificado);
-    expect(sim.stats.roundRobinCostPerVerified).toBe(raw.metrics.round_robin.coste_por_verificado);
+    expect(sim.stats.marketCostPerVerified).toBe(raw.metrics.mercado.coste_por_verificado ?? 0);
+    expect(sim.stats.roundRobinCostPerVerified).toBe(raw.metrics.round_robin.coste_por_verificado ?? 0);
     expect(headline(sim)).toContain('round-robin');
   });
 

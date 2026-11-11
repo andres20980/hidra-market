@@ -1,4 +1,4 @@
-# RULES.md v1.0 · Hidra Market — reglas exactas del mercado (contrato `contract/`)
+# RULES.md v1.1 · Hidra Market — reglas exactas del mercado (contrato `contract/`)
 
 Fuente: `hidra/consejo/DECISION.md` (10-nov-2026) y track `swarms` (`fuentes/prompts/tracks/05-swarms.md`).
 Toda regla numerada aquí tiene al menos un test en `contract/` (unidad o integración con near-sandbox).
@@ -34,7 +34,9 @@ Toda regla numerada aquí tiene al menos un test en `contract/` (unidad o integr
 - R16: `get_reputation` devuelve (α, β, media) como strings JSON (u128 no entra en JSON nativo de near-sdk 5).
 
 ## 6. Vistas
-`get_task(id)`, `list_tasks(from, limit)`, `get_round(task_id)`, `get_reputation(account)`, más `get_config` (cap por agente, verifier).
+`get_task(id)`, `list_tasks(from, limit)`, `get_round(task_id)`, `get_reputation(account)` y
+`get_config() -> (cap_per_agent, tareas)` (`(String, u64)`; u128 no cabe en JSON nativo, R16).
+El verificador es por tarea: se lee en `get_task(id).verifier`.
 
 ## 7. Diagrama de secuencia (una ronda)
 ```

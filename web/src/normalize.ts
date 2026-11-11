@@ -15,7 +15,7 @@ export function swarmRoundToRound(r: any): Round {
   return {
     id: r.round, task: r.task ?? '', publisher: r.publisher ?? '',
     status: r.state === 'open' ? 'open' : r.state === 'refunded' ? 'refunded' : 'closed',
-    bids, winner, closePrice, verified: !!r.attest, paid: (r.payment || 0) > 0,
+    bids, winner, closePrice, verified: !!r.attest, paid: (r.payment || 0) > 0, payment: r.payment || 0,
   };
 }
 
@@ -48,6 +48,13 @@ export function normalizeSim(data: any): Sim {
       roundRobinCostPerVerified: data.metrics.round_robin?.coste_por_verificado ?? 0,
       verifiedResults: data.metrics.mercado?.verificados ?? verifiedResults,
       totalSpent: data.metrics.mercado?.coste_total ?? totalSpent,
+    };
+  } else if (data.stats) {
+    stats = {
+      marketCostPerVerified: data.stats.marketCostPerVerified ?? (verifiedResults > 0 ? totalSpent / verifiedResults : 0),
+      roundRobinCostPerVerified: data.stats.roundRobinCostPerVerified ?? 0,
+      verifiedResults: data.stats.verifiedResults ?? verifiedResults,
+      totalSpent: data.stats.totalSpent ?? totalSpent,
     };
   } else {
     stats = {

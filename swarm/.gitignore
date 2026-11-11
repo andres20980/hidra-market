@@ -1,0 +1,10 @@
+# .gitignore v1.1
+.home/
+.local-home/
+.tmp/
+.cache/
+__pycache__/
+.pytest_cache/
+*.key
+out/*.key
+out/*.log

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# deterministic_simulator.py v2.1
+# deterministic_simulator.py v2.2
 # Deterministic simulator implementing producto/RULES.md v1.0 (R4-R16)
 
 import os
@@ -11,7 +11,7 @@ from typing import List, Dict
 WORKER_COUNT = 20
 PUBLISHER_COUNT = 5
 SEED = 42
-ROUNDS = 10
+ROUNDS = 200
 REWARD = 100  # reward per task (fee = 0 in v1, R2)
 CAP_PER_AGENT = ROUNDS * REWARD  # R3
 PRIOR = (1, 1)  # Beta prior (R15)
@@ -23,7 +23,14 @@ RATES_FILE = "worker_rates.json"  # real LOCKED rate per worker from ledger repl
 def load_workers(file_path: str) -> List[Dict]:
     with open(file_path, "r") as f:
         raw = json.load(f)
-    return [{"id": entry[0]} for entry in raw]
+    # Top20 format: [[id, value], ...]
+    workers = []
+    for entry in raw:
+        if isinstance(entry, list) and len(entry) > 0:
+            workers.append({"id": entry[0]})
+        elif isinstance(entry, dict):
+            workers.append({"id": entry.get("id", entry.get(0, ""))})
+    return workers
 
 
 def load_rates(file_path: str) -> Dict[str, float]:
@@ -152,9 +159,47 @@ def main():
 
     sim_results["reputation"] = {k: {"alpha": v[0], "beta": v[1], "media": v[0] / (v[0] + v[1])} for k, v in reputation.items()}
     sim_results["spent_by_agent"] = spent
+    # Metrics with explicit units so mercado and round-robin are comparable:
+    # same ROUNDS tasks, same ledger success rates, same REWARD; only the
+    # assignment rule (auction+reputation vs fixed rotation) and, for the naive
+    # baseline, the payment rule differ. Each entry declares its payment rule.
+    m_cpv = (paid / verified) if verified else None
+    rr_cpv = (ROUNDS * REWARD / rr_verified) if rr_verified else None
+    rr_escrow_cpv = REWARD  # same escrow rule as the market: pays only on attest ok
     sim_results["metrics"] = {
-        "mercado": {"coste_total": paid, "verificados": verified, "coste_por_verificado": (paid / verified) if verified else None},
-        "round_robin": {"coste_total": ROUNDS * REWARD, "verificados": rr_verified, "coste_por_verificado": (ROUNDS * REWARD / rr_verified) if rr_verified else None},
+        "unidad": "unidades de recompensa (REWARD=100); 1 resultado verificado = 1 attest ok=true",
+        "rondas": ROUNDS,
+        "reward": REWARD,
+        "mercado": {
+            "regla_asignacion": "subasta sellada inversa + reputacion Beta (R7-R8)",
+            "regla_pago": "escrow R12/R14: paga solo en Settled; fallo -> Refunded sin coste",
+            "verificados": verified,
+            "coste_total": paid,
+            "coste_por_verificado": m_cpv,
+            "verificados_por_ronda": verified / ROUNDS,
+        },
+        "round_robin": {
+            "regla_asignacion": "rotacion fija worker-0..worker-19, una tarea por ronda",
+            "regla_pago": "linea base ingenua: paga REWARD al entregar en cada ronda (sin escrow)",
+            "verificados": rr_verified,
+            "coste_total": ROUNDS * REWARD,
+            "coste_por_verificado": rr_cpv,
+            "verificados_por_ronda": rr_verified / ROUNDS,
+        },
+        "round_robin_escrow": {
+            "regla_asignacion": "rotacion fija (igual que round_robin)",
+            "regla_pago": "misma regla de escrow que el mercado: paga solo verificados",
+            "verificados": rr_verified,
+            "coste_total": rr_verified * REWARD,
+            "coste_por_verificado": rr_escrow_cpv,
+            "verificados_por_ronda": rr_verified / ROUNDS,
+        },
+        "titular": {
+            "definicion": "coste por resultado verificado sobre las mismas rondas y mismas tasas del ledger",
+            "mercado": m_cpv,
+            "round_robin": rr_cpv,
+            "factor_mercado_vs_rr": (rr_cpv / m_cpv) if (m_cpv and rr_cpv) else None,
+        },
     }
 
     out_dir = "out"

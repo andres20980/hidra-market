@@ -30,7 +30,16 @@ describe('normalizeSim', () => {
     const sim = normalizeSim(load('sim.sample.json'));
     expect(sim.rounds.length).toBeGreaterThan(0);
     expect(sim.rounds.every((r) => Array.isArray(r.bids))).toBe(true);
-    expect(sim.stats.marketCostPerVerified).toBeGreaterThan(0);
+    expect(sim.stats.marketCostPerVerified).toBe(0.42);
+    expect(sim.stats.roundRobinCostPerVerified).toBe(1.13);
+  });
+
+  it('does not infer round-robin cost from market spend without a baseline', () => {
+    const sim = normalizeSim({
+      rounds: [{ round: 1, verified: true, closePrice: 1, bids: [] }],
+      stats: { marketCostPerVerified: 1, verifiedResults: 1, totalSpent: 1 },
+    });
+    expect(sim.stats.roundRobinCostPerVerified).toBe(0);
   });
 
   it('keeps a round open when it has no winner', () => {

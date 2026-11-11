@@ -1,0 +1,48 @@
+{
+  "network": "near-sandbox",
+  "workers": 20,
+  "publishers": 5,
+  "rounds": [
+    {
+      "task_id": "r0-1794380831136",
+      "publisher": "pub-0.test.near",
+      "winner": "worker-0.test.near",
+      "state": "Settled",
+      "min_price": 50,
+      "min_bidder": "worker-0.test.near"
+    },
+    {
+      "task_id": "r1-1794380848136",
+      "publisher": "pub-1.test.near",
+      "winner": "worker-19.test.near",
+      "state": "Settled",
+      "min_price": 50,
+      "min_bidder": "worker-19.test.near"
+    },
+    {
+      "task_id": "r2-1794380865086",
+      "publisher": "pub-2.test.near",
+      "winner": "worker-18.test.near",
+      "state": "Settled",
+      "min_price": 50,
+      "min_bidder": "worker-18.test.near"
+    },
+    {
+      "task_id": "r3-1794380882070",
+      "publisher": "pub-3.test.near",
+      "winner": "worker-0.test.near",
+      "state": "Settled",
+      "min_price": 61,
+      "min_bidder": "worker-0.test.near"
+    },
+    {
+      "task_id": "r4-1794380898981",
+      "publisher": "pub-4.test.near",
+      "winner": "worker-19.test.near",
+      "state": "Settled",
+      "min_price": 61,
+      "min_bidder": "worker-19.test.near"
+    }
+  ],
+  "settled_count": 5
+}

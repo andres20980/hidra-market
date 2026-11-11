@@ -36,12 +36,25 @@ function stub(speed = () => 1) {
 const sim = normalizeSim(JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'fixtures', 'sim.swarm.sample.json'), 'utf8')));
 
 describe('replay del modo demo (motor)', () => {
-  it('arranca vacio y no reproduce solo', () => {
+  it('arranca con el resumen y no reproduce solo', () => {
     const s = stub();
     s.r.load(sim);
-    expect(s.els['view'].innerHTML).toBe('');
+    expect(s.els['view'].innerHTML).toContain('Ahorro del mercado');
+    expect(s.els['view'].innerHTML).toContain('Resultados verificados');
+    expect(s.els['view'].innerHTML).not.toContain('data-round=');
+    expect(s.els['replay-status'].textContent).toContain('pulsa reproducir');
     expect(s.r.running).toBe(false);
     expect(s.els['replay-toggle'].textContent).toBe('\u25b6 reproducir');
+  });
+
+  it('ignora un arranque duplicado mientras ya reproduce', () => {
+    const s = stub();
+    s.r.load(sim);
+    s.r.start();
+    s.r.start();
+    expect(s.r.index).toBe(0);
+    s.advance(stepMs(1) + 1);
+    expect(s.r.index).toBe(1);
   });
 
   it('pinta ya el primer fotograma y luego avanza commit -> reveal -> cierre', () => {

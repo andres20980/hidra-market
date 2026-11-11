@@ -1,80 +1,99 @@
 #!/usr/bin/env python3
-# export_ledger.py v2.0
-"""Exporta los ledgers reales de la Hidra a un dataset anonimizado.
-
-Lee:  /home/asanchez/Code/forgejo/repositorios/hidra-conocimiento/copias/*/polipasto/*/ledger.jsonl
-Escribe: producto/swarm/data/hidra_week.jsonl (rama producto/swarm del repo nearhackaton)
-
-Cada registro de salida solo contiene:
-  {t, worker, tipo_tarea, resultado, segundos, coste_estimado}
-- t: epoch (float) derivado de recorded_at.
-- worker: alias "worker-N" asignado deterministicamente (orden sorted) al par
-  (head_profile, model); el nombre del modelo nunca sale al dataset.
-- tipo_tarea: head_profile (perfil de la cabeza).
-- resultado: outcome (LOCKED/HEAD_FAILED/RATE_LIMIT_429/...).
-- segundos: seconds del registro.
-- coste_estimado: 0.0 si cost_tier == free; si es paid, seconds * TARIFF_USD_PER_S (tarifa
-  por defecto, ajustable por env LEDGER_TARIFF_USD_PER_S).
-Nada de rutas, run_id, plan_fingerprint, stderr_preview, providers ni claves.
-"""
-import glob
-import hashlib
 import json
-import os
-import sys
-from datetime import datetime
+from pathlib import Path
+from collections import Counter, defaultdict
 
-LEDGERS = "/home/asanchez/Code/forgejo/repositorios/hidra-conocimiento/copias/*/polipasto/*/ledger.jsonl"
-OUT = os.environ.get("SWARM_OUT", os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "hidra_week.jsonl"))
-TARIFF_USD_PER_S = float(os.environ.get("LEDGER_TARIFF_USD_PER_S", "0.0001"))
+# Directories
+LEDGERS_ROOT = Path("/home/asanchez/Code/forgejo/repositorios/hidra-conocimiento/copias")
+OUTPUT_FILE = Path("/home/asanchez/Code/forgejo/repositorios/nearhackaton/producto/swarm/data/hidra_week.jsonl")
 
-def epoch(recorded_at):
-    try:
-        return datetime.fromisoformat(recorded_at).timestamp()
-    except Exception:
-        return 0.0
+# Counters
+total_lines = 0
+exported_lines = 0
+result_counts = Counter()
 
-def main():
-    files = sorted(glob.glob(LEDGERS))
-    if not files:
-        print("BLOQUEO: no hay ledgers en", LEDGERS)
-        return 1
-    pairs = set()
-    rows = []
-    n_in = 0
-    for f in files:
-        with open(f, "r", encoding="utf-8") as fh:
-            for line in fh:
+# Mapping outcome -> result
+OUTCOME_MAP = {
+    "LOCKED": "LOCKED",
+    "RATE_LIMIT_429": "429",
+    "HEAD_FAILED": "FAILED",
+    "FAILED": "FAILED",
+    "HEAD_TIMEOUT": "TIMEOUT",
+    "SLIPPED": "SKIPPED",
+    "PERIMETER_VIOLATION": "VIOLATION",
+    "COMMAND_NONZERO": "ERROR",
+}
+
+
+def map_outcome(outcome: str) -> str:
+    """Mapeo fiel al outcome real: solo LOCKED es exito; el resto NO es LOCKED."""
+    return OUTCOME_MAP.get(outcome, "FAILED")
+
+# Worker alias mapping: model -> worker index
+worker_map = {}
+next_worker_id = 1
+
+def get_worker_alias(model_full: str) -> str:
+    global next_worker_id
+    # model_full format: "namespace/model-name" or "model-name"
+    # model_full = "cabeza:modelo" (p. ej. mini-head:groq/ALLaM-2-7b): un alias
+    # por par cabeza:modelo, sin filtrar ninguno de los dos componentes.
+    key = model_full or "desconocido"
+    if key not in worker_map:
+        worker_map[key] = f"worker-{next_worker_id}"
+        next_worker_id += 1
+    return worker_map[key]
+
+# Process all ledger files
+ledger_files = sorted(LEDGERS_ROOT.glob("*/*/*/ledger.jsonl"))  # copias/*/polipasto/*/ledger.jsonl
+print(f"Found {len(ledger_files)} ledger files")
+
+with OUTPUT_FILE.open("w", encoding="utf-8") as out_f:
+    for ledger_path in ledger_files:
+        with ledger_path.open("r", encoding="utf-8") as f:
+            for line in f:
                 line = line.strip()
                 if not line:
                     continue
-                d = json.loads(line)
-                n_in += 1
-                pair = (d.get("head_profile") or "?", d.get("model") or "?")
-                pairs.add(pair)
-                rows.append((d, pair))
-    # alias determinista por par (head_profile, model), ordenado por hash para no filtrar orden
-    order = sorted(pairs, key=lambda p: hashlib.sha256(f"{p[0]}|{p[1]}".encode()).hexdigest())
-    alias = {p: f"worker-{i+1}" for i, p in enumerate(order)}
-    os.makedirs(os.path.dirname(os.path.abspath(OUT)), exist_ok=True)
-    n_out = 0
-    with open(OUT, "w", encoding="utf-8") as out:
-        for d, pair in rows:
-            tier = d.get("cost_tier") or "free"
-            secs = d.get("seconds")
-            secs = secs if isinstance(secs, (int, float)) else 0.0
-            rec = {
-                "t": round(epoch(d.get("recorded_at") or ""), 3),
-                "worker": alias[pair],
-                "tipo_tarea": d.get("head_profile") or "?",
-                "resultado": d.get("outcome") or "UNKNOWN",
-                "segundos": round(float(secs), 3),
-                "coste_estimado": round(0.0 if tier == "free" else float(secs) * TARIFF_USD_PER_S, 8),
-            }
-            out.write(json.dumps(rec, ensure_ascii=False, separators=(",", ":")) + "\n")
-            n_out += 1
-    print(f"ledgers={len(files)} leidas={n_in} exportadas={n_out} workers={len(alias)} out={os.path.normpath(OUT)}")
-    return 0
+                total_lines += 1
+                try:
+                    obj = json.loads(line)
+                except json.JSONDecodeError:
+                    continue  # skip malformed lines
 
-if __name__ == "__main__":
-    sys.exit(main())
+                # Extract needed fields
+                recorded_at = obj.get("recorded_at", "")
+                head_model = obj.get("model", "") or obj.get("effective_model", "")
+                outcome = obj.get("outcome", "")
+                seconds = obj.get("seconds", 0)
+                cost_tier = obj.get("cost_tier", "free")
+                effective_model = obj.get("effective_model", "")
+
+                # Map result
+                result = map_outcome(outcome)
+
+                # Worker alias
+                worker_alias = get_worker_alias(head_model)
+
+                # Task type (profile)
+                task_type = obj.get("head_profile", "unknown")
+
+                # Coste estimado (USD): el ledger no trae tokens ni precio, solo
+                # cost_tier; para 'paid' estimamos segundos x 0,0002 USD/s.
+                cost_estimated = 0.0 if cost_tier == "free" else round(float(seconds or 0) * 0.0002, 6)
+
+                # Build record
+                record = {
+                    "t": recorded_at,  # timestamp
+                    "worker": worker_alias,
+                    "tipo_tarea": task_type,
+                    "resultado": result,
+                    "segundos": seconds,
+                    "coste_estimado": cost_estimated,
+                }
+                out_f.write(json.dumps(record, ensure_ascii=False) + "\n")
+                exported_lines += 1
+                result_counts[result] += 1
+
+print(f"Export completed: {exported_lines} lines written, {total_lines} lines read")
+print("Result distribution:", dict(result_counts))

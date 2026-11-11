@@ -1,4 +1,4 @@
-// rpc.ts v0.2 — modo en vivo contra las vistas REALES del contrato (producto/contract/src/lib.rs)
+// rpc.ts v0.3 — modo en vivo contra las vistas REALES del contrato (producto/contract/src/lib.rs)
 // Vistas usadas: list_tasks(from: u64, limit: u64) -> Vec<Task>; get_reputation(account) -> (alpha, beta, media) como strings
 // Fuente RPC: docs.near.org/api/rpc (query call_function, args_base64, result.result = bytes JSON)
 // Endpoint público: https://rpc.testnet.near.org (docs.near.org/api/rpc/providers)
@@ -23,23 +23,44 @@ export interface RawTask {
 export async function callView<T>(
   rpc: string, contract: string, method: string, args: Record<string, unknown> = {},
 ): Promise<T> {
-  const body = {
-    jsonrpc: '2.0', id: 'hidra-web', method: 'query',
-    params: {
-      request_type: 'call_function', finality: 'final',
-      account_id: contract, method_name: method,
-      args_base64: btoa(unescape(encodeURIComponent(JSON.stringify(args)))),
-    },
-  };
-  const res = await fetch(rpc, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`RPC ${rpc} respondió HTTP ${res.status}`);
-  const json = (await res.json()) as { error?: unknown; result?: { result?: number[] } };
-  if (json.error) throw new Error(`RPC error en ${method}: ${JSON.stringify(json.error).slice(0, 200)}`);
-  const bytes = json.result?.result;
-  if (!bytes) throw new Error(`RPC sin resultado en ${method}`);
-  return JSON.parse(new TextDecoder().decode(new Uint8Array(bytes))) as T;
+  let lastError: any;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const body = {
+        jsonrpc: '2.0', id: 'hidra-web', method: 'query',
+        params: {
+          request_type: 'call_function', finality: 'final',
+          account_id: contract, method_name: method,
+          args_base64: btoa(unescape(encodeURIComponent(JSON.stringify(args)))),
+        },
+      };
+      const res = await fetch(rpc, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      if (!res.ok) {
+        let msg = "";
+        if (res.status === 400) msg = "rechazó (HTTP 400) - id de contrato";
+        else if (res.status === 503) msg = "caído (HTTP 503)";
+        else msg = "error (HTTP " + res.status + ")";
+        throw new Error(`RPC ${rpc} (method ${method}) ${msg}`);
+      }
+      const json = (await res.json()) as { error?: unknown; result?: { result?: number[]; error?: string } };
+      if (json.error) throw new Error(`RPC error en ${method} (contract ${contract}) - ${JSON.stringify(json.error).slice(0, 200)}`);
+      const rerr = json.result?.error;
+      if (rerr) if (rerr.includes("does not exist while viewing")) throw new Error(`RPC error en ${method} (contract ${contract}) - contrato inexistente`); else throw new Error(`RPC error en ${method} (contract ${contract}) - ${rerr}`);
+      const bytes = json.result?.result;
+      if (!bytes) throw new Error(`RPC sin resultado en ${method}`);
+      return JSON.parse(new TextDecoder().decode(new Uint8Array(bytes))) as T;
+    } catch (e: any) {
+      lastError = e;
+      if (e.name === 'AbortError') continue;
+      throw e;
+    }
+  }
+  throw new Error(`RPC timeout tras 3 intentos: ${lastError?.message}`);
 }
 
 const YOCTO_BIG = BigInt('1000000000000000000000000'); // 1e24 exacto
@@ -68,7 +89,7 @@ export function taskToRound(t: RawTask, idx: number): Round {
     id: idx + 1, task: t.id, publisher: t.publisher,
     status: t.state === 'Open' ? 'open' : t.state === 'Refunded' ? 'refunded' : 'closed',
     bids, winner: t.winner ?? null,
-    closePrice: winBid ? near(winBid.price) : null,
+    closePrice: winBid ? near(winBid.price) : null, payment: winBid ? near(winBid.price) : 0,
     verified: settled, paid: settled, // attest(ok) paga el reward y deja state=Settled (RULES.md R12)
   };
 }
@@ -122,14 +143,22 @@ export function toSim(
 
 export async function loadLive(contract: string, rpc: string = DEFAULT_RPC): Promise<Sim> {
   if (!contract) throw new Error('falta ?contract=<cuenta.testnet>');
-  const tasks = await callView<RawTask[]>(rpc, contract, 'list_tasks', { from: 0, limit: TASKS_LIMIT });
-  const reps = await Promise.all(workerIds(tasks).slice(0, REPUTATION_LIMIT).map(async (id) => {
-    try {
-      const r = await callView<[string, string, string]>(rpc, contract, 'get_reputation', { account: id });
-      return [id, r] as const;
-    } catch {
-      return [id, ['1', '1', '0.5']] as const;
+  try {
+    const tasks = await callView<RawTask[]>(rpc, contract, 'list_tasks', { from: 0, limit: TASKS_LIMIT });
+    const reps = await Promise.all(workerIds(tasks).slice(0, REPUTATION_LIMIT).map(async (id) => {
+      try {
+        return [id, await callView<[string, string, string]>(rpc, contract, 'get_reputation', { account: id })] as const;
+      } catch (e) {
+        console.error(`Reputation fetch failed for ${id}:`, e);
+        return null;
+      }
+    }));
+    const reputations: Record<string, [string, string, string]> = {};
+    for (const rep of reps) {
+      if (rep) reputations[rep[0]] = rep[1];
     }
-  }));
-  return toSim(tasks, Object.fromEntries(reps), contract, rpc);
+    return toSim(tasks, reputations, contract, rpc);
+  } catch (e) {
+    throw new Error(`Error en modo en vivo: ${e instanceof Error ? e.message : String(e)}. Verifica que el contrato '${contract}' esté desplegado en testnet.`);
+  }
 }

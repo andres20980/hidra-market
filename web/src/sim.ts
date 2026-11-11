@@ -3,6 +3,7 @@ export interface Bid { worker: string; commit: string; reveal?: number; revealed
 export interface Round {
   id: number; task: string; publisher: string; status: 'open' | 'closed' | 'refunded';
   bids: Bid[]; winner: string | null; closePrice: number | null;
+  payment: number;
   verified: boolean; paid: boolean;
 }
 export interface Worker { id: string; alpha: number; beta: number; earned: number; done: number; failed: number }
