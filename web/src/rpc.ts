@@ -1,16 +1,16 @@
-// rpc.ts v0.3 — modo en vivo contra las vistas REALES del contrato (producto/contract/src/lib.rs)
+// rpc.ts v0.5 — modo en vivo contra las vistas REALES del contrato (producto/contract/src/lib.rs)
 // Vistas usadas: list_tasks(from: u64, limit: u64) -> Vec<Task>; get_reputation(account) -> (alpha, beta, media) como strings
 // Fuente RPC: docs.near.org/api/rpc (query call_function, args_base64, result.result = bytes JSON)
-// Endpoint público: https://rpc.testnet.near.org (docs.near.org/api/rpc/providers)
+// Public endpoint: FastNEAR testnet (rpc.testnet.near.org is deprecated and answers 429; docs.near.org/api/rpc/providers)
 import { Round, Sim, Worker } from './sim';
 
-export const DEFAULT_RPC = 'https://rpc.testnet.near.org';
+export const DEFAULT_RPC = 'https://test.rpc.fastnear.com';
 export const YOCTO_PER_NEAR = 1e24;
 export const TASKS_LIMIT = 100;
 export const REPUTATION_LIMIT = 60;
 
 export interface RawCommitment { worker: string; hash: string } // Vec<u8> → base64 en JSON
-export interface RawBid { worker: string; price: number } // precio en yoctoNEAR (RULES.md R5)
+export interface RawBid { worker: string; price: number } // bid price u64 in milliNEAR (RULES.md section 2)
 export interface RawTask {
   id: string; publisher: string; verifier: string;
   reward: string; // NearToken serializado como string de yoctoNEAR
@@ -67,10 +67,16 @@ const YOCTO_BIG = BigInt('1000000000000000000000000'); // 1e24 exacto
 export const near = (yocto: string | number): number => {
   if (typeof yocto === 'string') { // reward llega como string: conversión exacta con BigInt
     const y = BigInt(yocto);
-    return Number(y / YOCTO_BIG) + Number(y % YOCTO_BIG) / 1e24;
+    // build the exact decimal string, then parse once: 1e23 yocto -> "0.1" -> 0.1 (no float division error)
+    const frac = (y % YOCTO_BIG).toString().padStart(24, '0').replace(/0+$/, '');
+    return Number(`${y / YOCTO_BIG}${frac ? `.${frac}` : ''}`);
   }
   return Math.round(yocto / 1e18) / 1e6; // price (u64) llega como number JSON: 6 decimales bastan para mostrar
 };
+
+// Bid prices are u64 milliNEAR (a u64 cannot hold a useful yoctoNEAR amount); rewards are yoctoNEAR strings.
+export const MILLINEAR_PER_NEAR = 1000;
+export const bidNear = (price: number): number => price / MILLINEAR_PER_NEAR;
 
 export function taskToRound(t: RawTask, idx: number): Round {
   const bidByWorker = new Map(t.bids.map((b) => [b.worker, b]));
@@ -78,10 +84,10 @@ export function taskToRound(t: RawTask, idx: number): Round {
   const bids = t.commitments.map((c) => {
     seen.add(c.worker);
     const b = bidByWorker.get(c.worker);
-    return { worker: c.worker, commit: c.hash, reveal: b?.price !== undefined ? near(b.price) : undefined, revealed: b !== undefined };
+    return { worker: c.worker, commit: c.hash, reveal: b?.price !== undefined ? bidNear(b.price) : undefined, revealed: b !== undefined };
   });
   for (const b of t.bids) {
-    if (!seen.has(b.worker)) bids.push({ worker: b.worker, commit: '', reveal: near(b.price), revealed: true });
+    if (!seen.has(b.worker)) bids.push({ worker: b.worker, commit: '', reveal: bidNear(b.price), revealed: true });
   }
   const winBid = t.winner ? t.bids.find((b) => b.worker === t.winner) : undefined;
   const settled = t.state === 'Settled';
@@ -89,7 +95,7 @@ export function taskToRound(t: RawTask, idx: number): Round {
     id: idx + 1, task: t.id, publisher: t.publisher,
     status: t.state === 'Open' ? 'open' : t.state === 'Refunded' ? 'refunded' : 'closed',
     bids, winner: t.winner ?? null,
-    closePrice: winBid ? near(winBid.price) : null, payment: settled ? near(t.reward) : 0,
+    closePrice: winBid ? bidNear(winBid.price) : null, payment: settled ? near(t.reward) : 0,
     verified: settled, paid: settled, // attest(ok) paga el reward y deja state=Settled (RULES.md R12)
   };
 }

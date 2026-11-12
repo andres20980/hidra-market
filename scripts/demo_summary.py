@@ -1,4 +1,4 @@
-# demo_summary.py v1.0 - print the verifiable figures produced by `make demo`
+# demo_summary.py v1.1 - print the verifiable figures produced by `make demo`
 from __future__ import annotations
 
 import argparse
@@ -53,6 +53,20 @@ def main() -> int:
         status = "OK" if wk.get("ok") else "FAIL"
         print(f"  Worker key   {status}: {wk['worker']} keeps only a FunctionCall key"
               f" ({', '.join(wk['methods'])}; allowance {wk['allowance']})")
+
+    horizon = out / "horizon.json"
+    if fresh(horizon, args.since):
+        rows = [r for r in load(horizon)["rows"] if r["seed"] == sim["seed"]]
+        cells = ", ".join(f"{r['rounds']} rounds x{r['market_vs_round_robin_expected']:g}" for r in rows)
+        print(f"  Horizon      expected verified results, market vs round-robin (seed {sim['seed']}): {cells}")
+
+    live = out / "testnet_live_proof.json"
+    if live.exists():
+        lp = load(live)
+        rep = lp.get("reputation_after", {})
+        print(f"  Testnet      {lp['market']}: task {lp['task_id']} {lp['final']['state']},"
+              f" winner {lp['final']['winner']}, Beta({rep.get('alpha')},{rep.get('beta')})"
+              f" (recorded {lp['generated_at'][:10]}; web: {lp['web']})")
 
     print(f"  Duration     {int(time.time()) - args.since}s")
     print("  Web          cd web && npx vite preview   (or: python3 -m http.server -d web/dist 8080)")

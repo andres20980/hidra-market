@@ -1,14 +1,22 @@
+// rpc.test.ts v1.1
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { near, callView } from '../src/rpc';
+import { near, bidNear, callView } from '../src/rpc';
 
 describe('rpc.ts precision', () => {
   it('near() converts yocto string (reward) accurately', () => {
     expect(near('1000000000000000000000000')).toBe(1);
     expect(near('500000000000000000000000')).toBe(0.5);
+    expect(near('100000000000000000000000')).toBe(0.1);
+    expect(near('10000000000000000000000000')).toBe(10);
     expect(near('123456789012345678901234')).toBeCloseTo(0.123456789, 8);
   });
 
-  it('near() converts yocto number (price) accurately', () => {
+  it('bidNear() converts a u64 milliNEAR bid', () => {
+    expect(bidNear(80)).toBe(0.08);
+    expect(bidNear(300)).toBe(0.3);
+  });
+
+  it('near() converts yocto number accurately', () => {
     expect(near(1e23)).toBe(0.1);
     expect(near(1.5e23)).toBe(0.15);
   });

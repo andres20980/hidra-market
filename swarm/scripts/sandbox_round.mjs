@@ -1,4 +1,4 @@
-// sandbox_round.mjs v1.4
+// sandbox_round.mjs v1.5
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -27,9 +27,9 @@ const commitmentOf = (price, salt, accountId) => {
   return new Uint8Array(sha256(payload));
 };
 
+// throw instead of exiting so the finally block always stops near-sandbox (no orphan process)
 const fail = (msg) => {
-  console.error(`FAIL: ${msg}`);
-  process.exit(1);
+  throw new Error(`FAIL: ${msg}`);
 };
 
 import { existsSync as __ex } from "node:fs";
@@ -167,6 +167,8 @@ try {
 
   console.log("Sandbox round completed successfully");
 } catch (e) {
-  console.error(e);
-  process.exit(1);
+  console.error(e instanceof Error ? e.message : e);
+  process.exitCode = 1;
+} finally {
+  await sandbox.stop();
 }

@@ -1,4 +1,4 @@
-# RULES.md v1.2 · Hidra Market — reglas del contrato
+# RULES.md v1.3 · Hidra Market — reglas del contrato
 
 Especificación de la implementación en `contract/`. Los plazos se expresan en alturas de bloque NEAR.
 
@@ -12,6 +12,7 @@ Especificación de la implementación en `contract/`. Los plazos se expresan en 
 ## 2. Compromiso y revelación
 
 - Solo trabajadores registrados pueden llamar `commit_bid`. Se admite un compromiso por trabajador y tarea, de exactamente 32 bytes (SHA-256), mientras `altura < commit_end`.
+- El precio de la puja es un `u64` en miliNEAR (80 = 0,08 NEAR): es la oferta del trabajador; el pago liberado es siempre la recompensa en escrow.
 - El compromiso se calcula como `SHA-256(precio_u64_be || sal_u32_be || cuenta_utf8)`: precio `u64` y sal `u32` en big-endian, seguidos de los bytes UTF-8 del identificador de cuenta, sin separadores.
 - `reveal_bid(precio, sal)` solo se acepta en `[commit_end, reveal_end)`. Debe hacerlo la cuenta del compromiso y el hash recalculado debe coincidir; en caso contrario se rechaza. Cada compromiso válido se revela una sola vez.
 - Una duración cero es válida: `commit_len=0` impide comprometer y `reveal_len=0` impide revelar.

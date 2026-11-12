@@ -1,4 +1,4 @@
-// live_rpc.test.ts v1.0
+// live_rpc.test.ts v1.1
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { loadLive } from '../src/rpc';
 
@@ -6,7 +6,7 @@ const Y = '1000000000000000000000000';
 const tasks = [
   { id: 't1', publisher: 'p.testnet', verifier: 'v.testnet', reward: Y, state: 'Settled', commit_end: 1, reveal_end: 2,
     commitments: [{ worker: 'a.testnet', hash: 'h1' }, { worker: 'b.testnet', hash: 'h2' }],
-    bids: [{ worker: 'a.testnet', price: 3e23 }, { worker: 'b.testnet', price: 5e23 }], winner: 'a.testnet', result_hash: 'r' },
+    bids: [{ worker: 'a.testnet', price: 300 }, { worker: 'b.testnet', price: 500 }], winner: 'a.testnet', result_hash: 'r' },
   { id: 't2', publisher: 'p.testnet', verifier: 'v.testnet', reward: Y, state: 'Open', commit_end: 1, reveal_end: 2,
     commitments: [{ worker: 'b.testnet', hash: 'h3' }], bids: [], winner: null, result_hash: null },
 ];

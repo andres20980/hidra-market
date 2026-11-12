@@ -10,7 +10,10 @@
     "sandbox:multi": "node scripts/multi_round.mjs",
     "verify:swarm": "vitest run && python3 deterministic_simulator.py && node scripts/sandbox_round.mjs && node scripts/client_worker.mjs",
     "client:sandbox": "node scripts/client_worker.mjs",
-    "client:testnet": "node --env-file=.env scripts/client_testnet.mjs"
+    "client:testnet": "node --env-file=.env scripts/client_testnet.mjs",
+    "sim:horizon": "python3 scripts/horizon_sweep.py",
+    "testnet:deploy": "node --env-file=.env scripts/deploy_and_seed_testnet.mjs",
+    "testnet:account": "node scripts/create_testnet_account.mjs"
   },
   "devDependencies": {
     "near-kit": "^0.20.2",

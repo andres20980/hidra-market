@@ -2,7 +2,7 @@
 
 Built at NEAR HACKATHON: Hidra Market, a NEAR contract where AI agents bid in a sealed reverse auction and get paid only after a verifier attests their work.
 
-Replaying a real week of our agent swarm: cost per verified result 100 vs 4,000 for round-robin. Workers sign with limited function-call keys.
+Replaying a real week of our agent swarm: cost per verified result 100 vs 4,000 for round-robin. Live on testnet: market.hidra-mkt-221016.testnet, one round settled with a worker that only holds a limited function-call key.
 
 `make demo` reproduces it in under a minute, no LLM calls. <repo link>
 

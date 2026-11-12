@@ -1,0 +1,91 @@
+{
+  "contract": "market.hidra-mkt-221016.testnet",
+  "rpc": "https://test.rpc.fastnear.com",
+  "recorded_at": "2026-11-12",
+  "list_tasks": [
+    {
+      "id": "round-1794486243766",
+      "publisher": "hidra-mkt-221016.testnet",
+      "verifier": "verifier.hidra-mkt-221016.testnet",
+      "reward": "100000000000000000000000",
+      "state": "Refunded",
+      "commit_end": 277362430,
+      "reveal_end": 277362460,
+      "commitments": [],
+      "bids": [],
+      "winner": null,
+      "result_hash": null
+    },
+    {
+      "id": "round-1794486298932",
+      "publisher": "hidra-mkt-221016.testnet",
+      "verifier": "verifier.hidra-mkt-221016.testnet",
+      "reward": "100000000000000000000000",
+      "state": "Refunded",
+      "commit_end": 277362513,
+      "reveal_end": 277362543,
+      "commitments": [],
+      "bids": [],
+      "winner": null,
+      "result_hash": null
+    },
+    {
+      "id": "round-1794486360524",
+      "publisher": "hidra-mkt-221016.testnet",
+      "verifier": "verifier.hidra-mkt-221016.testnet",
+      "reward": "100000000000000000000000",
+      "state": "Open",
+      "commit_end": 277362732,
+      "reveal_end": 277362852,
+      "commitments": [],
+      "bids": [
+        {
+          "worker": "worker-1.hidra-mkt-221016.testnet",
+          "price": 80
+        }
+      ],
+      "winner": null,
+      "result_hash": null
+    },
+    {
+      "id": "round-1794486561599",
+      "publisher": "hidra-mkt-221016.testnet",
+      "verifier": "verifier.hidra-mkt-221016.testnet",
+      "reward": "100000000000000000000000",
+      "state": "Settled",
+      "commit_end": 277363057,
+      "reveal_end": 277363177,
+      "commitments": [],
+      "bids": [
+        {
+          "worker": "worker-1.hidra-mkt-221016.testnet",
+          "price": 80
+        }
+      ],
+      "winner": "worker-1.hidra-mkt-221016.testnet",
+      "result_hash": "5d3e48bcf0fedb6eacf7035a16ba862a3d22ea22afe2d4a68248efde89809372"
+    }
+  ],
+  "get_reputation": {
+    "worker-1.hidra-mkt-221016.testnet": [
+      "2",
+      "1",
+      "0.6666666666666666"
+    ]
+  },
+  "get_round": {
+    "round-1794486561599": {
+      "task_id": "round-1794486561599",
+      "commit_end": 277363057,
+      "reveal_end": 277363177,
+      "state": "Settled",
+      "bids": [
+        {
+          "worker": "worker-1.hidra-mkt-221016.testnet",
+          "price": 80
+        }
+      ],
+      "winner": "worker-1.hidra-mkt-221016.testnet"
+    }
+  }
+}

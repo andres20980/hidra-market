@@ -6,6 +6,8 @@
 - `npm run sandbox:multi` → 5 rondas reales en near-sandbox (5 publicadores + 20 workers) → `out/multi_round.json`.
 - `npm run client:sandbox` → worker-1 queda solo con key FunctionCall limitada a `register_worker,commit_bid,reveal_bid,submit_result`; ves `OK: ... solo tiene key FunctionCall`.
 - `npm run verify:swarm` → todo lo anterior.
+- `npm run sim:horizon` → `out/horizon.json`: mercado frente a round-robin a 200, 1.000 y 5.000 rondas (semillas 42, 7, 1234).
+- `npm run testnet:account` → cuenta testnet del faucet y `.env` (modo 600). `npm run testnet:deploy` → despliega el mercado y juega una ronda hasta `Settled` → `out/testnet_live_proof.json`.
 - `data/hidra_week.jsonl` → replay anónimo del ledger real; `npm run sim` → `out/sim.json` (coste/verificado mercado vs round-robin).
 
 Sandbox: `export NEAR_SANDBOX_BIN_PATH=<ruta>/near-sandbox` si near-kit no lo descarga. Si falta, `sandbox:round` y `client:worker` hacen SKIP (exit 0) y `verify:swarm` no falla.

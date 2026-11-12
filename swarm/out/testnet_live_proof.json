@@ -1,0 +1,96 @@
+{
+  "network": "testnet",
+  "rpc": "https://test.rpc.fastnear.com",
+  "root": "hidra-mkt-221016.testnet",
+  "market": "market.hidra-mkt-221016.testnet",
+  "verifier": "verifier.hidra-mkt-221016.testnet",
+  "worker": "worker-1.hidra-mkt-221016.testnet",
+  "wasm_sha256": "ab4cd46eb5007b433535660687ff29c6e3f4f0f796fd2822ecdff725d6c1c179",
+  "cap_per_agent_yocto": "10000000000000000000000000",
+  "worker_key": {
+    "limited_public_key": "ed25519:AFUPQ6tSrRUZqgNVcxtfmfFax2NoQ36tix7CEsamsdwc",
+    "methods": [
+      "register_worker",
+      "commit_bid",
+      "reveal_bid",
+      "submit_result"
+    ],
+    "allowance_initial": "0.25 NEAR",
+    "keys_onchain": 1,
+    "ok": true
+  },
+  "setup_txs": {
+    "market_create_fund_deploy_init": "2qHEBo4FShgMtrLFriRLsS2zyLvUkKhKK5aVWAM6eXeB",
+    "verifier_create": "AuD2dNWVTULA3Qn4VFMgipG7mWpsZ15PE4qiNEApUswv",
+    "worker_create_account": "fMWmg26FcaBofDdqqHfbadHQJ54WbJhHibYzFNF6ABM",
+    "worker_grant_market_methods": "3Entggar1J6a3XURaLZUnjwpFVL4TydfK8Jfnkx1RHFU",
+    "worker_drop_admin_rights": "Bycsf3oihbseVECvgYAB8mpc8Rvb58KvRMcCsRzwHJA8",
+    "register_worker": "ENXnJgRhRAocNBRYUxa3a82JrDQHHmB1QTnSu8Kwe8Ky"
+  },
+  "task_id": "round-1794486561599",
+  "txs": {
+    "post_task": "79S2Dv3kRt2Mi4wScL3r8zLmBZ5Zke1pazbPTQiXxkNr",
+    "commit_bid": "DCqdaqjQhmT6Dbj1BztRbNLfyqbcdPDXWDFM5TEusz9U",
+    "reveal_bid": "3Kp7Jqid58NTyGaK24FJnsBHFPHnqo1W99TCh4BAfrHe",
+    "close_round": "2cYmTyn237BWpTYtsoFGGMmKCS7e5MXMvR6kJKPLcCit",
+    "submit_result": "hFcBxyB4tiBraE4xRG9bE4HNpgQbLZFeqvXqb8rcTFg",
+    "attest": "7P7EjoEh1EBxL6i7hNEqFVsHtFAdhMWffNxphsiLinkQ"
+  },
+  "reputation_before": {
+    "alpha": "1",
+    "beta": "1"
+  },
+  "final": {
+    "state": "Settled",
+    "winner": "worker-1.hidra-mkt-221016.testnet",
+    "reward_yocto": "100000000000000000000000",
+    "bids": [
+      {
+        "worker": "worker-1.hidra-mkt-221016.testnet",
+        "price": 80
+      }
+    ],
+    "result_hash": "5d3e48bcf0fedb6eacf7035a16ba862a3d22ea22afe2d4a68248efde89809372"
+  },
+  "reputation_after": {
+    "alpha": "2",
+    "beta": "1",
+    "mean": "0.6666666666666666"
+  },
+  "nearblocks": {
+    "market_create_fund_deploy_init": "https://testnet.nearblocks.io/txns/2qHEBo4FShgMtrLFriRLsS2zyLvUkKhKK5aVWAM6eXeB",
+    "verifier_create": "https://testnet.nearblocks.io/txns/AuD2dNWVTULA3Qn4VFMgipG7mWpsZ15PE4qiNEApUswv",
+    "worker_create_account": "https://testnet.nearblocks.io/txns/fMWmg26FcaBofDdqqHfbadHQJ54WbJhHibYzFNF6ABM",
+    "worker_grant_market_methods": "https://testnet.nearblocks.io/txns/3Entggar1J6a3XURaLZUnjwpFVL4TydfK8Jfnkx1RHFU",
+    "worker_drop_admin_rights": "https://testnet.nearblocks.io/txns/Bycsf3oihbseVECvgYAB8mpc8Rvb58KvRMcCsRzwHJA8",
+    "register_worker": "https://testnet.nearblocks.io/txns/ENXnJgRhRAocNBRYUxa3a82JrDQHHmB1QTnSu8Kwe8Ky",
+    "post_task": "https://testnet.nearblocks.io/txns/79S2Dv3kRt2Mi4wScL3r8zLmBZ5Zke1pazbPTQiXxkNr",
+    "commit_bid": "https://testnet.nearblocks.io/txns/DCqdaqjQhmT6Dbj1BztRbNLfyqbcdPDXWDFM5TEusz9U",
+    "reveal_bid": "https://testnet.nearblocks.io/txns/3Kp7Jqid58NTyGaK24FJnsBHFPHnqo1W99TCh4BAfrHe",
+    "close_round": "https://testnet.nearblocks.io/txns/2cYmTyn237BWpTYtsoFGGMmKCS7e5MXMvR6kJKPLcCit",
+    "submit_result": "https://testnet.nearblocks.io/txns/hFcBxyB4tiBraE4xRG9bE4HNpgQbLZFeqvXqb8rcTFg",
+    "attest": "https://testnet.nearblocks.io/txns/7P7EjoEh1EBxL6i7hNEqFVsHtFAdhMWffNxphsiLinkQ",
+    "market_account": "https://testnet.nearblocks.io/address/market.hidra-mkt-221016.testnet"
+  },
+  "web": "?contract=market.hidra-mkt-221016.testnet",
+  "earlier_attempts": {
+    "note": "first runs of the script used 30-block windows (too short at ~0.6 s/block) and the deprecated rpc.testnet.near.org (HTTP 429); their tasks stay on-chain",
+    "round-1794486243766": {
+      "state": "Refunded",
+      "close_round": "2YqUq3SfkrmLm3URQGuJeC2BT1mbnBW1eGXe1CGyQcM5",
+      "refund_expired": "GtkLSURXka18M5DpBwBmh3aEsKgAD5vcdonuWxc193jS"
+    },
+    "round-1794486298932": {
+      "state": "Refunded",
+      "close_round": "2rzX5GmvsHirzwqNgTshBDMwtaFxueqSpsAHXmEMWoYj",
+      "refund_expired": "4h8ickzXR8tjX7r467sR8CYufsmVzVFA989J1VJzQXX8"
+    },
+    "round-1794486360524": {
+      "state": "Open",
+      "commit_bid": "12Q6LoaAg8JvMW6yKHr5kvs1jtEqjzRhPnmMuywixgfC",
+      "reveal_bid": "AsfpNnXSwXw2vowqXPjSMy36NYh1R4tXbboGcuQKMjxX",
+      "why_open": "run stopped by RPC 429 before close_round; left open so worker-1 keeps the Beta(2,1) of the settled round"
+    }
+  },
+  "generated_at": "2026-11-12T12:31:58.223Z"
+}

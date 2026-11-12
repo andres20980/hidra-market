@@ -1,4 +1,4 @@
-// multi_round.mjs v2.1 - 5 rondas en near-sandbox, valores u128 como números JS
+// multi_round.mjs v2.2 - 5 rondas en near-sandbox, valores u128 como números JS
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -28,7 +28,7 @@ const commitmentOf = (price, salt, accountId) => {
   return new Uint8Array(sha256(payload));
 };
 
-const fail = (msg) => { console.error(`FAIL: ${msg}`); process.exit(1); };
+const fail = (msg) => { throw new Error(`FAIL: ${msg}`); }; // finally stops near-sandbox
 
 const sandbox = await Sandbox.start();
 const syncFinal = async (ms = 15000) => {
@@ -109,8 +109,8 @@ try {
   writeFileSync(OUT, JSON.stringify({ network: "near-sandbox", workers: WORKERS, publishers: PUBLISHERS, rounds, settled_count: settledCount }, null, 2), "utf8");
   console.log(`Multi round completed: ${rounds.length} rounds, settled=${settledCount}`);
 } catch (e) {
-  console.error(e);
-  process.exit(1);
+  console.error(e instanceof Error ? e.message : e);
+  process.exitCode = 1;
 } finally {
   await sandbox.stop?.();
 }

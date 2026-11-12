@@ -1,0 +1,86 @@
+{
+  "workers": 20,
+  "rows": [
+    {
+      "rounds": 200,
+      "seed": 42,
+      "market_verified": 4,
+      "market_expected": 3.0,
+      "round_robin_verified": 5,
+      "round_robin_expected": 3.1,
+      "market_vs_round_robin_expected": 0.96
+    },
+    {
+      "rounds": 200,
+      "seed": 7,
+      "market_verified": 1,
+      "market_expected": 2.9,
+      "round_robin_verified": 2,
+      "round_robin_expected": 3.1,
+      "market_vs_round_robin_expected": 0.91
+    },
+    {
+      "rounds": 200,
+      "seed": 1234,
+      "market_verified": 1,
+      "market_expected": 2.7,
+      "round_robin_verified": 3,
+      "round_robin_expected": 3.1,
+      "market_vs_round_robin_expected": 0.84
+    },
+    {
+      "rounds": 1000,
+      "seed": 42,
+      "market_verified": 33,
+      "market_expected": 31.6,
+      "round_robin_verified": 20,
+      "round_robin_expected": 15.7,
+      "market_vs_round_robin_expected": 2.01
+    },
+    {
+      "rounds": 1000,
+      "seed": 7,
+      "market_verified": 27,
+      "market_expected": 32.5,
+      "round_robin_verified": 17,
+      "round_robin_expected": 15.7,
+      "market_vs_round_robin_expected": 2.07
+    },
+    {
+      "rounds": 1000,
+      "seed": 1234,
+      "market_verified": 24,
+      "market_expected": 28.5,
+      "round_robin_verified": 17,
+      "round_robin_expected": 15.7,
+      "market_vs_round_robin_expected": 1.81
+    },
+    {
+      "rounds": 5000,
+      "seed": 42,
+      "market_verified": 317,
+      "market_expected": 289.8,
+      "round_robin_verified": 86,
+      "round_robin_expected": 78.7,
+      "market_vs_round_robin_expected": 3.68
+    },
+    {
+      "rounds": 5000,
+      "seed": 7,
+      "market_verified": 268,
+      "market_expected": 275.8,
+      "round_robin_verified": 84,
+      "round_robin_expected": 78.7,
+      "market_vs_round_robin_expected": 3.51
+    },
+    {
+      "rounds": 5000,
+      "seed": 1234,
+      "market_verified": 312,
+      "market_expected": 288.2,
+      "round_robin_verified": 90,
+      "round_robin_expected": 78.7,
+      "market_vs_round_robin_expected": 3.66
+    }
+  ]
+}

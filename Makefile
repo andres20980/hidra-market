@@ -1,11 +1,11 @@
-# Makefile v2.0 - Hidra Market: verify / demo / testnet
+# Makefile v2.2 -Hidra Market: verify / demo / testnet / testnet-deploy
 # Works from a clean clone and inside a jail with a read-only $HOME.
 
 SHELL := bash
 .SHELLFLAGS := -euo pipefail -c
 .ONESHELL:
 .DEFAULT_GOAL := help
-.PHONY: help deps verify demo testnet
+.PHONY: help deps verify demo testnet testnet-deploy
 
 export PATH := $(HOME)/.cargo/bin:$(PATH)
 
@@ -13,7 +13,7 @@ ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 CONTRACT := $(ROOT)/contract
 SWARM := $(ROOT)/swarm
 WEB := $(ROOT)/web
-WASM := $(CONTRACT)/target/wasm32-unknown-unknown/release/contract.wasm
+WASM := $(or $(CARGO_TARGET_DIR),$(CONTRACT)/target)/wasm32-unknown-unknown/release/contract.wasm
 PESADO_LOCK ?= /tmp/coalicion_pesado.lock
 
 # near-sandbox binary: keep the caller's value, else pick the newest one cached by near-kit.
@@ -22,13 +22,16 @@ ifneq ($(strip $(NEAR_SANDBOX_BIN_PATH)),)
 export NEAR_SANDBOX_BIN_PATH
 endif
 
-# Per-run scratch dir (removed on exit). XDG config and npm cache move there when the
+# Per-run scratch dir (removed on exit). XDG config, npm cache and vite/vitest caches move there when the
 # defaults are not writable, so cargo-near never hits "os error 30 (Read-only file system)".
 define SETUP_ENV
 scratch="$$(mktemp -d "$${TMPDIR:-/tmp}/hidra-market.XXXXXX")"
 trap 'rm -rf "$$scratch"' EXIT
 if [[ -z "$${XDG_CONFIG_HOME:-}" ]] || ! { mkdir -p "$$XDG_CONFIG_HOME" && [[ -w "$$XDG_CONFIG_HOME" ]]; } 2>/dev/null; then
   export XDG_CONFIG_HOME="$$scratch/config"; mkdir -p "$$XDG_CONFIG_HOME"
+fi
+if [[ ! -w "$(SWARM)/node_modules" || ! -w "$(WEB)/node_modules" ]]; then
+  export VITE_CACHE_DIR="$$scratch/vite"
 fi
 npm_cache="$${npm_config_cache:-$$HOME/.npm}"
 if ! { mkdir -p "$$npm_cache" && [[ -w "$$npm_cache" ]]; } 2>/dev/null; then
@@ -47,6 +50,7 @@ help:
 	@echo "make verify   contract build + Rust tests, swarm tests + simulator, web typecheck + tests + build"
 	@echo "make demo     deterministic simulation + real on-chain round in near-sandbox + web build (no LLM, no network)"
 	@echo "make testnet  worker sub-account with a limited function-call key on NEAR testnet (needs swarm/.env)"
+	@echo "make testnet-deploy  deploy the market to testnet and run one live round to Settled (needs swarm/.env)"
 
 deps:
 	@$(SETUP_ENV)
@@ -84,8 +88,9 @@ demo: deps
 	  start="$$(date +%s)"
 	fi
 	cd "$(SWARM)"
-	echo "==> 1/4 deterministic simulator (seed 42, real anonymised ledger)"
+	echo "==> 1/4 deterministic simulator (seed 42, real anonymised ledger) + horizon sweep"
 	npm run --silent sim
+	npm run --silent sim:horizon >/dev/null
 	echo "==> 2/4 real round on near-sandbox (commit -> reveal -> close -> submit -> attest)"
 	npm run --silent sandbox:round
 	echo "==> 3/4 sync results to web/public and build web/dist"
@@ -95,9 +100,17 @@ demo: deps
 	echo "==> 4/4 summary"
 	python3 "$(ROOT)/scripts/demo_summary.py" --root "$(ROOT)" --since "$$start"
 
+define NEED_ENV
+if [[ ! -f "$(SWARM)/.env" ]]; then
+  echo "swarm/.env not found. Run: cd swarm && npm run testnet:account (faucet account), or cp .env.example .env and fill it (testnet only)." >&2
+  exit 2
+fi
+endef
+
 testnet: deps
-	@if [[ ! -f "$(SWARM)/.env" ]]; then
-	  echo "swarm/.env not found. Run: cp swarm/.env.example swarm/.env and set NEAR_ACCOUNT_ID, NEAR_PRIVATE_KEY, NEAR_CONTRACT_ID (testnet only)." >&2
-	  exit 2
-	fi
+	@$(NEED_ENV)
 	cd "$(SWARM)" && npm run --silent client:testnet
+
+testnet-deploy: deps
+	@$(NEED_ENV)
+	cd "$(SWARM)" && npm run --silent testnet:deploy

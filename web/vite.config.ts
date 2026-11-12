@@ -1,8 +1,11 @@
-// vite.config.ts v0.2
+// vite.config.ts v0.3
+// publicDir is public/: `make demo` writes the fresh sim.json and sandbox_round.json there (fixtures/ is for tests only).
+// VITE_CACHE_DIR moves vite/vitest caches out of node_modules when it is read-only (jailed runs).
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   base: './',
-  publicDir: 'fixtures',
+  publicDir: 'public',
+  cacheDir: process.env.VITE_CACHE_DIR || 'node_modules/.vite',
   test: { environment: 'node', include: ['test/**/*.test.ts'] }
 });

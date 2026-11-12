@@ -1,0 +1,17 @@
+{
+  "network": "testnet",
+  "worker": "worker-1.hidra-mkt-221016.testnet",
+  "market": "market.hidra-mkt-221016.testnet",
+  "limited_public_key": "ed25519:AFUPQ6tSrRUZqgNVcxtfmfFax2NoQ36tix7CEsamsdwc",
+  "methods": [
+    "register_worker",
+    "commit_bid",
+    "reveal_bid",
+    "submit_result"
+  ],
+  "allowance_initial": "0.25 NEAR",
+  "allowance_remaining_yocto": "247990280327970900000000",
+  "keys_onchain": 1,
+  "txs": {},
+  "ok": true
+}
