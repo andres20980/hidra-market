@@ -7,7 +7,8 @@ import { Near, InMemoryKeyStore, generateKey } from "near-kit";
 import { Sandbox } from "near-kit/sandbox";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const WASM = join(HERE, "..", "..", "contract", "target", "wasm32-unknown-unknown", "release", "contract.wasm");
+const TARGET_DIR = process.env.CARGO_TARGET_DIR || join(HERE, "..", "..", "contract", "target");
+const WASM = join(TARGET_DIR, "wasm32-unknown-unknown", "release", "contract.wasm");
 const OUT = join(HERE, "..", "out", "multi_round.json");
 const WORKERS = 20;
 const PUBLISHERS = 5;

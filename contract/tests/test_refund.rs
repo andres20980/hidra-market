@@ -53,7 +53,8 @@ async fn test_refund_expired_no_attest() -> testresult::TestResult<()> {
         .await?
         .as_contract();
 
-    let wasm_path = "target/wasm32-unknown-unknown/release/contract.wasm".to_string();
+    let target_dir = std::env::var("CARGO_TARGET_DIR").unwrap_or_else(|_| "target".to_string());
+    let wasm_path = format!("{target_dir}/wasm32-unknown-unknown/release/contract.wasm");
     Contract::deploy(contract.account_id().clone())
         .use_code(std::fs::read(wasm_path)?)
         .with_init_call("init", json!({"cap_per_agent": 10_000_u128}))?

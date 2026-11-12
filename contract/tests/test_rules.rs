@@ -36,10 +36,10 @@ async fn test_full_round_with_three_workers() -> testresult::TestResult<()> {
         create_subaccount(&sandbox, "worker-2.sandbox").await?,
     ];
 
+    let target_dir = std::env::var("CARGO_TARGET_DIR").unwrap_or_else(|_| "target".to_string());
+    let wasm_path = format!("{target_dir}/wasm32-unknown-unknown/release/contract.wasm");
     Contract::deploy(contract.account_id().clone())
-        .use_code(std::fs::read(
-            "target/wasm32-unknown-unknown/release/contract.wasm",
-        )?)
+        .use_code(std::fs::read(&wasm_path)?)
         .with_init_call("init", json!({"cap_per_agent": 10_000_u128}))?
         .with_signer(signer.clone())
         .send_to(&network)
