@@ -89,7 +89,7 @@ export function taskToRound(t: RawTask, idx: number): Round {
     id: idx + 1, task: t.id, publisher: t.publisher,
     status: t.state === 'Open' ? 'open' : t.state === 'Refunded' ? 'refunded' : 'closed',
     bids, winner: t.winner ?? null,
-    closePrice: winBid ? near(winBid.price) : null, payment: winBid ? near(winBid.price) : 0,
+    closePrice: winBid ? near(winBid.price) : null, payment: settled ? near(t.reward) : 0,
     verified: settled, paid: settled, // attest(ok) paga el reward y deja state=Settled (RULES.md R12)
   };
 }

@@ -8,7 +8,7 @@ import { stepMs } from '../src/timeline';
 
 function stub(speed = () => 1) {
   const els: Record<string, El> = {};
-  const el = (): El => ({ innerHTML: '', textContent: '', value: '', addEventListener: () => {} });
+  const el = (): El => ({ innerHTML: '', textContent: '', ariaPressed: null, value: '', addEventListener: () => {} });
   for (const id of ['view', 'replay-status', 'replay-toggle', 'replay-restart']) els[id] = el();
   let now = 0; let seq = 0;
   const pending = new Map<number, { at: number; fn: () => void }>();
@@ -45,6 +45,7 @@ describe('replay del modo demo (motor)', () => {
     expect(s.els['replay-status'].textContent).toContain('pulsa reproducir');
     expect(s.r.running).toBe(false);
     expect(s.els['replay-toggle'].textContent).toBe('\u25b6 reproducir');
+    expect(s.els['replay-toggle'].ariaPressed).toBe('false');
   });
 
   it('ignora un arranque duplicado mientras ya reproduce', () => {
@@ -53,6 +54,7 @@ describe('replay del modo demo (motor)', () => {
     s.r.start();
     s.r.start();
     expect(s.r.index).toBe(0);
+    expect(s.els['replay-toggle'].ariaPressed).toBe('true');
     s.advance(stepMs(1) + 1);
     expect(s.r.index).toBe(1);
   });
@@ -68,10 +70,10 @@ describe('replay del modo demo (motor)', () => {
     s.advance(2);
     expect(s.r.index).toBe(1);
     expect(s.els['view'].innerHTML).toContain('data-round="1"');
-    expect(s.els['view'].innerHTML).toContain('sellada');
+    expect(s.els['view'].innerHTML).toContain('abierta');
     s.advance(stepMs(1) + 1);
     expect(s.r.index).toBe(2);
-    expect(s.els['view'].innerHTML).not.toContain('sellada');
+    expect(s.els['view'].innerHTML).not.toContain('abierta');
     s.advance(stepMs(1) + 1);
     expect(s.r.index).toBe(3);
     expect(s.els['view'].innerHTML).toMatch(/cobrado|reembolsada/);
@@ -101,6 +103,7 @@ describe('replay del modo demo (motor)', () => {
     s.r.toggle();
     expect(s.r.running).toBe(false);
     expect(s.els['replay-toggle'].textContent).toBe('\u25b6 reproducir');
+    expect(s.els['replay-toggle'].ariaPressed).toBe('false');
     s.advance(stepMs(1) * 3);
     expect(s.r.index).toBe(1);
     s.r.toggle();

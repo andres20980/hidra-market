@@ -1,0 +1,28 @@
+# .gitignore v1.0
+# Build outputs
+target/
+node_modules/
+dist/
+# Secrets (only .env.example is tracked)
+.env
+.env.*
+!.env.example
+*.key
+*credentials*.json
+# Local tool state and caches
+.home/
+.local-home/
+.tmp/
+.cache/
+.config/
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+*.pyc
+# Temporary logs and run dumps
+*.log
+*.bak
+*.broken
+test_*.txt
+verification_*.txt
+build_output.txt

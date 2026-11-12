@@ -66,6 +66,31 @@ describe('timeline (replay del modo demo)', () => {
     expect(stepMs(1)).toBeGreaterThan(stepMs(10));
     expect(stepMs(10)).toBeLessThanOrEqual(120);
     expect(stepMs(0)).toBe(1200);
+    expect(stepMs(0.5)).toBe(2400);
     expect(stepMs(99)).toBe(120);
+  });
+
+  it('expone el selector de velocidad activo a lectores de pantalla', () => {
+    const toolbar = renderToolbar(normalizeSim(load('sim.swarm.sample.json')), 2);
+    expect(toolbar).toContain('data-speed="2" aria-pressed="true"');
+    expect(toolbar).toContain('data-speed="1" aria-pressed="false"');
+  });
+
+  it('no muestra gasto ni cobro antes del cierre de la ronda (pago anticipado)', () => {
+    const sim = normalizeSim(load('sim.swarm.sample.json'));
+    const paid = sim.rounds.find((r) => (r.payment ?? 0) > 0)!;
+    const i = sim.rounds.indexOf(paid);
+    const fr = frames(sim);
+    const commit = fr[1 + 3 * i];
+    const reveal = fr[2 + 3 * i];
+    const close = fr[3 + 3 * i];
+    const spentBefore = sim.rounds.slice(0, i).reduce((s, r) => s + (r.payment ?? 0), 0);
+    expect(commit.view.stats.totalSpent).toBe(spentBefore);
+    expect(reveal.view.stats.totalSpent).toBe(spentBefore);
+    expect(close.view.stats.totalSpent).toBe(spentBefore + paid.payment);
+    const w = paid.winner!;
+    expect(commit.view.workers.find((x) => x.id === w)?.earned ?? 0).toBe(0);
+    expect(reveal.view.workers.find((x) => x.id === w)?.earned ?? 0).toBe(0);
+    expect(close.view.workers.find((x) => x.id === w)?.earned).toBe(paid.payment);
   });
 });

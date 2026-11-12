@@ -1,0 +1,14 @@
+{
+  "network": "near-sandbox",
+  "root": "test.near",
+  "market": "market.test.near",
+  "task_id": "round-1794484741481",
+  "winner": "worker-0.test.near",
+  "state": "Settled",
+  "reputation_winner": {
+    "alpha": "2",
+    "beta": "1",
+    "media": "0.6666666666666666"
+  },
+  "worker_balance_winner": "5.99"
+}

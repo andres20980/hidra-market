@@ -6,6 +6,7 @@ import { Sim } from './sim';
 export interface El {
   innerHTML: string;
   textContent: string | null;
+  ariaPressed: string | null;
   value?: string;
   addEventListener(type: string, fn: () => void): void;
 }
@@ -53,7 +54,10 @@ export class Replay {
 
   private btn(): void {
     const b = this.host.dom.id('replay-toggle');
-    if (b) b.textContent = this.playing ? '\u23f8 pausa' : '\u25b6 reproducir';
+    if (b) {
+      b.textContent = this.playing ? '\u23f8 pausa' : '\u25b6 reproducir';
+      b.ariaPressed = String(this.playing);
+    }
   }
 
   private tick(): void {

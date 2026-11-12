@@ -1,6 +1,7 @@
 // live.test.ts v1.0 — el modo en vivo reintenta y avisa, nunca inventa datos
 import { describe, it, expect } from 'vitest';
 import { LivePoller, LiveHost } from '../src/live';
+import { Sim } from '../src/sim';
 import { normalizeSim } from '../src/normalize';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -34,18 +35,38 @@ const flush = async () => { for (let i = 0; i < 4; i += 1) await Promise.resolve
 const sim = normalizeSim(JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'fixtures', 'sim.sample.json'), 'utf8')));
 
 describe('refresco del modo en vivo', () => {
+  it('no pinta ni anuncia una carga que termina después de detenerse', async () => {
+    const c = fakeHost();
+    const status: string[] = [];
+    const announcements: string[] = [];
+    let painted = 0;
+    let finish!: (value: Sim) => void;
+    const p = new LivePoller(c.host,
+      { update: () => { painted += 1; }, status: (s) => status.push(s), announce: (s) => announcements.push(s) },
+      { intervalMs: 10000, label: 'en vivo', load: () => new Promise((resolve) => { finish = resolve; }) });
+    p.start();
+    p.stop();
+    finish(sim);
+    await flush();
+    expect(painted).toBe(0);
+    expect(status).toEqual([]);
+    expect(announcements).toEqual(['en vivo · sondeo iniciado']);
+  });
+
   it('pinta y reprograma el siguiente sondeo', async () => {
     const c = fakeHost();
     let loads = 0;
     const status: string[] = [];
+    const announcements: string[] = [];
     let painted = 0;
     const p = new LivePoller(c.host,
-      { update: () => { painted += 1; }, status: (s) => status.push(s) },
+      { update: () => { painted += 1; }, status: (s) => status.push(s), announce: (s) => announcements.push(s) },
       { intervalMs: 10000, label: 'en vivo', load: async () => { loads += 1; return sim; }, now: () => new Date(0) });
     p.start();
     await flush();
     expect(loads).toBe(1); expect(painted).toBe(1);
     expect(status[0]).toContain('en vivo'); expect(status[0]).toContain('actualizado');
+    expect(announcements).toEqual(['en vivo · sondeo iniciado']);
     c.advance(10000);
     await flush();
     expect(loads).toBe(2);
@@ -57,17 +78,29 @@ describe('refresco del modo en vivo', () => {
   it('ante error RPC conserva los datos y avisa del error', async () => {
     const c = fakeHost();
     const status: string[] = [];
+    const announcements: string[] = [];
+    let loads = 0;
     let painted = 0;
     const p = new LivePoller(c.host,
-      { update: () => { painted += 1; }, status: (s) => status.push(s) },
-      { intervalMs: 10000, label: 'en vivo', load: async () => { throw new Error('rpc caído') } });
+      { update: () => { painted += 1; }, status: (s) => status.push(s), announce: (s) => announcements.push(s) },
+      { intervalMs: 10000, label: 'en vivo', load: async () => { loads += 1; if (loads < 3) throw new Error('rpc caído'); return sim; } });
     p.start();
     await flush();
     expect(painted).toBe(0); expect(p.failed).toBe(1);
     expect(status[0]).toContain('error de refresco');
+    expect(announcements).toEqual(['en vivo · sondeo iniciado', 'en vivo · error de conexión, se reintenta']);
     c.advance(10000);
     await flush();
     expect(p.failed).toBe(2);
+    expect(announcements).toHaveLength(2);
+    c.advance(10000);
+    await flush();
+    expect(p.failed).toBe(0);
+    expect(announcements).toEqual([
+      'en vivo · sondeo iniciado',
+      'en vivo · error de conexión, se reintenta',
+      'en vivo · conexión recuperada',
+    ]);
     p.stop();
   });
 

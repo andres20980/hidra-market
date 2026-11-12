@@ -23,5 +23,14 @@ describe('taskToRound', () => {
     expect(r.status).toBe('refunded');
     expect(r.verified).toBe(false);
     expect(r.paid).toBe(false);
+    expect(r.payment).toBe(0);
+  });
+  it('Closed without attest is closed, unverified and unpaid', () => {
+    const r = taskToRound({ ...base, state: 'Closed', winner: 'x', bids: [{ worker: 'x', price: 3e23 }] } as any, 0);
+    expect(r.status).toBe('closed');
+    expect(r.closePrice).toBe(0.3);
+    expect(r.verified).toBe(false);
+    expect(r.paid).toBe(false);
+    expect(r.payment).toBe(0);
   });
 });

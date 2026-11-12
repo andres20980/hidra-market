@@ -10,6 +10,7 @@ export interface LiveHost {
 export interface LiveSink {
   update(sim: Sim): void;
   status(text: string): void;
+  announce?(text: string): void;
 }
 export interface LiveOptions {
   intervalMs: number;
@@ -36,6 +37,7 @@ export class LivePoller {
 
   start(): void {
     this.stopped = false;
+    this.sink.announce?.(`${this.opts.label} · sondeo iniciado`);
     this.tick();
   }
 
@@ -64,16 +66,21 @@ export class LivePoller {
       .load()
       .then((sim) => {
         this.inflight = false;
+        if (this.stopped) return;
+        const recovered = this.failures > 0;
         this.failures = 0;
         this.sink.update(sim);
         const now = (this.opts.now ?? (() => new Date()))();
         this.sink.status(`${this.opts.label} · actualizado ${now.toLocaleTimeString()}`);
+        if (recovered) this.sink.announce?.(`${this.opts.label} · conexión recuperada`);
         this.reschedule();
       })
       .catch(() => {
         this.inflight = false;
+        if (this.stopped) return;
         this.failures += 1;
         this.sink.status(`${this.opts.label} · error de refresco ${this.failures} (se reintenta)`);
+        if (this.failures === 1) this.sink.announce?.(`${this.opts.label} · error de conexión, se reintenta`);
         this.reschedule();
       });
   }

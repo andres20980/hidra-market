@@ -1,9 +1,0 @@
-verificacion replay modo demo 2026-11-10T21:18:12Z
-urls:
-  / -> 200 432B
-  /sim.sample.json -> 200 2011B
-  /sim.swarm.sample.json -> 200 19357B
-bundle:
-   B
-  index-Bnyao3YM.js 12047B
-  index-xg0wAEl1.css 2265B

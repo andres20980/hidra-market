@@ -1,5 +1,6 @@
 // main.ts v0.9 — entry: ?contract= → modo en vivo por RPC; si no, demo con replay ?sim=
 import './style.css';
+import { loadSandboxBadge } from './sandbox';
 
 function themeInit(): void {
   const saved = localStorage.getItem('theme') as 'light' | 'dark' | null;
@@ -8,7 +9,7 @@ function themeInit(): void {
 }
 
 import { Sim } from './sim';
-import { render, renderToolbar, loadingSpinner, esc } from './render';
+import { render, renderToolbar, renderReplayToggle, renderSkipLink, loadingSpinner, esc } from './render';
 import { Replay, Dom } from './replay';
 import { normalizeSim } from './normalize';
 import { LivePoller } from './live';
@@ -22,7 +23,7 @@ const SPEED_KEY = 'sim-speed';
 let currentSpeed = 1;
 
 function clampSpeed(v: number | string): number {
-  return Math.max(1, Math.min(10, Math.round(Number(v) || 1)));
+  return Math.max(0.5, Math.min(10, Number(v) || 1));
 }
 
 function showSpeed(): void {
@@ -32,17 +33,30 @@ function showSpeed(): void {
 
 function initSpeedControl(): void {
   const saved = localStorage.getItem(SPEED_KEY);
-  currentSpeed = clampSpeed(saved ? parseInt(saved, 10) : 1);
+  currentSpeed = clampSpeed(saved ? parseFloat(saved) : 1);
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.btn-speed');
+  const setSpeed = (value: number | string): void => {
+    currentSpeed = clampSpeed(value);
+    localStorage.setItem(SPEED_KEY, String(currentSpeed));
+    buttons.forEach((button) => {
+      const selected = Number(button.dataset.speed) === currentSpeed;
+      button.classList.toggle('active', selected);
+      button.setAttribute('aria-pressed', String(selected));
+    });
+    showSpeed();
+    replay.reschedule();
+  };
+  buttons.forEach((button) => {
+    const selected = Number(button.dataset.speed) === currentSpeed;
+    button.classList.toggle('active', selected);
+    button.setAttribute('aria-pressed', String(selected));
+    button.addEventListener('click', () => setSpeed(button.dataset.speed ?? '1'));
+  });
   const slider = document.querySelector('.speed-slider') as HTMLInputElement | null;
   showSpeed();
   if (slider) {
     slider.value = String(currentSpeed);
-    slider.addEventListener('input', () => {
-      currentSpeed = clampSpeed(slider.value);
-      localStorage.setItem(SPEED_KEY, String(currentSpeed));
-      showSpeed();
-      replay.reschedule();
-    });
+    slider.addEventListener('input', () => setSpeed(slider.value));
   }
 }
 
@@ -67,12 +81,13 @@ const replay = new Replay(
 
 themeInit();
 app.innerHTML = loadingSpinner();
-load().then(({ sim, live }) => {
-  app.innerHTML = renderToolbar(sim, currentSpeed)
-    + `<div class="replay"> <button id="replay-toggle" type="button" aria-label="reproducir o pausar simulación">▶ reproducir</button>`
+load().then(async ({ sim, live }) => {
+  const badge = live ? '' : await loadSandboxBadge();
+  app.innerHTML = renderSkipLink() + renderToolbar(sim, currentSpeed)
+    + `<div class="replay"> ${renderReplayToggle()}`
     + ` <button id="replay-restart" type="button" aria-label="reiniciar simulación">↺ reiniciar</button>`
-    + `<span id="replay-status" class="status"></span></div>`
-    + `<main id="view">${live ? render(sim) : ''}</main>`;
+    + `<span id="replay-status" class="status"></span>${live ? '<span id="live-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>' : ''}${badge}</div>`
+    + `<main id="view" tabindex="-1">${live ? render(sim) : ''}</main>`;
   initSpeedControl();
   document.getElementById('theme-toggle')?.addEventListener('click', () => {
     const el = document.documentElement;
@@ -92,6 +107,7 @@ load().then(({ sim, live }) => {
       {
         update: (x) => { const v = document.getElementById('view'); if (v) v.innerHTML = render(x); },
         status: (t) => { if (s) s.textContent = t; },
+        announce: (t) => { const a = document.getElementById('live-announcement'); if (a) a.textContent = t; },
       },
       { intervalMs: 10000, label: 'modo en vivo (testnet)', load: async () => (await load()).sim },
     );

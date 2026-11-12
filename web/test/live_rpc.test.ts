@@ -25,9 +25,12 @@ describe('loadLive (fetch mock)', () => {
     expect(sim.rounds).toHaveLength(2);
     expect(sim.rounds[0].winner).toBe('a.testnet');
     expect(sim.rounds[0].closePrice).toBe(0.3);
+    expect(sim.rounds[0].payment).toBe(1);
     expect(sim.rounds[1].status).toBe('open');
     expect(sim.workers.find((w) => w.id === 'a.testnet')?.alpha).toBe(4);
+    expect(sim.workers.find((w) => w.id === 'a.testnet')?.earned).toBe(1);
     expect(sim.stats.verifiedResults).toBe(1);
+    expect(sim.stats.totalSpent).toBe(1);
     expect(sim.stats.marketCostPerVerified).toBe(1);
   });
 

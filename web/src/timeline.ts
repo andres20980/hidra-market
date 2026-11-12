@@ -11,7 +11,7 @@ export interface Frame {
 export const BASE_MS = 1200;
 
 export function stepMs(speed: number): number {
-  const s = Math.max(1, Math.min(10, Math.round(Number(speed) || 1)));
+  const s = Math.max(0.5, Math.min(10, Number(speed) || 1));
   return Math.max(40, Math.round(BASE_MS / s));
 }
 
@@ -86,10 +86,10 @@ export function frames(sim: Sim): Frame[] {
   let idx = 0;
   for (const r of base.rounds) {
     const c = sim.meta.currency;
-    const sealed: Round = { ...r, status: 'open', winner: null, closePrice: null, verified: false, paid: false, bids: r.bids.map((b) => ({ ...b, revealed: false })) };
+    const sealed: Round = { ...r, status: 'open', winner: null, closePrice: null, verified: false, paid: false, payment: 0, bids: r.bids.map((b) => ({ ...b, revealed: false })) };
     out.push(frame(out.length, 'compromiso', `ronda ${r.id}: ${r.bids.length} pujas selladas (commit)`, viewAt(base, idx, sealed, idx, earnedOf(base, idx)), { round: r.id }));
 
-    const opened: Round = { ...r, status: 'closed', winner: null, closePrice: null, verified: false, paid: false, bids: r.bids.map((b) => ({ ...b, revealed: true })) };
+    const opened: Round = { ...r, status: 'closed', winner: null, closePrice: null, verified: false, paid: false, payment: 0, bids: r.bids.map((b) => ({ ...b, revealed: true })) };
     out.push(frame(out.length, 'revelado', `ronda ${r.id}: pujas abiertas (reveal)`, viewAt(base, idx, opened, idx, earnedOf(base, idx)), { round: r.id }));
 
     const closed = idx + 1;

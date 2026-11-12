@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { Sim, headline } from '../src/sim';
-import { render, renderIntro, renderFooter, loadingSpinner, esc } from '../src/render';
+import { render, renderIntro, renderFooter, renderReplayToggle, renderSkipLink, loadingSpinner, esc } from '../src/render';
 
 const fixture = fileURLToPath(new URL('../fixtures/sim.sample.json', import.meta.url));
 const sim = JSON.parse(readFileSync(fixture, 'utf8')) as Sim;
@@ -16,6 +16,27 @@ describe('web demo', () => {
     expect(headline(sim)).toContain('Coste por resultado verificado');
     expect(headline(sim)).toContain('round-robin');
     expect(render(sim)).toContain(headline(sim));
+  });
+  it('nombra el control de reproducción como toggle con etiqueta estable', () => {
+    const button = renderReplayToggle();
+    expect(button).toContain('aria-label="reproducir o pausar simulación"');
+    expect(button).toContain('aria-pressed="false"');
+    expect(button).toContain('>▶ reproducir</button>');
+  });
+  it('ofrece un salto de teclado al contenido principal', () => {
+    expect(renderSkipLink()).toContain('href="#view">Saltar al contenido principal</a>');
+  });
+  it('el destino del salto recibe foco y conserva un indicador visible', () => {
+    const main = readFileSync(fileURLToPath(new URL('../src/main.ts', import.meta.url)), 'utf8');
+    const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
+    expect(main).toMatch(/<main id="view" tabindex="-1">/);
+    expect(css).toMatch(/#view:focus\s*\{\s*outline:\s*3px solid var\(--accent\)/);
+  });
+  it('muestra la divisa del mercado en el cobro de cada trabajador', () => {
+    const currency = 'TST';
+    const html = render({ ...sim, meta: { ...sim.meta, currency } });
+    expect(html).toContain(`${sim.workers[0].earned.toFixed(2)} ${currency}`);
+    expect(html).not.toContain('undefined');
   });
   it('el h1 no contradice los stats ni deja celdas vacías', () => {
     const html = render({ ...sim, rounds: sim.rounds.map((r) => ({ ...r, task: '', publisher: '' })) });
@@ -56,6 +77,13 @@ describe('web demo', () => {
     expect((html.match(/role="region" aria-label="[^"]+" tabindex="0"/g) || []).length).toBe(2);
     expect(html).toContain('aria-label="Rondas; desplaza horizontalmente');
     expect(html).toContain('aria-label="Reputación de trabajadores; desplaza horizontalmente');
+    const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
+    expect(css).toContain('.table-wrap:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }');
+  });
+  it('asocia todos los encabezados de tabla a sus columnas', () => {
+    const html = render(sim);
+    expect((html.match(/<th scope="col">/g) || []).length).toBe(12);
+    expect(html).not.toMatch(/<th(?! scope="col">)[ >]/);
   });
   it('el resumen inicial muestra el ahorro del mercado y los totales', () => {
     const html = renderIntro(sim);
@@ -89,5 +117,17 @@ describe('barra de stats', () => {
     expect(t).not.toContain('Coste mercado');
     expect(t).not.toContain('Coste round-robin');
     expect(t).toContain(`Verificados: ${sim.stats.verifiedResults}`);
+    expect(t).toContain('role="group" aria-label="Controles de reproducción"');
+    expect(t).not.toContain('role="toolbar"');
+  });
+  it('mantiene los controles de velocidad en el orden de tabulación nativo', async () => {
+    const { renderToolbar } = await import('../src/render');
+    const t = renderToolbar(sim);
+    const controls = t.match(/<button[^>]*data-speed="[^"]+"[^>]*>/g) ?? [];
+    expect(controls.map((control) => control.match(/data-speed="([^"]+)"/)?.[1])).toEqual([
+      '0.5', '1', '2', '3',
+    ]);
+    expect(controls.every((control) => /^<button type="button" /.test(control))).toBe(true);
+    expect(t).not.toMatch(/tabindex="[1-9]\d*"/);
   });
 });

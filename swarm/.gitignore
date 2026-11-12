@@ -8,3 +8,5 @@ __pycache__/
 *.key
 out/*.key
 out/*.log
+.env
+.env

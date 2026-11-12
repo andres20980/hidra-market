@@ -1,4 +1,4 @@
-// sandbox_round.mjs v1.3
+// sandbox_round.mjs v1.4
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -31,7 +31,10 @@ const fail = (msg) => {
   process.exit(1);
 };
 
-const sandbox = await Sandbox.start();
+import { existsSync as __ex } from "node:fs";
+const __bin = process.env.NEAR_SANDBOX_BIN_PATH;
+if (!__bin || !__ex(__bin)) { console.log("SKIP: set NEAR_SANDBOX_BIN_PATH to a near-sandbox binary"); process.exit(0); }
+const sandbox = await Sandbox.start({ binaryPath: __bin });
 const syncFinal = async (ms = 30000) => {
   const t0 = Date.now();
   const rpc = async (finality) => (await (await fetch(sandbox.rpcUrl, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "block", params: { finality } }) })).json()).result.header.height;
@@ -72,7 +75,9 @@ const waitState = async (state, ms = 20000, taskId = globalThis.__taskId) => {
 try {
   const wasm = readFileSync(WASM);
   await near.transaction(root).createAccount(market).transfer(market, "50 NEAR").deployContract(market, wasm).send();
-  await call(root, market, "init", { cap_per_agent: 1000000 });
+  // u128 above 2^53: send the JSON as raw bytes so the yocto amount keeps full precision
+  const capYocto = BigInt(parseAmount(CAP_PER_AGENT));
+  await call(root, market, "init", new TextEncoder().encode(`{"cap_per_agent":${capYocto}}`));
 
   for (const account of [publisher, verifier]) {
     const key = generateKey();
@@ -138,8 +143,15 @@ try {
   });
   await call(verifier, market, "attest", { task_id: taskId, ok: true });
 
-  const settled = await view(market, "get_task", { task_id: taskId });
-  const [alpha, beta, media] = await view(market, "get_reputation", { account: workerIds[0] });
+  const settled = await waitState("Settled");
+  if (!settled) fail(`attest did not settle the task: ${JSON.stringify(await view(market, "get_task", { task_id: taskId }))}`);
+  // reputation view also reads finalized state; wait until the success is counted
+  let rep = await view(market, "get_reputation", { account: workerIds[0] });
+  for (let i = 0; i < 40 && Number(rep[0]) < 2; i++) {
+    await new Promise((r) => setTimeout(r, 500));
+    rep = await view(market, "get_reputation", { account: workerIds[0] });
+  }
+  const [alpha, beta, media] = rep;
   
   const balances = await near.getBalance(workerIds[0]);
   mkdirSync(dirname(OUT), { recursive: true });

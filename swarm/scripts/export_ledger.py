@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 import json
+import hashlib
+from datetime import datetime, timezone
 from pathlib import Path
-from collections import Counter, defaultdict
+from collections import Counter
 
 # Directories
 LEDGERS_ROOT = Path("/home/asanchez/Code/forgejo/repositorios/hidra-conocimiento/copias")
 OUTPUT_FILE = Path("/home/asanchez/Code/forgejo/repositorios/nearhackaton/producto/swarm/data/hidra_week.jsonl")
 
 # Counters
+task_types = set()
 total_lines = 0
 exported_lines = 0
 result_counts = Counter()
@@ -92,8 +95,29 @@ with OUTPUT_FILE.open("w", encoding="utf-8") as out_f:
                     "coste_estimado": cost_estimated,
                 }
                 out_f.write(json.dumps(record, ensure_ascii=False) + "\n")
+                task_types.add(task_type)
                 exported_lines += 1
                 result_counts[result] += 1
 
+# Anonymized manifest: reproducible fingerprint of the exported dataset.
+# No paths, prompts, contest names or keys: only counts, distribution and hash.
+digest = hashlib.sha256()
+with OUTPUT_FILE.open("rb") as hash_f:
+    for chunk in iter(lambda: hash_f.read(1 << 20), b""):
+        digest.update(chunk)
+manifest = {
+    "generado_en": datetime.now(timezone.utc).isoformat(),
+    "ficheros_ledger": len(ledger_files),
+    "lineas_leidas": total_lines,
+    "lineas_exportadas": exported_lines,
+    "reparto_resultado": dict(sorted(result_counts.items())),
+    "workers": len(worker_map),
+    "tipos_tarea": sorted(task_types),
+    "sha256_dataset": digest.hexdigest(),
+}
+MANIFEST_FILE = OUTPUT_FILE.with_name("hidra_week.manifest.json")
+MANIFEST_FILE.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
 print(f"Export completed: {exported_lines} lines written, {total_lines} lines read")
 print("Result distribution:", dict(result_counts))
+print("Manifest:", MANIFEST_FILE.name, "sha256", manifest["sha256_dataset"][:16])

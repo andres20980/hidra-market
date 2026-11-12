@@ -1,63 +1,47 @@
-# RULES.md v1.1 · Hidra Market — reglas exactas del mercado (contrato `contract/`)
+# RULES.md v1.2 · Hidra Market — reglas del contrato
 
-Fuente: `hidra/consejo/DECISION.md` (10-nov-2026) y track `swarms` (`fuentes/prompts/tracks/05-swarms.md`).
-Toda regla numerada aquí tiene al menos un test en `contract/` (unidad o integración con near-sandbox).
+Especificación de la implementación en `contract/`. Los plazos se expresan en alturas de bloque NEAR.
 
-## 1. Cuentas y roles
-- **Publicador (publisher):** crea la tarea con `post_task` y bloquea la recompensa en escrow.
-- **Trabajador (worker):** cuenta (p. ej. `worker-N.<mercado>.testnet`) que se registra con `register_worker`.
-- **Verificador (verifier):** única cuenta autorizada a llamar `attest` para una tarea dada; la fija el publicador en `post_task`. Es el «trinquete»: tests en verde.
-- **Contrato:** ingresa todo el dinero; nadie recibe pagos salvo vía `close_round`/`refund_expired`.
+## 1. Roles y creación de tareas
 
-## 2. Tarea y escrow (R1–R3)
-- R1: `post_task` es `payable`: `attached_deposit` = recompensa máxima de la ronda y queda en escrow del contrato. Rechaza depósito 0.
-- R2: Una tarea tiene: `id`, `publisher`, `verifier`, `reward` (escrow), `fee` (0 en v1), `state` (`Open`, `Closed`, `Settled`, `Refunded`), `round` (see §3).
-- R3: El contrato guarda `spent_by_agent: map cuenta -> u128` (yoctoNEAR gastado como puja ganadora) y `cap_per_agent` (tope de gasto por agente, fijado en despliegue). Ninguna liquidación puede llevar a una cuenta por encima del tope: si el pago del ganador supera `cap - spent`, la ronda se cierra como `Refunded` (R8).
+- El publicador llama `post_task(id, verifier, commit_len, reveal_len)` con un depósito adjunto mayor que cero; el depósito completo es la recompensa en escrow.
+- El identificador de tarea debe ser único. El contrato fija `commit_end = altura_actual + commit_len` y `reveal_end = commit_end + reveal_len`; los cálculos que desbordan se rechazan.
+- El publicador declara el verificador de esa tarea. No hay depósito para registrarse, comprometer ni revelar pujas.
+- Un trabajador llama `register_worker`; su reputación inicial es Beta(1,1), es decir, `alpha=1`, `beta=1`.
 
-## 3. Ronda de subasta sellada inversa (R4–R9)
-- R4: La ronda vive en **bloques**: `commit_end` y `reveal_end` son alturas de bloque absolutas fijadas en `post_task` (`commit_len`, `reveal_len` en bloques). Ventana de commit: `[open, commit_end)`; ventana de reveal: `[commit_end, reveal_end)`.
-- R5: **Commit:** `commit_bid(commitment)` donde `commitment = sha256( price_be_u64 || salt_be_u32 || account_id_bytes )` (precio en yoctoNEAR, big-endian, sin separadores). Solo trabajadores registrados; un commit por trabajador por ronda; rechaza si no estamos en ventana de commit.
-- R6: **Reveal:** `reveal_bid(price, salt)`; el contrato recalcula `sha256(...)` y exige igualdad con el commit guardado; borra el commit (reveal de una sola vez). Rechaza fuera de ventana de reveal o si no cuadra.
-- R7: **Cierre (`close_round`)** tras `reveal_end`: gana la puja con menor **precio ajustado** `precio / media_beta`, donde `media_beta = α / (α + β)` de la reputación Beta(α, β) del trabajador (prior **(1,1)**, §5). Si `media_beta == 0` (α=0) no puja.
-- R8: **Desempate (tie-break), en orden:** (1) menor precio nominal; (2) mayor reputación (α+β, luego α); (3) cuenta lexicográficamente menor. Determinista y público.
-- R9: Si no hay reveals válidos, la ronda cierra sin ganador → `refund_expired` devuelve el escrow al publicador.
+## 2. Compromiso y revelación
 
-## 4. Entrega, atestación y pago (R10–R14)
-- R10: Tras `close_round`, el ganador llama `submit_result(task_id, result_hash)` (hash del artefacto; p. ej. SHA-256 del bundle verificado).
-- R11: Solo la cuenta `verifier` de la tarea puede llamar `attest(task_id, ok: bool)`.
-- R12: `attest(ok=true)` → `state = Settled`: el contrato transfiere `reward` al ganador (menos fee si lo hubiera), suma a `spent_by_agent[ganador]`, y actualiza reputación: α += 1 (éxito). `attest(ok=false)` → reputación β += 1 y escrow vuelve al publicador (`Refunded`).
-- R13: Doble pago prohibido: `attest` y `close_round` rechazan si `state != Closed` / `state != Settled` según corresponda; `submit_result` solo una vez por ganador.
-- R14: `refund_expired`: a partir de `reveal_end + 100` bloques, si no hay `attest`, cualquiera puede llamar y el escrow vuelve al publicador; la reputación del ganador (si lo hubo y no entregó resultado) pierde: β += 1. Si la puja ganadora supera el tope de gasto restante del agente, `attest(ok=true)` devuelve el escrow al publicador sin pagar ni alterar reputación.
+- Solo trabajadores registrados pueden llamar `commit_bid`. Se admite un compromiso por trabajador y tarea, de exactamente 32 bytes (SHA-256), mientras `altura < commit_end`.
+- El compromiso se calcula como `SHA-256(precio_u64_be || sal_u32_be || cuenta_utf8)`: precio `u64` y sal `u32` en big-endian, seguidos de los bytes UTF-8 del identificador de cuenta, sin separadores.
+- `reveal_bid(precio, sal)` solo se acepta en `[commit_end, reveal_end)`. Debe hacerlo la cuenta del compromiso y el hash recalculado debe coincidir; en caso contrario se rechaza. Cada compromiso válido se revela una sola vez.
+- Una duración cero es válida: `commit_len=0` impide comprometer y `reveal_len=0` impide revelar.
 
-## 5. Reputación Beta (R15–R16)
-- R15: `reputation[account] = (α, β)`, prior (1,1) en `register_worker`. Media = α/(α+β).
-- R16: `get_reputation` devuelve (α, β, media) como strings JSON (u128 no entra en JSON nativo de near-sdk 5).
+## 3. Cierre y selección del ganador
 
-## 6. Vistas
-`get_task(id)`, `list_tasks(from, limit)`, `get_round(task_id)`, `get_reputation(account)` y
-`get_config() -> (cap_per_agent, tareas)` (`(String, u64)`; u128 no cabe en JSON nativo, R16).
-El verificador es por tarea: se lee en `get_task(id).verifier`.
+- Cualquier cuenta puede llamar `close_round` desde `reveal_end`, inclusive. Se ignoran compromisos no revelados.
+- Para reputación Beta(`alpha`, `beta`), la media es `alpha/(alpha+beta)` y el precio ajustado es `precio / media`. Si `alpha=0`, la puja no es elegible. Una reputación no inicializada usa el prior (1,1).
+- La comparación del precio ajustado se hace como fracción exacta `precio*(alpha+beta)/alpha`, sin redondeo.
+- Gana el menor precio ajustado. En igualdad exacta, desempata, en este orden: menor precio nominal; mayor `alpha+beta`; mayor `alpha`; y cuenta con orden lexicográfico menor.
+- Si no hay pujas reveladas elegibles, la ronda se cierra sin ganador.
 
-## 7. Diagrama de secuencia (una ronda)
-```
-publisher          contract                worker-1            worker-2         verifier
-   |  post_task(reward, verifier, commit_len, reveal_len) |                   |                |
-   |-------------->| escrow reward, state=Open, round=1      |                   |                |
-   |               |   commit_bid(sha256(p||s||acct))        |                   |                |
-   |               |<-------------|                          |                   |                |
-   |               |   commit_bid(sha256(...))               |                   |                |
-   |               |<-----------------------------------------|                   |                |
-   |               |        [bloque >= commit_end]           |                   |                |
-   |               |   reveal_bid(price, salt)               |                   |                |
-   |               |<-------------|                          |                   |                |
-   |               |   reveal_bid(price, salt)               |                   |                |
-   |               |<-----------------------------------------|                   |                |
-   |               |   close_round() -> ganador = min precio/mean_beta (R7,R8)     |                |
-   |<--------------| state=Closed, winner=worker-1            |                   |                |
-   |               |   submit_result(hash)                    |                   |                |
-   |               |<-------------|                          |                   |                |
-   |               |                    attest(task, true)   |                   |                |
-   |               |------------------------------------------>|                   |                |
-   |<--------------| paga reward a worker-1, α+=1, Settled  |                   |                |
-   |               |   (attest false o timeout -> refund_expired: escrow a publisher, β+=1)
-```
+## 4. Resultado, atestación, pago y reembolso
+
+- Solo el ganador de una ronda cerrada puede llamar `submit_result` y registrar un hash de resultado; solo se admite una entrega.
+- Solo el verificador declarado en `post_task` puede llamar `attest`, y solo después de recibir el resultado. La primera atestación termina la tarea.
+- Con `attest(ok=true)`, se paga la recompensa íntegra al ganador, se suma a su gasto acumulado y `alpha` aumenta en uno. El gasto solo cuenta recompensas efectivamente pagadas y se acumula entre tareas.
+- El tope de gasto por agente (`cap_per_agent`) se fija al inicializar el contrato. Si el pago excede el tope restante, la tarea se marca reembolsada y se devuelve el depósito al publicador; no se paga ni se modifica gasto o reputación.
+- Con `attest(ok=false)`, se devuelve la recompensa al publicador y `beta` del ganador aumenta en uno.
+- Desde `reveal_end + 100` bloques, inclusive, cualquier cuenta puede llamar `refund_expired` si la tarea sigue cerrada. Devuelve el depósito al publicador. Si no se presentó resultado y había ganador, se suma uno a su `beta`; si sí se presentó, no hay penalización. Una ronda cerrada sin ganador también se puede reembolsar.
+
+## 5. Vistas
+
+`get_task(id)`, `list_tasks(from, limit)`, `get_round(task_id)` y `get_reputation(account)` exponen tareas, rondas y reputación; `get_reputation` devuelve `alpha`, `beta` y media como cadenas JSON.
+
+## 6. Secuencia textual de una ronda
+
+1. Publicador → `post_task` con depósito, verificador y ventanas.
+2. Trabajadores → `register_worker` y `commit_bid(SHA-256(precio||sal||cuenta))` antes de `commit_end`.
+3. Trabajadores → `reveal_bid(precio, sal)` desde `commit_end` y antes de `reveal_end`.
+4. Cualquier cuenta → `close_round` desde `reveal_end`; el contrato selecciona al ganador.
+5. Ganador → `submit_result(hash)`; verificador → `attest(ok)`.
+6. Si `ok=true` y el tope lo permite, cobra el ganador y aumenta `alpha`; si `ok=false`, se reembolsa al publicador y aumenta `beta`. Si vence el plazo sin atestación, cualquier cuenta activa el reembolso.
