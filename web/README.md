@@ -19,3 +19,7 @@ Light/dark follows the system; force dark with `localStorage.theme = 'dark'`.
 
 ## Sandbox badge
 In demo mode the page shows a "validated on near-sandbox" badge read from `public/sandbox_round.json` (copy of `swarm/out/sandbox_round.json`). Refresh it with `cp ../swarm/out/sandbox_round.json public/` after re-running the sandbox round; if the file is missing, the badge is hidden.
+
+## Offline serving (100% local)
+- Build `npm run build` copies `public/sandbox_round.json` and `public/sim.json` to `dist/`. 
+- Serve offline: `python3 -m http.server -d dist 8000` → open http://localhost:8000 . No network needed; `sim.json` y `sandbox_round.json` se cargan desde `dist/`.

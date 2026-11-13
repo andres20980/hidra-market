@@ -10,3 +10,4 @@ out/*.key
 out/*.log
 .env
 .env
+out/release/

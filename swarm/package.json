@@ -12,6 +12,11 @@
     "client:sandbox": "node scripts/client_worker.mjs",
     "client:testnet": "node --env-file=.env scripts/client_testnet.mjs",
     "sim:horizon": "python3 scripts/horizon_sweep.py",
+    "sim:multiseed": "python3 scripts/multiseed_ci.py",
+    "reproduce": "python3 scripts/reproduce_checks.py",
+    "reproduce:check": "python3 scripts/reproduce_checks.py --no-regen",
+    "repro:fuente": "python3 scripts/reproducibilidad_desde_fuente.py",
+    "release": "python3 scripts/package_release.py",
     "testnet:deploy": "node --env-file=.env scripts/deploy_and_seed_testnet.mjs",
     "testnet:account": "node scripts/create_testnet_account.mjs"
   },

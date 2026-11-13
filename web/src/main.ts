@@ -1,15 +1,17 @@
-// main.ts v0.9 — entry: ?contract= → modo en vivo por RPC; si no, demo con replay ?sim=
+// main.ts v1.2 — entry: ?contract= → modo en vivo por RPC; si no, demo con replay ?sim= + toggle de tema
 import './style.css';
 import { loadSandboxBadge } from './sandbox';
 
-function themeInit(): void {
+function themeInit(): 'light' | 'dark' {
   const saved = localStorage.getItem('theme') as 'light' | 'dark' | null;
   const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  const theme = dark ? 'dark' : 'light';
+  document.documentElement.dataset.theme = theme;
+  return theme;
 }
 
 import { Sim } from './sim';
-import { render, renderToolbar, renderReplayToggle, renderSkipLink, loadingSpinner, esc } from './render';
+import { render, renderIntro, renderToolbar, renderReplayToggle, renderSkipLink, loadingSpinner, esc } from './render';
 import { Replay, Dom } from './replay';
 import { normalizeSim } from './normalize';
 import { LivePoller } from './live';
@@ -21,6 +23,18 @@ const app = document.getElementById('app')!;
 const AUTOSTART_MS = 1500; // pausa para leer el resumen antes del replay
 const SPEED_KEY = 'sim-speed';
 let currentSpeed = 1;
+
+// sostenibilidad: huella estable del estado leido del contrato; si no cambia, el mercado no se repinta
+// (0 DOM / 0 trabajo de pintado por sondeo)
+function fingerprintSim(sim: Sim): string {
+  return JSON.stringify([
+    sim.meta.seed,
+    sim.rounds.length,
+    sim.stats,
+    sim.rounds.map((r) => [r.id, r.status, r.winner, r.closePrice, r.payment, r.verified, r.paid, r.bids.length]),
+    sim.workers.map((w) => [w.id, w.alpha, w.beta, w.earned, w.done, w.failed]),
+  ]);
+}
 
 function clampSpeed(v: number | string): number {
   return Math.max(0.5, Math.min(10, Number(v) || 1));
@@ -75,7 +89,13 @@ const dom: Dom = {
   query: (sel) => document.querySelector(sel),
 };
 const replay = new Replay(
-  { dom, schedule: (fn, ms) => setTimeout(fn, ms) as unknown as number, cancel: (t) => clearTimeout(t) },
+  {
+    dom,
+    schedule: (fn, ms) => setTimeout(fn, ms) as unknown as number,
+    cancel: (t) => clearTimeout(t),
+    visible: () => document.visibilityState !== 'hidden',
+    onVisibilityChange: (fn) => document.addEventListener('visibilitychange', fn),
+  },
   () => currentSpeed,
 );
 
@@ -87,12 +107,16 @@ load().then(async ({ sim, live }) => {
     + `<div class="replay"> ${renderReplayToggle()}`
     + ` <button id="replay-restart" type="button" aria-label="reiniciar simulación">↺ reiniciar</button>`
     + `<span id="replay-status" class="status"></span>${live ? '<span id="live-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>' : ''}${badge}</div>`
-    + `<main id="view" tabindex="-1">${live ? render(sim) : ''}</main>`;
+    + `<main id="view" tabindex="-1">${live ? renderIntro(sim, new Date().toLocaleTimeString()) + render(sim) : ''}</main>`;
   initSpeedControl();
-  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+  const themeToggle = document.getElementById('theme-toggle');
+  themeToggle?.setAttribute('aria-pressed', String(document.documentElement.dataset.theme === 'dark'));
+  themeToggle?.addEventListener('click', () => {
     const el = document.documentElement;
-    el.dataset.theme = el.dataset.theme === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('theme', el.dataset.theme);
+    const next = el.dataset.theme === 'dark' ? 'light' : 'dark';
+    el.dataset.theme = next;
+    localStorage.setItem('theme', next);
+    themeToggle.setAttribute('aria-pressed', String(next === 'dark'));
   });
   if (live) {
     const s = document.getElementById('replay-status');
@@ -105,11 +129,11 @@ load().then(async ({ sim, live }) => {
         visible: () => document.visibilityState !== 'hidden',
       },
       {
-        update: (x) => { const v = document.getElementById('view'); if (v) v.innerHTML = render(x); },
+        update: (x) => { const v = document.getElementById('view'); if (v) v.innerHTML = renderIntro(x, new Date().toLocaleTimeString()) + render(x); },
         status: (t) => { if (s) s.textContent = t; },
         announce: (t) => { const a = document.getElementById('live-announcement'); if (a) a.textContent = t; },
       },
-      { intervalMs: 10000, label: 'modo en vivo (testnet)', load: async () => (await load()).sim },
+      { intervalMs: 10000, label: 'modo en vivo (testnet)', load: async () => (await load()).sim, fingerprint: fingerprintSim },
     );
     poller.start();
     document.addEventListener('visibilitychange', () => {

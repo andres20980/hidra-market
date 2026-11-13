@@ -33,6 +33,15 @@ function stub(speed = () => 1) {
   };
 }
 
+// stub con pagina visible/oculta controlable (sostenibilidad)
+function stubVis(visible0: boolean, speed = () => 1) {
+  const base = stub(speed);
+  const st = { value: visible0 };
+  let emit: (() => void) | null = null;
+  const host: Host = { ...base.host, visible: () => st.value, onVisibilityChange: (fn) => { emit = fn; } };
+  return { ...base, r: new Replay(host, speed), visibility: (v: boolean) => { st.value = v; emit?.(); } };
+}
+
 const sim = normalizeSim(JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'fixtures', 'sim.swarm.sample.json'), 'utf8')));
 
 describe('replay del modo demo (motor)', () => {
@@ -123,5 +132,33 @@ describe('replay del modo demo (motor)', () => {
     s.r.toggle();
     expect(s.r.index).toBe(0);
     expect(s.r.running).toBe(true);
+  });
+});
+
+describe('replay sostenible (pestaña oculta = 0 pasos, 0 repintados)', () => {
+  it('con la pestaña oculta no reprograma pasos ni avanza', () => {
+    const s = stubVis(false);
+    s.r.load(sim); s.r.start();
+    const painted = s.els['view'].innerHTML;
+    s.visibility(false);
+    s.advance(stepMs(1) * 10);
+    expect(s.r.index).toBe(-1);
+    expect(s.els['view'].innerHTML).toBe(painted);
+  });
+  it('al volver a mostrar la pestaña reanuda desde el mismo punto', () => {
+    const s = stubVis(false);
+    s.r.load(sim); s.r.start();
+    s.visibility(true);
+    s.advance(stepMs(1) + 1);
+    expect(s.r.index).toBe(0);
+  });
+  it('con la pestaña visible avanza con normalidad', () => {
+    const s = stubVis(true);
+    s.r.load(sim); s.r.start();
+    s.advance(stepMs(1) + 1);
+    expect(s.r.index).toBe(1);
+    s.visibility(false);
+    s.advance(stepMs(1) * 10);
+    expect(s.r.index).toBe(1);
   });
 });

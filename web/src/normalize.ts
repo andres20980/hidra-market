@@ -23,7 +23,7 @@ export function swarmRoundToRound(r: any): Round {
 export function normalizeSim(data: any): Sim {
   const rounds = data.rounds || [];
   const normalizedRounds: Round[] = rounds.map((r: any) =>
-    r.bids !== undefined ? r : swarmRoundToRound(r),
+    r.bids !== undefined ? { ...r, id: r.round ?? r.id } :  swarmRoundToRound(r),
   );
 
   let workers: any[];

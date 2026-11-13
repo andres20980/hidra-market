@@ -1,4 +1,4 @@
-# RULES.md v1.3 · Hidra Market — reglas del contrato
+# RULES.md v1.4 · Hidra Market — reglas del contrato
 
 Especificación de la implementación en `contract/`. Los plazos se expresan en alturas de bloque NEAR.
 
@@ -36,7 +36,7 @@ Especificación de la implementación en `contract/`. Los plazos se expresan en 
 
 ## 5. Vistas
 
-`get_task(id)`, `list_tasks(from, limit)`, `get_round(task_id)` y `get_reputation(account)` exponen tareas, rondas y reputación; `get_reputation` devuelve `alpha`, `beta` y media como cadenas JSON.
+`get_task(id)`, `list_tasks(from, limit)`, `get_round(task_id)` y `get_reputation(account)` exponen tareas, rondas y reputación; `get_reputation` devuelve `alpha`, `beta` y media como cadenas JSON. `list_tasks` devuelve como máximo 100 tareas por llamada (tope de gas de la vista).
 
 ## 6. Secuencia textual de una ronda
 
@@ -46,3 +46,10 @@ Especificación de la implementación en `contract/`. Los plazos se expresan en 
 4. Cualquier cuenta → `close_round` desde `reveal_end`; el contrato selecciona al ganador.
 5. Ganador → `submit_result(hash)`; verificador → `attest(ok)`.
 6. Si `ok=true` y el tope lo permite, cobra el ganador y aumenta `alpha`; si `ok=false`, se reembolsa al publicador y aumenta `beta`. Si vence el plazo sin atestación, cualquier cuenta activa el reembolso.
+
+## 7. Reproducibilidad del artefacto (verificado 13-nov 03:41 UTC)
+
+- Toolchain fijado en `contract/rust-toolchain.toml` (Rust 1.95.0 + target `wasm32-unknown-unknown`) y dependencias congeladas en `Cargo.lock`; builds con `--offline`.
+- Build determinista demostrado con `contract/check-reproducible.sh` (2 rebuilds seguidos, bytes idénticos): wasm crudo `target/wasm32-unknown-unknown/release/contract.wasm` = 220193 B, sha256 `95fa620b96ddfd99617302f59bcd90d43febb1720b79faa1230b0395b78d9b50`; artefacto que copia near-cli `target/near/contract.wasm` = 178726 B, sha256 `14946d7597840fb7f3735776f7ec21086549f9d8a10cda923fc6bf6cbe0d9445`.
+- Tests: `cargo test -q --offline` 43/43 en verde (35 unitarios + 8 de integración near-sandbox), 0 warnings.
+- Verificador del módulo: `cd producto/contract && cargo near build non-reproducible-wasm && cargo test -q`.

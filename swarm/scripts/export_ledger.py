@@ -1,6 +1,7 @@
-#!/usr/bin/env python3
+# scripts/export_ledger.py v1.2 - ISO-8601 UTC timestamps + export atomico validado
 import json
 import hashlib
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from collections import Counter
@@ -28,6 +29,26 @@ OUTCOME_MAP = {
 }
 
 
+def normalize_ts(value) -> str:
+    """Normalise the ledger timestamp to ISO-8601 UTC.
+
+    Some ledger snapshots store `recorded_at` as a UNIX epoch (int/float) instead of
+    an ISO string; the exported field `t` must always be the documented ISO string so
+    the schema, the manifest and the tests stay stable across snapshots.
+    """
+    if isinstance(value, bool) or value is None:
+        return ""
+    if isinstance(value, (int, float)):
+        return datetime.fromtimestamp(float(value), timezone.utc).isoformat()
+    text = str(value).strip()
+    if not text:
+        return ""
+    try:
+        return datetime.fromtimestamp(float(text), timezone.utc).isoformat()
+    except ValueError:
+        return text
+
+
 def map_outcome(outcome: str) -> str:
     """Mapeo fiel al outcome real: solo LOCKED es exito; el resto NO es LOCKED."""
     return OUTCOME_MAP.get(outcome, "FAILED")
@@ -51,7 +72,10 @@ def get_worker_alias(model_full: str) -> str:
 ledger_files = sorted(LEDGERS_ROOT.glob("*/*/*/ledger.jsonl"))  # copias/*/polipasto/*/ledger.jsonl
 print(f"Found {len(ledger_files)} ledger files")
 
-with OUTPUT_FILE.open("w", encoding="utf-8") as out_f:
+TMP_FILE = OUTPUT_FILE.with_name(OUTPUT_FILE.name + ".tmp")
+TMP_FILE.unlink(missing_ok=True)
+
+with TMP_FILE.open("w", encoding="utf-8") as out_f:
     for ledger_path in ledger_files:
         with ledger_path.open("r", encoding="utf-8") as f:
             for line in f:
@@ -87,7 +111,7 @@ with OUTPUT_FILE.open("w", encoding="utf-8") as out_f:
 
                 # Build record
                 record = {
-                    "t": recorded_at,  # timestamp
+                    "t": normalize_ts(recorded_at),  # ISO-8601 UTC timestamp
                     "worker": worker_alias,
                     "tipo_tarea": task_type,
                     "resultado": result,
@@ -98,6 +122,15 @@ with OUTPUT_FILE.open("w", encoding="utf-8") as out_f:
                 task_types.add(task_type)
                 exported_lines += 1
                 result_counts[result] += 1
+
+# Invariantes del dataset: nunca sustituir un dataset bueno por uno roto.
+# Se escribe primero a un temporal y solo se publica si todo cuadra.
+aliases = set(worker_map.values())
+bad_aliases = [a for a in aliases if not re.fullmatch(r"worker-\d+", a)]
+if exported_lines == 0 or len(aliases) < 2 or bad_aliases:
+    TMP_FILE.unlink(missing_ok=True)
+    raise SystemExit(f"export abortado: lineas={exported_lines} workers={len(aliases)} alias_invalidos={bad_aliases[:3]}")
+TMP_FILE.replace(OUTPUT_FILE)
 
 # Anonymized manifest: reproducible fingerprint of the exported dataset.
 # No paths, prompts, contest names or keys: only counts, distribution and hash.

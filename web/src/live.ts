@@ -17,6 +17,8 @@ export interface LiveOptions {
   label: string;
   load: () => Promise<Sim>;
   now?: () => Date;
+  // sostenibilidad: huella estable; si el estado no cambia, el mercado no se repinta
+  fingerprint?: (sim: Sim) => string;
 }
 
 // bucle: carga, pinta, reprograma; ante error conserva los datos y avisa (sin fallback silencioso)
@@ -25,6 +27,7 @@ export class LivePoller {
   private stopped = true;
   private failures = 0;
   private inflight = false;
+  private lastFingerprint: string | null = null;
 
   constructor(
     private host: LiveHost,
@@ -65,13 +68,16 @@ export class LivePoller {
     this.opts
       .load()
       .then((sim) => {
+        const fp = this.opts.fingerprint ? this.opts.fingerprint(sim) : null;
+        const unchanged = fp !== null && fp === this.lastFingerprint;
+        this.lastFingerprint = fp;
         this.inflight = false;
         if (this.stopped) return;
         const recovered = this.failures > 0;
         this.failures = 0;
-        this.sink.update(sim);
+        if (!unchanged) this.sink.update(sim);
         const now = (this.opts.now ?? (() => new Date()))();
-        this.sink.status(`${this.opts.label} · actualizado ${now.toLocaleTimeString()}`);
+        this.sink.status(`${this.opts.label} ${unchanged ? '· sin cambios' : '· actualizado'} ${now.toLocaleTimeString()}`);
         if (recovered) this.sink.announce?.(`${this.opts.label} · conexión recuperada`);
         this.reschedule();
       })

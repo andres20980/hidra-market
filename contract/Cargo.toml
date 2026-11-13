@@ -1,14 +1,12 @@
 [package]
 name = "contract"
-description = "cargo-near-new-project-description"
+description = "Hidra Market: sealed-bid inverse auction for verified AI work on NEAR"
 version = "0.1.0"
 edition = "2024"
 resolver = "3"
 rust-version = "1.95"
-# TODO: Fill out the repository field to help NEAR ecosystem tools to discover your project.
-# NEP-0330 is automatically implemented for all contracts built with https://github.com/near/cargo-near.
-# Link to the repository will be available via `contract_source_metadata` view-function.
-repository = "https://github.com/<xxx>/<xxx>"
+# NEP-0330 source metadata is implemented by cargo-near; the public repository URL is
+# published in the product README as soon as the public repository is available.
 
 [lib]
 crate-type = ["cdylib", "rlib"]

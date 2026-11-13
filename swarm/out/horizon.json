@@ -1,5 +1,6 @@
 {
   "workers": 20,
+  "nota": "market_verified/round_robin_verified: sorteo medido con el simulador canonico (R3 incluido); market_vs_round_robin_measured: ratio medido; market_vs_round_robin_expected: ratio sin ruido (suma de tasas reales del ledger, techo teorico); cap_refunds: rondas reembolsadas por R3 (tope = rondas del contrato x REWARD, fijado al inicializar)",
   "rows": [
     {
       "rounds": 200,
@@ -8,7 +9,9 @@
       "market_expected": 3.0,
       "round_robin_verified": 5,
       "round_robin_expected": 3.1,
-      "market_vs_round_robin_expected": 0.96
+      "market_vs_round_robin_expected": 0.96,
+      "market_vs_round_robin_measured": 0.8,
+      "cap_refunds": 0
     },
     {
       "rounds": 200,
@@ -17,7 +20,9 @@
       "market_expected": 2.9,
       "round_robin_verified": 2,
       "round_robin_expected": 3.1,
-      "market_vs_round_robin_expected": 0.91
+      "market_vs_round_robin_expected": 0.91,
+      "market_vs_round_robin_measured": 0.5,
+      "cap_refunds": 0
     },
     {
       "rounds": 200,
@@ -26,7 +31,9 @@
       "market_expected": 2.7,
       "round_robin_verified": 3,
       "round_robin_expected": 3.1,
-      "market_vs_round_robin_expected": 0.84
+      "market_vs_round_robin_expected": 0.84,
+      "market_vs_round_robin_measured": 0.333,
+      "cap_refunds": 0
     },
     {
       "rounds": 1000,
@@ -35,7 +42,9 @@
       "market_expected": 31.6,
       "round_robin_verified": 20,
       "round_robin_expected": 15.7,
-      "market_vs_round_robin_expected": 2.01
+      "market_vs_round_robin_expected": 2.01,
+      "market_vs_round_robin_measured": 1.65,
+      "cap_refunds": 0
     },
     {
       "rounds": 1000,
@@ -44,7 +53,9 @@
       "market_expected": 32.5,
       "round_robin_verified": 17,
       "round_robin_expected": 15.7,
-      "market_vs_round_robin_expected": 2.07
+      "market_vs_round_robin_expected": 2.07,
+      "market_vs_round_robin_measured": 1.588,
+      "cap_refunds": 0
     },
     {
       "rounds": 1000,
@@ -53,7 +64,9 @@
       "market_expected": 28.5,
       "round_robin_verified": 17,
       "round_robin_expected": 15.7,
-      "market_vs_round_robin_expected": 1.81
+      "market_vs_round_robin_expected": 1.81,
+      "market_vs_round_robin_measured": 1.412,
+      "cap_refunds": 0
     },
     {
       "rounds": 5000,
@@ -62,7 +75,9 @@
       "market_expected": 289.8,
       "round_robin_verified": 86,
       "round_robin_expected": 78.7,
-      "market_vs_round_robin_expected": 3.68
+      "market_vs_round_robin_expected": 3.68,
+      "market_vs_round_robin_measured": 3.686,
+      "cap_refunds": 0
     },
     {
       "rounds": 5000,
@@ -71,7 +86,9 @@
       "market_expected": 275.8,
       "round_robin_verified": 84,
       "round_robin_expected": 78.7,
-      "market_vs_round_robin_expected": 3.51
+      "market_vs_round_robin_expected": 3.51,
+      "market_vs_round_robin_measured": 3.19,
+      "cap_refunds": 0
     },
     {
       "rounds": 5000,
@@ -80,7 +97,9 @@
       "market_expected": 288.2,
       "round_robin_verified": 90,
       "round_robin_expected": 78.7,
-      "market_vs_round_robin_expected": 3.66
+      "market_vs_round_robin_expected": 3.66,
+      "market_vs_round_robin_measured": 3.467,
+      "cap_refunds": 0
     }
   ]
 }

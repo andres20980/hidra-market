@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# deterministic_simulator.py v2.2
+# deterministic_simulator.py v2.5 (v2.5: out/sim.json se escribe atomico tmp+os.replace:
+# un lector concurrente nunca ve un JSON a medias, que era el fallo transitorio de make verify)
 # Deterministic simulator implementing producto/RULES.md v1.0 (R4-R16)
 
 import os
@@ -136,83 +137,106 @@ def run_round(workers: List[Dict], round_num: int, reputation: Dict[str, List[in
     return results
 
 
+def simulate(seed: int = SEED, rounds: int = ROUNDS) -> Dict:
+    """One full run of the market and the round-robin baseline over the same rounds,
+    same ledger rates and same reward (producto/RULES.md). Pure function: the same
+    (seed, rounds) always returns the same metrics. Used by main() and by the
+    multi-seed interval script (scripts/multiseed_ci.py).
+
+    R3 (cap_per_agent): the cap is fixed when the contract is initialised, so in a
+    horizon sweep it belongs to the contract of that horizon: cap = rounds * REWARD.
+    Keeping the 200-round cap in a 5000-round sweep refunded rounds that the rules
+    would not refund (it under-stated the market: 2.95x instead of 3.51x)."""
+    previous_seed = globals()["SEED"]
+    globals()["SEED"] = seed  # draw_success() derives its draws from the module seed
+    try:
+        workers = load_workers(WORKER_FILE)
+        if not workers:
+            raise RuntimeError("No workers loaded, exiting.")
+        rates = load_rates(RATES_FILE)
+        reputation = {w["id"]: list(PRIOR) for w in workers}  # R15
+        spent = {w["id"]: 0 for w in workers}  # R3
+        cap = rounds * REWARD  # R3: cap_per_agent is fixed at contract init (this horizon)
+        log = []
+        paid = 0
+        verified = 0
+        for r in range(1, rounds + 1):
+            round_result = run_round(workers, r, reputation, rates)
+            # R3: if the payment exceeds cap - spent the round becomes Refunded.
+            # Important: do not touch reputation here, run_round() already updated
+            # alpha/beta for the result. The cap only voids the payment.
+            if (
+                round_result["state"] == "settled" and
+                spent[round_result["winner"]] + round_result["payment"] > cap
+            ):
+                round_result["state"] = "refunded"
+                round_result["payment"] = 0
+                round_result["cap_refund"] = True  # R3: the cap voided a settled round
+            if round_result["state"] == "settled":
+                paid += round_result["payment"]
+                spent[round_result["winner"]] += round_result["payment"]
+                verified += 1
+            log.append(round_result)
+        # Baseline round-robin: metrics from the fixed rotation, not reusing the
+        # market result.
+        rr_verified = sum(1 for r in range(1, rounds + 1) if draw_success(
+            workers[(r - 1) % len(workers)]["id"], r,
+            rates.get(workers[(r - 1) % len(workers)]["id"], 0.0)))
+        m_cpv = (paid / verified) if verified else None
+        rr_cpv = (rounds * REWARD / rr_verified) if rr_verified else None
+        return {
+            "seed": seed,
+            "rounds": log,
+            "reputation": {k: {"alpha": v[0], "beta": v[1], "media": v[0] / (v[0] + v[1])}
+                           for k, v in reputation.items()},
+            "spent_by_agent": spent,
+            # Metrics with explicit units so mercado and round-robin are comparable:
+            # same rounds, same ledger success rates, same REWARD; only the assignment
+            # rule (auction+reputation vs fixed rotation) and, for the naive baseline,
+            # the payment rule differ. Each entry declares its payment rule.
+            "metrics": {
+                "unidad": "unidades de recompensa (REWARD=100); 1 resultado verificado = 1 attest ok=true",
+                "rondas": rounds,
+                "reward": REWARD,
+                "mercado": {
+                    "regla_asignacion": "subasta sellada inversa + reputacion Beta (R7-R8)",
+                    "regla_pago": "escrow R12/R14: paga solo en Settled; fallo -> Refunded sin coste",
+                    "verificados": verified,
+                    "coste_total": paid,
+                    "coste_por_verificado": m_cpv,
+                    "verificados_por_ronda": verified / rounds,
+                },
+                "round_robin": {
+                    "verificados": rr_verified,
+                    "regla_asignacion": "rotacion fija (igual que round_robin)",
+                    "regla_pago": "ingenuo: paga cada asignacion (ROUNDS*REWARD) sin escrow",
+                    "coste_total": rounds * REWARD,
+                    "coste_por_verificado": rr_cpv,
+                    "verificados_por_ronda": rr_verified / rounds,
+                },
+                "titular": {
+                    "definicion": "coste por resultado verificado sobre las mismas rondas y mismas tasas del ledger",
+                    "mercado": m_cpv,
+                    "round_robin": rr_cpv,
+                    "factor_mercado_vs_rr": (rr_cpv / m_cpv) if (m_cpv and rr_cpv) else None,
+                },
+            },
+        }
+    finally:
+        globals()["SEED"] = previous_seed
+
+
 def main():
-    workers = load_workers(WORKER_FILE)
-    if not workers:
-        print("No workers loaded, exiting.")
-        return
-    rates = load_rates(RATES_FILE)
-    reputation = {w["id"]: list(PRIOR) for w in workers}  # R15
-    spent = {w["id"]: 0 for w in workers}  # R3
-
-    sim_results = {"seed": SEED, "rounds": [], "reputation": {}, "spent_by_agent": {}, "metrics": {}}
-    paid = 0
-    verified = 0
-    for r in range(1, ROUNDS + 1):
-        round_result = run_round(workers, r, reputation, rates)
-        # R3: si el pago supera cap - spent, la ronda queda Refunded.
-        # Importante: no alterar reputación aquí, porque run_round() ya
-        # actualizó alpha/beta según el resultado ok. El cap solo anula el
-        # pago.
-        if (
-            round_result["state"] == "settled" and
-            spent[round_result["winner"]] + round_result["payment"] > CAP_PER_AGENT
-        ):
-            round_result["state"] = "refunded"
-            round_result["payment"] = 0
-        if round_result["state"] == "settled":
-            paid += round_result["payment"]
-            spent[round_result["winner"]] += round_result["payment"]
-            verified += 1
-        sim_results["rounds"].append(round_result)
-
-    # Baseline round-robin: (legacy) métricas calculadas a partir de la rotación,
-    # no reutilizando el resultado del "mercado".
-    rr_verified = sum(1 for r in range(1, ROUNDS + 1) if draw_success(workers[(r - 1) % len(workers)]["id"], r, rates.get(workers[(r - 1) % len(workers)]["id"], 0.0)))
-    sim_results["reputation"] = {k: {"alpha": v[0], "beta": v[1], "media": v[0] / (v[0] + v[1])} for k, v in reputation.items()}
-    sim_results["spent_by_agent"] = spent
-    # Metrics with explicit units so mercado and round-robin are comparable:
-    # same ROUNDS tasks, same ledger success rates, same REWARD; only the
-    # assignment rule (auction+reputation vs fixed rotation) and, for the naive
-    # baseline, the payment rule differ. Each entry declares its payment rule.
-    m_cpv = (paid / verified) if verified else None
-    rr_cpv = (ROUNDS * REWARD / rr_verified) if rr_verified else None
-    sim_results["metrics"] = {
-        "unidad": "unidades de recompensa (REWARD=100); 1 resultado verificado = 1 attest ok=true",
-        "rondas": ROUNDS,
-        "reward": REWARD,
-        "mercado": {
-            "regla_asignacion": "subasta sellada inversa + reputacion Beta (R7-R8)",
-            "regla_pago": "escrow R12/R14: paga solo en Settled; fallo -> Refunded sin coste",
-            "verificados": verified,
-            "coste_total": paid,
-            "coste_por_verificado": m_cpv,
-            "verificados_por_ronda": verified / ROUNDS,
-        },
-
-        "round_robin": {
-            "verificados": rr_verified,
-
-            "regla_asignacion": "rotacion fija (igual que round_robin)",
-            "regla_pago": "ingenuo: paga cada asignacion (ROUNDS*REWARD) sin escrow",
-
-            "coste_total": ROUNDS * REWARD,
-            "coste_por_verificado": rr_cpv,
-            "verificados_por_ronda": rr_verified / ROUNDS,
-        },
-        "titular": {
-            "definicion": "coste por resultado verificado sobre las mismas rondas y mismas tasas del ledger",
-            "mercado": m_cpv,
-            "round_robin": rr_cpv,
-            "factor_mercado_vs_rr": (rr_cpv / m_cpv) if (m_cpv and rr_cpv) else None,
-        },
-    }
-
+    sim_results = simulate()
     out_dir = "out"
     os.makedirs(out_dir, exist_ok=True)
     sim_file = os.path.join(out_dir, "sim.json")
-    with open(sim_file, "w") as f:
+    tmp_file = sim_file + ".tmp"
+    with open(tmp_file, "w") as f:
         json.dump(sim_results, f, indent=2)
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(tmp_file, sim_file)
     print(f"Simulacion guardada en {sim_file}")
 
 

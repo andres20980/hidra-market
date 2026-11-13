@@ -67,3 +67,11 @@ describe('normalizeSim', () => {
     expect(renderToolbar(normalizeSim(load('sim.swarm.sample.json')), 2)).toContain('2');
   });
 });
+
+  it("handles round with empty bids array with id property", () => {
+    const sim = normalizeSim({ rounds: [{ round: 1, state: "open", commitments: {}, reveals: {}, bids: [], winner: null, closePrice: null }] });
+    expect(sim.rounds[0].bids).toEqual([]);
+    expect(sim.rounds[0].winner).toBeNull();
+    expect(sim.rounds[0].closePrice).toBeNull();
+    expect(render(sim)).toContain('data-round="1"')
+  });

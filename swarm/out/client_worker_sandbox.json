@@ -1,10 +1,10 @@
 {
-  "sandbox_rpc": "http://127.0.0.1:45197",
+  "sandbox_rpc": "http://127.0.0.1:44655",
   "root": "test.near",
   "market": "market.test.near",
   "worker": "worker-1.test.near",
   "worker_balance": "4999734617814057600000000",
-  "limited_public_key": "ed25519:HoHVsLJ7HG38s3HZHZECXgsuZ4JPjnxDeH9u5hRbpmc1",
+  "limited_public_key": "ed25519:2YXk96DQjG8bEARtW3vH6ck4TAzFA6r2bFbyQR5BuCc4",
   "allowance": "0.25 NEAR",
   "methods": [
     "register_worker",
@@ -14,7 +14,7 @@
   ],
   "keys_onchain": [
     {
-      "public_key": "ed25519:HoHVsLJ7HG38s3HZHZECXgsuZ4JPjnxDeH9u5hRbpmc1",
+      "public_key": "ed25519:2YXk96DQjG8bEARtW3vH6ck4TAzFA6r2bFbyQR5BuCc4",
       "permission": {
         "FunctionCall": {
           "allowance": "250000000000000000000000",

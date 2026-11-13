@@ -1,4 +1,4 @@
-// live.test.ts v1.0 — el modo en vivo reintenta y avisa, nunca inventa datos
+// live.test.ts v1.1 — el modo en vivo reintenta y avisa, nunca inventa datos
 import { describe, it, expect } from 'vitest';
 import { LivePoller, LiveHost } from '../src/live';
 import { Sim } from '../src/sim';
@@ -150,5 +150,43 @@ describe('refresco del modo en vivo', () => {
     c.advance(10000);
     await flush();
     expect(loads).toBe(3);
+  });
+
+  it('si la huella del estado no cambia, el mercado no se repinta (0 DOM por sondeo)', async () => {
+    const c = fakeHost();
+    const status: string[] = [];
+    let painted = 0;
+    const p = new LivePoller(c.host,
+      { update: () => { painted += 1; }, status: (s) => status.push(s), announce: () => {} },
+      { intervalMs: 10000, label: 'en vivo', fingerprint: () => 'misma-huella', load: async () => sim });
+    p.start();
+    await flush();
+    expect(painted).toBe(1);
+    c.advance(10000);
+    await flush();
+    expect(painted).toBe(1);
+    expect(status[1]).toContain('sin cambios');
+    p.stop();
+  });
+
+  it('si la huella cambia, repinta y avisa de actualizacion', async () => {
+    const c = fakeHost();
+    const status: string[] = [];
+    let painted = 0;
+    let n = 0;
+    const p = new LivePoller(c.host,
+      { update: () => { painted += 1; }, status: (s) => status.push(s), announce: () => {} },
+      {
+        intervalMs: 10000, label: 'en vivo',
+        fingerprint: (x) => String(x.stats.verifiedResults),
+        load: async () => { n += 1; return { ...sim, stats: { ...sim.stats, verifiedResults: n } }; },
+      });
+    p.start();
+    await flush();
+    c.advance(10000);
+    await flush();
+    expect(painted).toBe(2);
+    expect(status.every((t) => t.includes('actualizado'))).toBe(true);
+    p.stop();
   });
 });

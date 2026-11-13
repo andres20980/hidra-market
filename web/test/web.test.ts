@@ -40,7 +40,7 @@ describe('web demo', () => {
   });
   it('el h1 no contradice los stats ni deja celdas vacías', () => {
     const html = render({ ...sim, rounds: sim.rounds.map((r) => ({ ...r, task: '', publisher: '' })) });
-    expect(html).toMatch(/<h1>[^<]*<\/h1>/);
+    expect(html).toMatch(/<h1[^>]*>[^<]*<\/h1>/);
     expect(html).not.toContain('0.00 vs round-robin 0.00');
     expect(html).toContain('<td>—</td>');
   });
@@ -56,8 +56,8 @@ describe('web demo', () => {
     expect(css).toMatch(/td li \{ min-width: 5rem; max-width: 100%; white-space: normal; overflow-wrap: anywhere;/);
   });
   it('tabla de rondas en móvil conserva tarea y publicador con desplazamiento horizontal', () => {
-    expect(render(sim)).toContain('<table class="rounds">');
-    expect(render(sim)).toContain('<table class="workers">');
+    expect(render(sim)).toContain('<table class="rounds"');
+    expect(render(sim)).toContain('<table class="workers"');
     const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
     expect(css).toMatch(/\.table-wrap table \{ min-width: 34rem; \}/);
     expect(css).not.toMatch(/table\.rounds th:nth-child\(2\)[^}]*display: none/);
@@ -129,5 +129,16 @@ describe('barra de stats', () => {
     ]);
     expect(controls.every((control) => /^<button type="button" /.test(control))).toBe(true);
     expect(t).not.toMatch(/tabindex="[1-9]\d*"/);
+  });
+});
+describe('renderIntro con modo live', () => {
+  it('muestra "Última actualización" cuando se pasa updatedAt', () => {
+    const html = renderIntro(sim, '12:34');
+    expect(html).toContain('Última actualización');
+    expect(html).toContain('12:34');
+  });
+  it('no muestra "Última actualización" sin updatedAt', () => {
+    const html = renderIntro(sim);
+    expect(html).not.toContain('Última actualización');
   });
 });

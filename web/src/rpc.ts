@@ -1,10 +1,11 @@
-// rpc.ts v0.5 — modo en vivo contra las vistas REALES del contrato (producto/contract/src/lib.rs)
+// rpc.ts v0.6 — modo en vivo contra las vistas REALES del contrato (producto/contract/src/lib.rs)
 // Vistas usadas: list_tasks(from: u64, limit: u64) -> Vec<Task>; get_reputation(account) -> (alpha, beta, media) como strings
 // Fuente RPC: docs.near.org/api/rpc (query call_function, args_base64, result.result = bytes JSON)
 // Public endpoint: FastNEAR testnet (rpc.testnet.near.org is deprecated and answers 429; docs.near.org/api/rpc/providers)
 import { Round, Sim, Worker } from './sim';
 
 export const DEFAULT_RPC = 'https://test.rpc.fastnear.com';
+export const DEMO_CONTRACT = 'market.hidra-mkt-221016.testnet'; // deployed contract on testnet (producto/docs/TESTNET_DEPLOY.md)
 export const YOCTO_PER_NEAR = 1e24;
 export const TASKS_LIMIT = 100;
 export const REPUTATION_LIMIT = 60;

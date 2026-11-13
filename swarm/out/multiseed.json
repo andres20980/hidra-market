@@ -1,0 +1,342 @@
+{
+  "semillas": [
+    42,
+    7,
+    1234,
+    2024,
+    11
+  ],
+  "horizontes": [
+    200,
+    1000,
+    5000
+  ],
+  "filas": [
+    {
+      "rondas": 200,
+      "semilla": 42,
+      "mercado_verificados": 4,
+      "mercado_coste_total": 400,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 5,
+      "rr_coste_total": 20000,
+      "rr_coste_por_verificado": 4000.0,
+      "factor_coste": 40.0,
+      "ratio_verificados": 0.8
+    },
+    {
+      "rondas": 200,
+      "semilla": 7,
+      "mercado_verificados": 1,
+      "mercado_coste_total": 100,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 2,
+      "rr_coste_total": 20000,
+      "rr_coste_por_verificado": 10000.0,
+      "factor_coste": 100.0,
+      "ratio_verificados": 0.5
+    },
+    {
+      "rondas": 200,
+      "semilla": 1234,
+      "mercado_verificados": 1,
+      "mercado_coste_total": 100,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 3,
+      "rr_coste_total": 20000,
+      "rr_coste_por_verificado": 6666.666666666667,
+      "factor_coste": 66.66666666666667,
+      "ratio_verificados": 0.3333333333333333
+    },
+    {
+      "rondas": 200,
+      "semilla": 2024,
+      "mercado_verificados": 1,
+      "mercado_coste_total": 100,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 2,
+      "rr_coste_total": 20000,
+      "rr_coste_por_verificado": 10000.0,
+      "factor_coste": 100.0,
+      "ratio_verificados": 0.5
+    },
+    {
+      "rondas": 200,
+      "semilla": 11,
+      "mercado_verificados": 2,
+      "mercado_coste_total": 200,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 0,
+      "rr_coste_total": 20000,
+      "rr_coste_por_verificado": null,
+      "factor_coste": null,
+      "ratio_verificados": null
+    },
+    {
+      "rondas": 1000,
+      "semilla": 42,
+      "mercado_verificados": 33,
+      "mercado_coste_total": 3300,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 20,
+      "rr_coste_total": 100000,
+      "rr_coste_por_verificado": 5000.0,
+      "factor_coste": 50.0,
+      "ratio_verificados": 1.65
+    },
+    {
+      "rondas": 1000,
+      "semilla": 7,
+      "mercado_verificados": 27,
+      "mercado_coste_total": 2700,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 17,
+      "rr_coste_total": 100000,
+      "rr_coste_por_verificado": 5882.35294117647,
+      "factor_coste": 58.8235294117647,
+      "ratio_verificados": 1.588235294117647
+    },
+    {
+      "rondas": 1000,
+      "semilla": 1234,
+      "mercado_verificados": 24,
+      "mercado_coste_total": 2400,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 17,
+      "rr_coste_total": 100000,
+      "rr_coste_por_verificado": 5882.35294117647,
+      "factor_coste": 58.8235294117647,
+      "ratio_verificados": 1.411764705882353
+    },
+    {
+      "rondas": 1000,
+      "semilla": 2024,
+      "mercado_verificados": 26,
+      "mercado_coste_total": 2600,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 14,
+      "rr_coste_total": 100000,
+      "rr_coste_por_verificado": 7142.857142857143,
+      "factor_coste": 71.42857142857143,
+      "ratio_verificados": 1.8571428571428572
+    },
+    {
+      "rondas": 1000,
+      "semilla": 11,
+      "mercado_verificados": 32,
+      "mercado_coste_total": 3200,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 15,
+      "rr_coste_total": 100000,
+      "rr_coste_por_verificado": 6666.666666666667,
+      "factor_coste": 66.66666666666667,
+      "ratio_verificados": 2.1333333333333333
+    },
+    {
+      "rondas": 5000,
+      "semilla": 42,
+      "mercado_verificados": 317,
+      "mercado_coste_total": 31700,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 86,
+      "rr_coste_total": 500000,
+      "rr_coste_por_verificado": 5813.953488372093,
+      "factor_coste": 58.13953488372093,
+      "ratio_verificados": 3.686046511627907
+    },
+    {
+      "rondas": 5000,
+      "semilla": 7,
+      "mercado_verificados": 268,
+      "mercado_coste_total": 26800,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 84,
+      "rr_coste_total": 500000,
+      "rr_coste_por_verificado": 5952.380952380952,
+      "factor_coste": 59.523809523809526,
+      "ratio_verificados": 3.1904761904761907
+    },
+    {
+      "rondas": 5000,
+      "semilla": 1234,
+      "mercado_verificados": 312,
+      "mercado_coste_total": 31200,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 90,
+      "rr_coste_total": 500000,
+      "rr_coste_por_verificado": 5555.555555555556,
+      "factor_coste": 55.55555555555556,
+      "ratio_verificados": 3.466666666666667
+    },
+    {
+      "rondas": 5000,
+      "semilla": 2024,
+      "mercado_verificados": 239,
+      "mercado_coste_total": 23900,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 73,
+      "rr_coste_total": 500000,
+      "rr_coste_por_verificado": 6849.315068493151,
+      "factor_coste": 68.4931506849315,
+      "ratio_verificados": 3.2739726027397262
+    },
+    {
+      "rondas": 5000,
+      "semilla": 11,
+      "mercado_verificados": 287,
+      "mercado_coste_total": 28700,
+      "mercado_coste_por_verificado": 100.0,
+      "rr_verificados": 73,
+      "rr_coste_total": 500000,
+      "rr_coste_por_verificado": 6849.315068493151,
+      "factor_coste": 68.4931506849315,
+      "ratio_verificados": 3.9315068493150687
+    }
+  ],
+  "resumen": {
+    "200": {
+      "mercado_coste_por_verificado": {
+        "min": 100.0,
+        "max": 100.0,
+        "media": 100.0,
+        "n": 5,
+        "desv": 0.0,
+        "ic95": [
+          100.0,
+          100.0
+        ]
+      },
+      "rr_coste_por_verificado": {
+        "min": 4000.0,
+        "max": 10000.0,
+        "media": 7666.67,
+        "n": 4,
+        "desv": 2905.93,
+        "ic95": [
+          3043.33,
+          12290.01
+        ]
+      },
+      "factor_coste": {
+        "min": 40.0,
+        "max": 100.0,
+        "media": 76.67,
+        "n": 4,
+        "desv": 29.06,
+        "ic95": [
+          30.43,
+          122.9
+        ]
+      },
+      "ratio_verificados": {
+        "min": 0.33,
+        "max": 0.8,
+        "media": 0.53,
+        "n": 4,
+        "desv": 0.19,
+        "ic95": [
+          0.22,
+          0.84
+        ]
+      },
+      "rr_semillas_sin_verificado": 1,
+      "mercado_semillas_sin_verificado": 0
+    },
+    "1000": {
+      "mercado_coste_por_verificado": {
+        "min": 100.0,
+        "max": 100.0,
+        "media": 100.0,
+        "n": 5,
+        "desv": 0.0,
+        "ic95": [
+          100.0,
+          100.0
+        ]
+      },
+      "rr_coste_por_verificado": {
+        "min": 5000.0,
+        "max": 7142.86,
+        "media": 6114.85,
+        "n": 5,
+        "desv": 823.45,
+        "ic95": [
+          5092.56,
+          7137.13
+        ]
+      },
+      "factor_coste": {
+        "min": 50.0,
+        "max": 71.43,
+        "media": 61.15,
+        "n": 5,
+        "desv": 8.23,
+        "ic95": [
+          50.93,
+          71.37
+        ]
+      },
+      "ratio_verificados": {
+        "min": 1.41,
+        "max": 2.13,
+        "media": 1.73,
+        "n": 5,
+        "desv": 0.28,
+        "ic95": [
+          1.38,
+          2.07
+        ]
+      },
+      "rr_semillas_sin_verificado": 0,
+      "mercado_semillas_sin_verificado": 0
+    },
+    "5000": {
+      "mercado_coste_por_verificado": {
+        "min": 100.0,
+        "max": 100.0,
+        "media": 100.0,
+        "n": 5,
+        "desv": 0.0,
+        "ic95": [
+          100.0,
+          100.0
+        ]
+      },
+      "rr_coste_por_verificado": {
+        "min": 5555.56,
+        "max": 6849.32,
+        "media": 6204.1,
+        "n": 5,
+        "desv": 605.97,
+        "ic95": [
+          5451.82,
+          6956.39
+        ]
+      },
+      "factor_coste": {
+        "min": 55.56,
+        "max": 68.49,
+        "media": 62.04,
+        "n": 5,
+        "desv": 6.06,
+        "ic95": [
+          54.52,
+          69.56
+        ]
+      },
+      "ratio_verificados": {
+        "min": 3.19,
+        "max": 3.93,
+        "media": 3.51,
+        "n": 5,
+        "desv": 0.3,
+        "ic95": [
+          3.13,
+          3.89
+        ]
+      },
+      "rr_semillas_sin_verificado": 0,
+      "mercado_semillas_sin_verificado": 0
+    }
+  }
+}
