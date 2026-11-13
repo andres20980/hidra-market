@@ -115,8 +115,11 @@ const verifier = new Account(verifierId, provider, readFileSync(verifierKeyFile,
 const plan = planRounds(loadWorkers());
 const workers = {};
 for (const w of loadWorkers()) {
-  const workerId = `worker-${w.index}.${root}`;
-  const keyFile = join(OUT, `worker-${w.index}.testnet.key`);
+  let tag = `worker-${w.index}`;
+  // an account whose key was lost (crash between create and key write) is unrecoverable: use a fresh suffixed id
+  if ((await accountState(`${tag}.${root}`)) && !existsSync(join(OUT, `${tag}.testnet.key`))) tag += "b";
+  const workerId = `${tag}.${root}`;
+  const keyFile = join(OUT, `${tag}.testnet.key`);
   if (!(await accountState(workerId))) {
     const fullKey = KeyPair.fromRandom("ed25519");
     await rootAccount.createAccount({
@@ -170,7 +173,7 @@ const proof = {
   rounds: [],
 };
 for (const r of plan.rounds) {
-  const taskId = `${r.task_id}-${root}`;
+  const taskId = `${r.task_id}-${process.env.MARKET_RUN ?? "c"}-${root}`;
   const txs = {};
   txs.post_task = await call(rootAccount, "post_task", { id: taskId, verifier: verifierId, commit_len: COMMIT_LEN, reveal_len: REVEAL_LEN }, BigInt(nearToYocto(REWARD)));
   const salts = {};
@@ -192,7 +195,8 @@ for (const r of plan.rounds) {
   txs.close_round = await call(rootAccount, "close_round", { task_id: taskId });
   const closed = await viewUntil("get_round", { task_id: taskId }, (x) => x?.state === "Closed" || x?.winner);
   const winnerId = closed.winner ?? workers[r.winner].account_id;
-  txs.submit_result = await call(workers[r.winner].account, "submit_result", {
+  const winnerW = Object.values(workers).find((x) => x.account_id === winnerId) ?? workers[r.winner];
+  txs.submit_result = await call(winnerW.account, "submit_result", {
     task_id: taskId,
     result_hash: createHash("sha256").update(`hidra-market ${taskId}`).digest("hex"),
   });

@@ -1,10 +1,28 @@
 # Hidra Market
 
+**Live demo: https://andres20980.github.io/hidra-market/** (replay plus live reads from the testnet contract)
+
 A NEAR smart contract where AI agents in a swarm bid for tasks in a sealed-bid reverse auction, the reward sits in escrow, and an agent is paid only after a verifier attests its result. Reputation is an on-chain Beta(α, β) prior per agent, and each worker signs with a function-call key that can only call the market and has a spending allowance.
 
 Built at NEAR HACKATHON 2026 (1-14 Nov). Tracks: `swarms` (main), `agents`, `security`, `open`.
 
 Live on NEAR testnet: [`market.hidra-mkt-221016.testnet`](https://testnet.nearblocks.io/address/market.hidra-mkt-221016.testnet). One full round there ended `Settled` with the worker at reputation Beta(2,1); the attestation that released the escrow is [`7P7EjoEh...`](https://testnet.nearblocks.io/txns/7P7EjoEh1EBxL6i7hNEqFVsHtFAdhMWffNxphsiLinkQ). All hashes are in [`docs/TESTNET_DEPLOY.md`](docs/TESTNET_DEPLOY.md).
+
+## Track fit
+
+| Track | Fit | Evidence |
+| --- | --- | --- |
+| `swarms` (main) | Agents bid in sealed-bid reverse auctions and are paid only on a verifier attestation; reputation is a Beta score | [`RULES.md`](RULES.md), [`contract/tests/test_rules.rs`](contract/tests/test_rules.rs), [`swarm/test/simulator.test.js`](swarm/test/simulator.test.js) |
+| `security` | Spend caps, limited function-call keys, escrow refund on failure, threat model | [`SECURITY.md`](SECURITY.md), [`contract/tests/test_cap.rs`](contract/tests/test_cap.rs), [`test_key_scope.rs`](contract/tests/test_key_scope.rs), [`test_refund.rs`](contract/tests/test_refund.rs) |
+
+Contract on testnet: [`market.hidra-mkt-221016.testnet`](https://testnet.nearblocks.io/address/market.hidra-mkt-221016.testnet).
+
+## What is different
+
+- Payment is conditional on a verified result, not on effort: the escrow is released only after attestation, otherwise refunded.
+- Headline figure, reproducible with `make demo` (no LLM calls): cost per verified result of **100 NEAR with the market vs 4,000 with round-robin** (40x).
+- Workers hold only a function-call key limited to four methods with a small allowance, so a compromised agent cannot drain funds.
+- Everything is checked locally: `make verify` runs Rust, swarm and web tests with no network.
 
 ## The problem, with real data
 
@@ -30,7 +48,7 @@ Requirements: Rust (toolchain pinned in `contract/rust-toolchain.toml`) with [`c
 
 | Do | See |
 | --- | --- |
-| `make verify` | Contract wasm built; 40 Rust tests pass (unit tests plus near-sandbox integration); 16 swarm tests; web typecheck, 73+1 web tests (one more, against the live testnet RPC, runs with `LIVE_CONTRACT` set) and build. Last line `verify: OK`. 45-70 s with warm caches; the first build downloads crates and npm packages. |
+| `make verify` | Contract wasm built; 40 Rust tests pass (unit tests plus near-sandbox integration); 16 swarm tests; web typecheck, 99+1 web tests (one more, against the live testnet RPC, runs with `LIVE_CONTRACT` set) and build. Last line `verify: OK`. 45-70 s with warm caches; the first build downloads crates and npm packages. |
 | `make demo` | In about 50 s, with no LLM calls and no external network: the deterministic simulator and its horizon sweep, a real round on near-sandbox (commit → reveal → close → submit → attest), an on-chain check of the worker's limited key, the web build, and the summary below. |
 | `make testnet` | Without `swarm/.env`: exit code 2 and a message saying what to set. With it: `worker-1.<account>.testnet` keeps exactly one function-call key for the four worker methods, with a 0.25 NEAR allowance, checked on-chain. |
 | `make testnet-deploy` | Deploys the market to testnet and plays one live round to `Settled` in about 3 minutes ([`docs/TESTNET_DEPLOY.md`](docs/TESTNET_DEPLOY.md); `npm run testnet:account` in `swarm/` gets a faucet account first). |

@@ -36,6 +36,7 @@ describe('collapsible round details', () => {
   const html = render(sim);
   it('wraps the rounds table in a details/summary disclosure', () => {
     expect(html).toContain('<details class="round-details"');
+    expect(html).toContain('worker-details');
     expect(html).toContain('<summary>Show round details</summary>');
     expect(html).toMatch(/<details[^>]*>[\s\S]*data-testid="rounds"[\s\S]*<\/details>/);
   });
@@ -49,5 +50,15 @@ describe('footer links', () => {
     expect(html).toContain('SECURITY.md');
     expect(html).toContain(DEMO_CONTRACT);
     expect(html).toContain('</footer>');
+  });
+});
+
+import { describe as d2, it as i2, expect as e2 } from 'vitest';
+import { render as rb } from '../src/render';
+d2('empty state', () => {
+  i2('shows text when no rows', () => {
+    const sim: any = { meta: { currency: 'NEAR' }, rounds: [], workers: [], stats: { marketCostPerVerified: 0, roundRobinCostPerVerified: 0 } };
+    let h = ''; h = rb(sim);
+    e2(h).toContain('No rounds yet');
   });
 });

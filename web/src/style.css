@@ -165,3 +165,4 @@ tr.flash > td { animation: flash 900ms ease-out 1; }
 .footer-links a { color: var(--muted); }
 .footer-links a:hover { color: var(--accent); }
 
+.headline { font: 600 1rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted, inherit); margin: 0.5rem 0 1rem; }

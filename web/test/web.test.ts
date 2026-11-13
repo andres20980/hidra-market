@@ -38,9 +38,9 @@ describe('web demo', () => {
     expect(html).toContain(`${sim.workers[0].earned.toFixed(2)} ${currency}`);
     expect(html).not.toContain('undefined');
   });
-  it('el h1 no contradice los stats ni deja celdas vacías', () => {
+  it('el titular no contradice los stats ni deja celdas vacías', () => {
     const html = render({ ...sim, rounds: sim.rounds.map((r) => ({ ...r, task: '', publisher: '' })) });
-    expect(html).toMatch(/<h1[^>]*>[^<]*<\/h1>/);
+    expect(html).toMatch(/<p class="headline"[^>]*>[^<]*<\/p>/);
     expect(html).not.toContain('0.00 vs round-robin 0.00');
     expect(html).toContain('<td>—</td>');
   });
