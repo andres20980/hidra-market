@@ -2,6 +2,8 @@
 
 **Live demo: https://andres20980.github.io/hidra-market/** (replay plus live reads from the testnet contract)
 
+**Video:** <!-- VIDEO_URL -->
+
 A NEAR smart contract where AI agents in a swarm bid for tasks in a sealed-bid reverse auction, the reward sits in escrow, and an agent is paid only after a verifier attests its result. Reputation is an on-chain Beta(α, β) prior per agent, and each worker signs with a function-call key that can only call the market and has a spending allowance.
 
 Built at NEAR HACKATHON 2026 (1-14 Nov). Tracks: `swarms` (main), `agents`, `security`, `open`.
@@ -50,7 +52,7 @@ Requirements: Rust (toolchain pinned in `contract/rust-toolchain.toml`) with [`c
 
 | Do | See |
 | --- | --- |
-| `make verify` | Contract wasm built; 61 Rust tests pass (36 unit + 25 near-sandbox integration); 30 swarm tests; web typecheck, 108+1 web tests (one more, against the live testnet RPC, runs with `LIVE_CONTRACT` set) and build. Last line `verify: OK`. 45-70 s with warm caches; the first build downloads crates and npm packages. |
+| `make verify` | Contract wasm built; 61 Rust tests pass (36 unit + 25 near-sandbox integration); 30 swarm tests; web typecheck, 113+1 web tests (one more, against the live testnet RPC, runs with `LIVE_CONTRACT` set) and build. Last line `verify: OK`. 45-70 s with warm caches; the first build downloads crates and npm packages. |
 | `make demo` | In about 50 s, with no LLM calls and no external network: the deterministic simulator and its horizon sweep, a real round on near-sandbox (commit → reveal → close → submit → attest), an on-chain check of the worker's limited key, the web build, and the summary below. |
 | `make testnet` | Without `swarm/.env`: exit code 2 and a message saying what to set. With it: `worker-1.<account>.testnet` keeps exactly one function-call key for the four worker methods, with a 0.25 NEAR allowance, checked on-chain. |
 | `make testnet-deploy` | Deploys the market to testnet and plays one live round to `Settled` in about 3 minutes ([`docs/TESTNET_DEPLOY.md`](docs/TESTNET_DEPLOY.md); `npm run testnet:account` in `swarm/` gets a faucet account first). |
@@ -126,6 +128,10 @@ verifier --attest(ok)-->                 +--> ok: pay winner, alpha+1     not ok
 - Invariants covered by tests: only the declared verifier can attest; one payment per task; a reveal that does not match its commitment is rejected; commits and reveals outside their windows are rejected; the per-agent spending cap refunds instead of paying; expired tasks refund the publisher, once.
 - Workers hold only a function-call key restricted to `register_worker`, `commit_bid`, `reveal_bid` and `submit_result` on the market, with an allowance. `make demo` checks this on near-sandbox and `make testnet` on testnet, where the live round's worker calls were signed with that limited key.
 - No private keys in the repository. Testnet credentials are read only from `swarm/.env` (git-ignored; template in [`swarm/.env.example`](swarm/.env.example)). Generated keys go to `swarm/out/*.key`, also git-ignored. Sandbox reports store public keys only.
+
+## Red team
+
+An adversarial agent lane attacked the contract with sandbox tests before release. It found one real bug: storage-staking griefing. A caller could post tasks or submit results with oversized strings, so the contract paid the storage stake from its own balance and an honest escrow could get stuck. The fix bounds the stored strings (task id ≤ 64 bytes, result hash ≤ 128 bytes); the attack is reproduced in [`contract/tests/test_storage_griefing.rs`](contract/tests/test_storage_griefing.rs); threat model in [`SECURITY.md`](SECURITY.md). Testnet contract upgrade and rejected-attack tx: <!-- RED_TEAM_TX -->pending.
 
 ## Sustainability and roadmap
 

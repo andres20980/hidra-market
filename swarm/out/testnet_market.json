@@ -430,9 +430,9 @@
       "alias": "worker-48",
       "account_id": "worker-1.hidra-mkt-221016.testnet",
       "locked_rate": 0.14797136038186157,
-      "alpha": "6",
+      "alpha": "9",
       "beta": "5",
-      "mean": "0.5454545454545454"
+      "mean": "0.6428571428571429"
     },
     {
       "index": 2,

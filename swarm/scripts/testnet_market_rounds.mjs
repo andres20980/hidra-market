@@ -1,4 +1,4 @@
-// testnet_market_rounds.mjs v1.0 - LIVE replay of the real Hidra ledger on NEAR testnet.
+// testnet_market_rounds.mjs v1.1 - LIVE replay of the real Hidra ledger on NEAR testnet.
 // Runs the deterministic plan from market_plan.mjs on market.<root>: 5 worker sub-accounts (each a real
 // brain), each with ONE limited FunctionCall key, bidding sealed in >=6 rounds. Winners whose real
 // LOCKED draw succeeds settle; the rest refund via attest(ok=false), so Beta reputations diverge and
@@ -10,7 +10,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Account, JsonRpcProvider, KeyPair, actions, nearToYocto, teraToGas } from "near-api-js";
-import { loadWorkers, planRounds } from "./market_plan.mjs";
+import { loadWorkers, planRounds, proofFileName } from "./market_plan.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SWARM = join(HERE, "..");
@@ -29,6 +29,11 @@ const root = need("NEAR_ACCOUNT_ID");
 const rootKey = need("NEAR_PRIVATE_KEY");
 const market = need("NEAR_CONTRACT_ID");
 const rpcUrl = process.env.NEAR_RPC_URL || "https://test.rpc.fastnear.com";
+const workerOffset = Number(process.env.WORKER_OFFSET ?? 0);
+const marketRun = process.env.MARKET_RUN ?? "c";
+if (!Number.isInteger(workerOffset) || workerOffset < 0) throw new Error("WORKER_OFFSET must be a non-negative integer");
+if (!/^[a-zA-Z0-9_-]+$/.test(marketRun)) throw new Error("MARKET_RUN must contain only letters, numbers, underscores, or hyphens");
+if (workerOffset > 0 && marketRun === "c") throw new Error("WORKER_OFFSET requires a unique MARKET_RUN suffix");
 if (!root.endsWith(".testnet")) {
   console.error("BLOQUEO: testnet accounts only");
   process.exit(2);
@@ -112,9 +117,22 @@ if (!(await accountState(verifierId)) || !existsSync(verifierKeyFile)) {
 const verifier = new Account(verifierId, provider, readFileSync(verifierKeyFile, "utf8").trim());
 
 // --- ensure 5 worker sub-accounts, each with exactly one limited FunctionCall key ---
-const plan = planRounds(loadWorkers());
+const selectedWorkers = loadWorkers(SWARM, { offset: workerOffset });
+// cap-safe second tranche: reuse the already-funded workers (offset 0) and run extra rounds under a
+// unique MARKET_RUN; continue reputations from the frozen first tranche so predictions stay faithful.
+const extraRounds = Number(process.env.MARKET_ROUNDS ?? 8);
+if (!Number.isInteger(extraRounds) || extraRounds < 1) throw new Error("MARKET_ROUNDS must be a positive integer");
+let initialRep = null;
+if (marketRun !== "c" && workerOffset === 0) {
+  const priorFile = join(OUT, "testnet_market.json");
+  if (existsSync(priorFile)) {
+    const prior = JSON.parse(readFileSync(priorFile, "utf8"));
+    initialRep = Object.fromEntries((prior.reputations ?? []).map((r) => [r.index, { alpha: r.alpha, beta: r.beta }]));
+  }
+}
+const plan = planRounds(selectedWorkers, { rounds: extraRounds, initialRep });
 const workers = {};
-for (const w of loadWorkers()) {
+for (const w of selectedWorkers) {
   let tag = `worker-${w.index}`;
   // an account whose key was lost (crash between create and key write) is unrecoverable: use a fresh suffixed id
   if ((await accountState(`${tag}.${root}`)) && !existsSync(join(OUT, `${tag}.testnet.key`))) tag += "b";
@@ -173,7 +191,7 @@ const proof = {
   rounds: [],
 };
 for (const r of plan.rounds) {
-  const taskId = `${r.task_id}-${process.env.MARKET_RUN ?? "c"}-${root}`;
+  const taskId = `${r.task_id}-${marketRun}-${root}`;
   const txs = {};
   txs.post_task = await call(rootAccount, "post_task", { id: taskId, verifier: verifierId, commit_len: COMMIT_LEN, reveal_len: REVEAL_LEN }, BigInt(nearToYocto(REWARD)));
   const salts = {};
@@ -227,7 +245,8 @@ proof.settled_count = proof.rounds.filter((r) => r.state === "Settled").length;
 proof.refunded_count = proof.rounds.filter((r) => r.state === "Refunded").length;
 proof.market_explorer = `https://testnet.nearblocks.io/address/${market}`;
 proof.generated_at = new Date().toISOString();
-writeFileSync(join(OUT, "testnet_market.json"), JSON.stringify(proof, null, 2) + "\n");
+const proofName = proofFileName(marketRun);
+writeFileSync(join(OUT, proofName), JSON.stringify(proof, null, 2) + "\n");
 
 const ok =
   proof.rounds.length >= 6 &&
@@ -235,6 +254,6 @@ const ok =
   proof.settled_count >= 1 &&
   proof.refunded_count >= 1;
 console.log(
-  `${ok ? "OK" : "FAIL"}: ${proof.rounds.length} rounds, ${proof.settled_count} Settled / ${proof.refunded_count} Refunded; proof in out/testnet_market.json`,
+  `${ok ? "OK" : "FAIL"}: ${proof.rounds.length} rounds, ${proof.settled_count} Settled / ${proof.refunded_count} Refunded; proof in out/${proofName}`,
 );
 process.exitCode = ok ? 0 : 1;

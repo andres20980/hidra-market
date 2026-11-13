@@ -33,12 +33,16 @@ export const compareRound = (round, chainTask, txStatuses) => {
   return issues;
 };
 
+// On-chain Beta reputation is append-only: alpha/beta only ever increase as the
+// live contract processes more rounds (e.g. a later tranche). A frozen proof snapshot
+// is therefore a LOWER BOUND on the current chain state, not an exact match. We flag an
+// impossible regression (chain below the snapshot) — never legitimate monotonic growth.
 export const compareReputation = (rep, chainRep) => {
   if (!chainRep) return [`reputation ${rep.account_id} missing`];
   const [alpha, beta] = chainRep;
   const issues = [];
-  if (String(alpha) !== String(rep.alpha)) issues.push(`alpha chain=${alpha} json=${rep.alpha}`);
-  if (String(beta) !== String(rep.beta)) issues.push(`beta chain=${beta} json=${rep.beta}`);
+  if (Number(alpha) < Number(rep.alpha)) issues.push(`alpha regressed chain=${alpha} < json=${rep.alpha}`);
+  if (Number(beta) < Number(rep.beta)) issues.push(`beta regressed chain=${beta} < json=${rep.beta}`);
   return issues.map((i) => `${rep.account_id} ${i}`);
 };
 

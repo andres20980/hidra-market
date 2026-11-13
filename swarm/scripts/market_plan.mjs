@@ -1,4 +1,4 @@
-// market_plan.mjs v1.0 - pure, network-free plan for the live testnet market replay.
+// market_plan.mjs v1.1 - pure, network-free plan for the live testnet market replay.
 // Replays the real ledger (worker_rates.json LOCKED rates) over a fixed schedule so that the
 // on-chain rounds are deterministic and auditable without touching NEAR. No I/O, no randomness
 // beyond a seeded PRNG, so test/testnet_market.test.js can pin every number.
@@ -28,14 +28,17 @@ export const priceMultiplier = (rep) => (rep.alpha + rep.beta) / rep.alpha; // =
 // Pick 5 real brains that are both high-volume (top-20 by runs, so the rate is well-sampled) and
 // span the real LOCKED-rate range (highest first), so the divergence is visible on-chain. Rates are
 // the true per-brain LOCKED frequency from the frozen week of ledger data.
-export const loadWorkers = (swarmDir = join(HERE, "..")) => {
+export const loadWorkers = (swarmDir = join(HERE, ".."), { offset = 0 } = {}) => {
+  if (!Number.isInteger(offset) || offset < 0) throw new RangeError("worker offset must be a non-negative integer");
   const rates = JSON.parse(readFileSync(join(swarmDir, "worker_rates.json"), "utf8")).tasa_locked;
   const top = JSON.parse(readFileSync(join(swarmDir, "workers_top20.json"), "utf8"));
-  return top
+  const ranked = top
     .map(([alias, runs]) => ({ alias, runs, locked_rate: rates[alias] ?? 0 }))
-    .sort((a, b) => b.locked_rate - a.locked_rate)
-    .slice(0, 5)
-    .map((w, i) => ({ index: i + 1, alias: w.alias, runs: w.runs, locked_rate: w.locked_rate }));
+    .sort((a, b) => b.locked_rate - a.locked_rate);
+  if (offset + 5 > ranked.length) throw new RangeError(`worker offset ${offset} exceeds available top-20 workers`);
+  return ranked
+    .slice(offset, offset + 5)
+    .map((w, i) => ({ index: offset + i + 1, alias: w.alias, runs: w.runs, locked_rate: w.locked_rate }));
 };
 
 // Build the deterministic round schedule: >=6 rounds, >=3 sealed bidders each, winner = cheapest
@@ -43,8 +46,21 @@ export const loadWorkers = (swarmDir = join(HERE, "..")) => {
 // Default seed 479 is a fixed, representative run: every outcome is still drawn Bernoulli(real_rate),
 // but this run shows the divergence clearly (the 14.8%% brain settles and gets cheap; the rest refund
 // and get expensive). Pin it so the on-chain rounds and test/testnet_market.test.js agree exactly.
-export const planRounds = (workers, { rounds = 8, seed = 479, basePrice = 100 } = {}) => {
-  const rep = Object.fromEntries(workers.map((w) => [w.index, { alpha: 1, beta: 1 }]));
+// The frozen first tranche publishes out/testnet_market.json; a second tranche (MARKET_RUN != "c")
+// must write a distinct file so the verified proof is never clobbered.
+export const proofFileName = (marketRun) =>
+  marketRun === "c" ? "testnet_market.json" : `testnet_market-${marketRun}.json`;
+
+// `initialRep` lets a second tranche continue from the reputations the first tranche already left
+// on-chain (per index {alpha,beta}); without it every worker starts at the Beta(1,1) prior. Keeping
+// the plan's starting point equal to the chain state preserves expected_winner == on-chain winner.
+export const planRounds = (workers, { rounds = 8, seed = 479, basePrice = 100, initialRep = null } = {}) => {
+  const rep = Object.fromEntries(
+    workers.map((w) => {
+      const seedRep = initialRep?.[w.index];
+      return [w.index, { alpha: seedRep ? Number(seedRep.alpha) : 1, beta: seedRep ? Number(seedRep.beta) : 1 }];
+    }),
+  );
   const rngPrice = mulberry32(seed);
   const rngOutcome = mulberry32(seed ^ 0x9e3779b9);
   const plan = [];

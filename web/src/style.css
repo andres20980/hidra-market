@@ -1,4 +1,4 @@
-/* style.css v1.19 — NEAR palette (green accent), dark default, unified control card, replay, hero */
+/* style.css v1.20 — NEAR palette (green accent), dark default, unified control card, replay, hero */
 :root {
   --bg: #f6f7f9; --fg: #17202a; --panel: #fff; --muted: #5b6b7b; --line: #d8dee6;
   --accent: #0a7d55; --ok: #157347; --bad: #b02a37; --warn: #8a5a00; --info: #0b6bcb;
@@ -273,3 +273,12 @@ td li.more { display: none; }
 .live-dot { display: inline-block; width: 0.5rem; height: 0.5rem; margin-right: 0.5rem; border-radius: 50%; background: var(--accent); vertical-align: 0.05em; animation: livepulse 1.4s ease-in-out infinite; }
 @keyframes livepulse { 50% { opacity: 0.3; } }
 @media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+
+/* Worker leaderboard: top rows by default, the rest behind a toggle (state on #view). */
+#view:not(.all-workers) table.workers tr.x { display: none; }
+#view.all-workers .more-btn .when-few, #view:not(.all-workers) .more-btn .when-all { display: none; }
+table.workers tr.more-row td { padding: 0.5rem 0; border-bottom: 0; text-align: center; }
+.more-btn { font: inherit; font-size: 0.85rem; color: var(--accent); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 0.35rem 1rem; cursor: pointer; }
+.more-btn:hover { border-color: currentColor; }
+.more-btn:focus-visible { outline: 2px solid var(--accent, #00ec97); outline-offset: 2px; }
+@media (max-width: 480px) { table.workers tr.more-row { display: block; } table.workers tr.more-row td { display: block; } }

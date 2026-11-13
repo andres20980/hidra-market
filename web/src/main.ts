@@ -1,4 +1,4 @@
-// main.ts v1.3 — entry: ?contract= → modo en vivo por RPC; si no, demo con replay ?sim= + toggle de tema
+// main.ts v1.5 — entry: ?contract= → modo en vivo por RPC; si no, demo con replay ?sim= + toggle de tema
 import './style.css';
 import { loadSandboxBadge } from './sandbox';
 
@@ -21,7 +21,7 @@ import { loadLive, DEFAULT_RPC } from './rpc';
 const app = document.getElementById('app')!;
 
 
-const AUTOSTART_MS = 1500; // pausa para leer el resumen antes del replay
+const AUTOSTART_MS = 800; // breve pausa para leer el resumen; el mercado arranca solo y nunca se queda en "press play"
 const SPEED_KEY = 'sim-speed';
 let currentSpeed = 1;
 
@@ -102,6 +102,12 @@ const replay = new Replay(
 
 themeInit();
 app.innerHTML = loadingSpinner();
+// Worker table shows the top rows; the toggle state lives on #view so it survives re-renders of its content.
+document.addEventListener('click', (e) => {
+  const btn = (e.target as Element | null)?.closest?.('[data-action="all-workers"]');
+  const view = document.getElementById('view');
+  if (btn && view) view.classList.toggle('all-workers');
+});
 load().then(async ({ sim, live }) => {
   const badge = live ? '' : await loadSandboxBadge();
   app.innerHTML = renderSkipLink() + renderHero(sim)

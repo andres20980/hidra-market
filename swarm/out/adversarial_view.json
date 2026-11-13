@@ -1,0 +1,60 @@
+{
+  "cap_per_agent_yocto": "10000000000000000000000000",
+  "per_agent_cap_bound": {
+    "cap_yocto": "10000000000000000000000000",
+    "reward_yocto": "50000000000000000000000",
+    "max_paid_tasks": 200,
+    "bounded_extraction_yocto": "10000000000000000000000000",
+    "bounded_extraction_near": 10.000000000000002,
+    "note": "wins beyond max_paid_tasks are refunded to the publisher (no pay, no reputation)"
+  },
+  "rule": "adjusted_price = nominal_price * (alpha+beta)/alpha; lower wins (RULES.md:23-24)",
+  "reputations_by_price_desc": [
+    {
+      "account_id": "worker-4.hidra-mkt-221016.testnet",
+      "locked_rate": 0.02,
+      "alpha": "1",
+      "beta": "3",
+      "mean": 0.25,
+      "price_multiplier": 4
+    },
+    {
+      "account_id": "worker-2.hidra-mkt-221016.testnet",
+      "locked_rate": 0.032418952618453865,
+      "alpha": "1",
+      "beta": "2",
+      "mean": 0.3333333333333333,
+      "price_multiplier": 3
+    },
+    {
+      "account_id": "worker-3.hidra-mkt-221016.testnet",
+      "locked_rate": 0.024390243902439025,
+      "alpha": "1",
+      "beta": "2",
+      "mean": 0.3333333333333333,
+      "price_multiplier": 3
+    },
+    {
+      "account_id": "worker-5b.hidra-mkt-221016.testnet",
+      "locked_rate": 0.014652014652014652,
+      "alpha": "1",
+      "beta": "2",
+      "mean": 0.3333333333333333,
+      "price_multiplier": 3
+    },
+    {
+      "account_id": "worker-1.hidra-mkt-221016.testnet",
+      "locked_rate": 0.14797136038186157,
+      "alpha": "9",
+      "beta": "5",
+      "mean": 0.6428571428571429,
+      "price_multiplier": 1.5555555555555556
+    }
+  ],
+  "worst_vs_best_price_multiplier": {
+    "worst": "worker-4.hidra-mkt-221016.testnet",
+    "best": "worker-1.hidra-mkt-221016.testnet",
+    "penalty_ratio": 2.571428571428571
+  },
+  "generated_at": "2026-11-13T18:21:42.270Z"
+}

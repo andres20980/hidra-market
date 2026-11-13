@@ -152,3 +152,21 @@ d2('live empty state', () => {
     e2(css).toMatch(/prefers-reduced-motion: reduce\)\s*\{\s*\.live-dot\s*\{\s*animation:\s*none/);
   });
 });
+
+describe('worker leaderboard', () => {
+  const many: Sim = { ...sim, workers: Array.from({ length: 20 }, (_, i) => ({ ...sim.workers[0], id: `worker-${i}`, earned: i === 13 ? 50 : 0, done: i === 13 ? 1 : 0, failed: 0 })) };
+  const html = render(many);
+  it('puts the top earner first and hides the tail behind a toggle', () => {
+    expect(html.indexOf('data-worker="worker-13"')).toBeLessThan(html.indexOf('data-worker="worker-0"'));
+    expect((html.match(/<tr data-worker="[^"]+" class="x"/g) ?? []).length).toBe(12);
+    expect(html).toContain('data-action="all-workers"');
+    expect(html).toContain('Show all 20 workers');
+  });
+  it('keeps the highlighted worker visible even outside the top rows', () => {
+    expect(render(many, { worker: 'worker-19' })).toMatch(/data-worker="worker-19" class="flash"/);
+  });
+  it('hides tail rows only while the table is collapsed', () => {
+    const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
+    expect(css).toContain('#view:not(.all-workers) table.workers tr.x { display: none; }');
+  });
+});

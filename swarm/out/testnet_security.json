@@ -1,0 +1,30 @@
+{
+  "network": "testnet",
+  "rpc": "https://test.rpc.fastnear.com",
+  "market": "market.hidra-mkt-221016.testnet",
+  "task_id": "griefing-proof-277535751-hidra-mkt-221016.testnet",
+  "worker": "worker-1.hidra-mkt-221016.testnet",
+  "guard": "require!(!result_hash.is_empty() && result_hash.len() <= MAX_RESULT_HASH_LEN)",
+  "max_result_hash_len": 128,
+  "txs": {
+    "post_task": "DC5BvnhQS9dFjpydcpzPfGnbUBRxVEG53yDpUkwLz7ga",
+    "commit_bid": "AUb7dKqLDNPCSaAvBingqDviXaocVHpYKift9E3xU6Lx",
+    "reveal_bid": "BeBEoVcsByF6XhrttkWLNDCQ8E3tsnMzZQC3kNZp8Hr3",
+    "close_round": "GWA6DyLbCSPnX3UsTo6qNZPGgjU6g6scG1KFcXxJAvru",
+    "submit_result_valid": "CuGjt1UWfLHV3k5gtG5pNQD4oiLJo8MiXzhm8hS1uvZp",
+    "attest": "G4J2LR4e36Wj3aEDy7sW6wVgWYrQ37QoQZtz8yfeAnwi"
+  },
+  "winner": "worker-1.hidra-mkt-221016.testnet",
+  "attack": {
+    "result_hash_len": 129,
+    "tx": "4D9PY6cTmEGYXHbKGT7vzdVcjLEzuK7TyEszcMKmk6K2",
+    "nearblocks": "https://testnet.nearblocks.io/txns/4D9PY6cTmEGYXHbKGT7vzdVcjLEzuK7TyEszcMKmk6K2",
+    "rejected": true,
+    "require_message": "Result hash length out of bounds",
+    "failure_excerpt": "{\"Failure\":{\"ActionError\":{\"index\":0,\"kind\":{\"FunctionCallError\":{\"ExecutionError\":\"Smart contract panicked: Result hash length out of bounds\"}}}}} Smart contract panicked: Result hash length out of bounds",
+    "result_hash_still_none": true
+  },
+  "final_state": "Settled",
+  "valid_result_accepted": true,
+  "pass": true
+}

@@ -7,8 +7,9 @@
 // reward, the transfer in `attest` / `refund_expired` would leave the contract
 // unable to cover its storage: the receipt fails with LackBalanceForState and
 // the honest escrow is frozen.
-// This test REPRODUCES the bug (asserts current behaviour). Invert the
-// assertions once src/ charges callers for storage / bounds string lengths.
+// FIXED: src/ now bounds the byte length of `id` (post_task) and `result_hash`
+// (submit_result), so the bloat is rejected and the honest escrow is never
+// frozen. This test asserts the rejection and that the honest round settles.
 const SANDBOX_VERSION: &str = "2.14.0";
 use contract::TaskState;
 use near_api::types::{Data, Reference};
@@ -121,14 +122,17 @@ async fn test_storage_griefing_freezes_honest_escrow() -> testresult::TestResult
         .use_code(std::fs::read(wasm_path)?)
         .with_init_call(
             "init",
-            json!({"cap_per_agent": 1_000_000_000_000_000_000_u128}),
+            json!({"cap_per_agent": 2_000_000_000_000_000_000_u64}),
         )?
         .with_signer(signer.clone())
         .send_to(&network)
         .await?
         .assert_success();
 
-    let reward: u128 = NearToken::from_near(1).as_yoctonear();
+    // Reward below the per-agent cap so the honest round settles (pays the
+    // winner) once the griefing write is rejected. Kept within u64 so it can be
+    // passed as a JSON number alongside `cap_per_agent`.
+    let reward: u128 = NearToken::from_yoctonear(1_000_000_000_000_000_000).as_yoctonear();
     for (who, id, verif, dep) in [
         (&publisher, "honest", verifier.account_id().clone(), reward),
         (&attacker, "grief", attacker.account_id().clone(), 1),
@@ -144,6 +148,23 @@ async fn test_storage_griefing_freezes_honest_escrow() -> testresult::TestResult
         )
         .await??;
     }
+
+    // Guard 1: an over-long task id (> MAX_ID_LEN = 64 B) is rejected, so the
+    // attacker cannot grief via a huge storage key either.
+    let long_id = "z".repeat(65);
+    let long_id_res = call(
+        &contract,
+        &network,
+        &signer,
+        &attacker,
+        "post_task",
+        json!({"id": long_id, "verifier": attacker.account_id().clone(), "commit_len": 100, "reveal_len": 100}),
+        1,
+    )
+    .await?;
+    let msg = long_id_res.expect_err("BUG: long task id accepted");
+    assert!(msg.contains("Task id length out of bounds"), "long id: {msg}");
+
     for (who, id, price, salt) in [
         (&worker, "honest", 500_u64, 7_u32),
         (&attacker, "grief", 1, 1),
@@ -210,14 +231,16 @@ async fn test_storage_griefing_freezes_honest_escrow() -> testresult::TestResult
     )
     .await??;
 
-    // Free balance still covers the honest reward before the attack.
+    // Free balance covers the honest reward before the attack attempt.
     let free_before = free_balance(&contract, &network).await?;
     assert!(free_before > reward, "setup: free {free_before} <= reward");
 
-    // Attack: bloat state so that free balance < reward (leave half a reward).
+    // Guard 2: the griefing submit_result that would bloat state by ~free_before
+    // bytes is now rejected (result_hash > MAX_RESULT_HASH_LEN = 128 B). The
+    // storage is never written, so the free balance cannot drop below an escrow.
     let bloat_bytes = usize::try_from((free_before - reward / 2) / STORAGE_PRICE_PER_BYTE)?;
     let junk = "x".repeat(bloat_bytes);
-    call(
+    let grief = call(
         &contract,
         &network,
         &signer,
@@ -226,16 +249,20 @@ async fn test_storage_griefing_freezes_honest_escrow() -> testresult::TestResult
         json!({"task_id": "grief", "result_hash": junk}),
         0,
     )
-    .await??;
+    .await?;
+    let msg = grief.expect_err("BUG: oversized result_hash accepted");
+    assert!(
+        msg.contains("Result hash length out of bounds"),
+        "grief: unexpected failure: {msg}"
+    );
     let free_after = free_balance(&contract, &network).await?;
     assert!(
-        free_after < reward,
-        "attack did not bite: free {free_after} >= reward {reward}"
+        free_after > reward,
+        "rejected write still bit: free {free_after} <= reward {reward}"
     );
 
-    // Honest verifier approves. cap < reward here, so attest takes the refund
-    // branch; any transfer of the escrow breaks storage staking either way.
-    let attest = call(
+    // The honest round now settles normally: the escrow is not frozen.
+    call(
         &contract,
         &network,
         &signer,
@@ -244,41 +271,14 @@ async fn test_storage_griefing_freezes_honest_escrow() -> testresult::TestResult
         json!({"task_id": "honest", "ok": true}),
         0,
     )
-    .await?;
-    let msg = attest.expect_err("BUG FIXED? attest succeeded after storage griefing");
-    assert!(
-        msg.contains("LackBalanceForState"),
-        "attest: unexpected failure: {msg}"
-    );
+    .await??;
     assert_eq!(
         state_of(&get_task(&contract, &network, "honest").await?)?,
-        TaskState::Closed
-    );
-
-    // Publisher cannot reclaim either: escrow frozen.
-    sandbox.fast_forward(101).await?;
-    let refund = call(
-        &contract,
-        &network,
-        &signer,
-        &publisher,
-        "refund_expired",
-        json!({"task_id": "honest"}),
-        0,
-    )
-    .await?;
-    let msg = refund.expect_err("BUG FIXED? refund succeeded after storage griefing");
-    assert!(
-        msg.contains("LackBalanceForState"),
-        "refund: unexpected failure: {msg}"
-    );
-    assert_eq!(
-        state_of(&get_task(&contract, &network, "honest").await?)?,
-        TaskState::Closed
+        TaskState::Settled
     );
 
     println!(
-        "griefing: attacker paid 1 yocto escrow, wrote {bloat_bytes} B; free {free_before} -> {free_after}; 1 NEAR escrow frozen"
+        "griefing blocked: long id and {bloat_bytes}-B result_hash rejected; free {free_before} -> {free_after}; honest escrow settled"
     );
     Ok(())
 }

@@ -1,4 +1,4 @@
-// render.ts v1.10 — render HTML estático (sin framework) + hooks data-testid estables + hero
+// render.ts v1.11 — render HTML estático (sin framework) + hooks data-testid estables + hero
 import { Round, Sim, Worker, reputation } from "./sim";
 import { DEMO_CONTRACT } from "./rpc";
 
@@ -63,8 +63,11 @@ function repBar(w: Worker): string {
     + `<span class="rep-val num">${mean.toFixed(2)}</span></div>`;
 }
 
-function workerRow(w: Worker, currency: string, hot?: string | null): string {
-  const cls = hot && hot === w.id ? ' class="flash"' : '';
+const WORKER_PREVIEW = 8;
+
+function workerRow(w: Worker, currency: string, hot?: string | null, extra = false): string {
+  const c = [hot && hot === w.id ? 'flash' : '', extra && hot !== w.id ? 'x' : ''].filter(Boolean).join(' ');
+  const cls = c ? ` class="${c}"` : '';
     return `
     <tr data-worker="${w.id}"${cls}>
       <td>${esc(w.id)}</td>
@@ -114,6 +117,13 @@ function skeletonRounds(n = 2): string {
   const row = () => `<tr class="skel-row" aria-hidden="true">${widths.map((w) => `<td>${skel(w)}</td>`).join("")}</tr>`;
   return Array.from({ length: n }, row).join("");
 }
+// Leaderboard order: earnings, then reputation; stable so ties keep the simulation order.
+function leaderboard(ws: Worker[]): Worker[] {
+  return ws.map((w, i) => ({ w, i, r: reputation(w) }))
+    .sort((a, b) => b.w.earned - a.w.earned || b.r - a.r || a.i - b.i)
+    .map((x) => x.w);
+}
+
 function skeletonWorkers(n = 2): string {
   const row = () => `<tr class="skel-row" aria-hidden="true"><td>${skel("5rem")}</td>`
     + `<td><span class="rep"><span class="rep-track"><span class="skel skel-full"></span></span></span></td>`
@@ -125,7 +135,10 @@ export function render(sim: Sim, flash?: { round?: number; worker?: string } | n
     ? sim.rounds.map((r) => roundRow(r, flash?.round)).join("")
     : `<tr class="empty"><td colspan="7"><span class="live-dot" aria-hidden="true"></span>Round 1 is open: workers are committing sealed bids…</td></tr>${skeletonRounds()}`;
   const workersBody = sim.workers.length
-    ? sim.workers.map((w) => workerRow(w, sim.meta.currency, flash?.worker)).join("")
+    ? leaderboard(sim.workers).map((w, i) => workerRow(w, sim.meta.currency, flash?.worker, i >= WORKER_PREVIEW)).join("")
+      + (sim.workers.length > WORKER_PREVIEW
+        ? `<tr class="more-row"><td colspan="5"><button type="button" class="more-btn" data-action="all-workers" aria-controls="view"><span class="when-few">Show all ${sim.workers.length} workers</span><span class="when-all">Show top ${WORKER_PREVIEW}</span></button></td></tr>`
+        : "")
     : `<tr class="empty"><td colspan="5"><span class="live-dot" aria-hidden="true"></span>Reputation appears after the first verified result…</td></tr>${skeletonWorkers()}`;
   return `<section><details class="round-details" open><summary>Rounds</summary><div class="table-wrap" role="region" aria-label="Rounds" tabindex="0"><table class="rounds" data-testid="rounds"><thead><tr><th scope="col">#</th><th scope="col">task</th><th scope="col">publisher</th><th scope="col">bids</th><th scope="col">winner</th><th scope="col">price</th><th scope="col">status</th></tr></thead><tbody>${roundsBody}</tbody></table></div></details></section><section><details class="round-details worker-details" open><summary>Worker reputation</summary><div class="table-wrap" role="region" aria-label="Worker reputation; scroll horizontally to see all columns" tabindex="0"><table class="workers" data-testid="workers"><thead><tr><th scope="col">agent</th><th scope="col"><abbr title="Reputation: Beta posterior mean">rep.</abbr></th><th scope="col">done</th><th scope="col">failed</th><th scope="col">earned <span class="unit">${esc(sim.meta.currency)}</span></th></tr></thead><tbody>${workersBody}</tbody></table></div></details></section>`;
 }

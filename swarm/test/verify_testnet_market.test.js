@@ -19,6 +19,10 @@ describe('verificador de la prueba testnet (sin red)', () => {
     for (const r of proof.rounds) expect(compareRound(r, asChain(r), okStatuses(r))).toEqual([]);
     for (const rep of proof.reputations) expect(compareReputation(rep, [rep.alpha, rep.beta, rep.mean])).toEqual([]);
   });
+  it('reputación crecida (append-only) → sin discrepancias; snapshot es cota inferior', () => {
+    const rep = proof.reputations[0];
+    expect(compareReputation(rep, [String(Number(rep.alpha) + 2), String(Number(rep.beta) + 1), '0'])).toEqual([]);
+  });
   it('detecta estado, ganador, tx fallida y tarea ausente', () => {
     const r = proof.rounds[0];
     const st = okStatuses(r);
@@ -29,9 +33,10 @@ describe('verificador de la prueba testnet (sin red)', () => {
     expect(issues.some((i) => i.includes('post_task') && i.endsWith('failed'))).toBe(true);
     expect(compareRound(r, null, okStatuses(r))[0]).toMatch(/not found/);
   });
-  it('detecta reputación Beta alterada', () => {
+  it('detecta regresión de reputación (cadena por debajo del snapshot) y vista ausente', () => {
     const rep = proof.reputations[0];
-    expect(compareReputation(rep, [String(Number(rep.alpha) + 1), rep.beta, '0'])).toHaveLength(1);
+    expect(compareReputation(rep, [String(Number(rep.alpha) - 1), rep.beta, '0'])).toHaveLength(1);
+    expect(compareReputation(rep, [rep.alpha, String(Number(rep.beta) - 1), '0'])).toHaveLength(1);
     expect(compareReputation(rep, undefined)).toHaveLength(1);
   });
 });

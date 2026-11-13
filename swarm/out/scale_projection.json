@@ -1,0 +1,54 @@
+{
+  "network": "testnet",
+  "market": "market.hidra-mkt-221016.testnet",
+  "source": [
+    "out/testnet_costs.json",
+    "out/testnet_market.json",
+    "out/baseline_compare.json"
+  ],
+  "overhead_near_per_result": 0.002571653955087825,
+  "reward_near": 0.049999999999999996,
+  "overhead_pct_of_reward": 5.1433079101756505,
+  "savings_factor": 10.586,
+  "projections": [
+    {
+      "verified_results": 100,
+      "coordination_near": 0.2571653955087825
+    },
+    {
+      "verified_results": 1000,
+      "coordination_near": 2.571653955087825
+    },
+    {
+      "verified_results": 10000,
+      "coordination_near": 25.71653955087825
+    }
+  ],
+  "headline": "Coste de coordinación on-chain por resultado verificado: 0.002572 NEAR (5.14% de la recompensa de 0.05 NEAR que protege). A 1.000 resultados verificados: 2.572 NEAR de gas, mientras el escrow+reputación abarata el coste por verificado 10.586×.",
+  "sensitivity": {
+    "overhead_near_per_result": 0.002571653955087825,
+    "rows": [
+      {
+        "reward_near": 0.01,
+        "overhead_pct_of_reward": 25.71653955087825
+      },
+      {
+        "reward_near": 0.05,
+        "overhead_pct_of_reward": 5.14330791017565
+      },
+      {
+        "reward_near": 0.1,
+        "overhead_pct_of_reward": 2.571653955087825
+      },
+      {
+        "reward_near": 0.5,
+        "overhead_pct_of_reward": 0.514330791017565
+      },
+      {
+        "reward_near": 1,
+        "overhead_pct_of_reward": 0.2571653955087825
+      }
+    ],
+    "breakeven_below_1pct_reward_near": 0.5
+  }
+}

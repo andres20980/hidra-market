@@ -1,0 +1,72 @@
+{
+  "network": "testnet",
+  "market": "market.hidra-mkt-221016.testnet",
+  "source": "out/testnet_market.json",
+  "rounds": [
+    {
+      "round": 1,
+      "state": "Refunded",
+      "txs": 14,
+      "gas_burnt": "32670342419783",
+      "tokens_burnt_yocto": "2932260398228300000000"
+    },
+    {
+      "round": 2,
+      "state": "Refunded",
+      "txs": 12,
+      "gas_burnt": "28052412780986",
+      "tokens_burnt_yocto": "2515103946848600000000"
+    },
+    {
+      "round": 3,
+      "state": "Refunded",
+      "txs": 14,
+      "gas_burnt": "32617638905578",
+      "tokens_burnt_yocto": "2926990046807800000000"
+    },
+    {
+      "round": 4,
+      "state": "Refunded",
+      "txs": 12,
+      "gas_burnt": "27971310215860",
+      "tokens_burnt_yocto": "2506993690336000000000"
+    },
+    {
+      "round": 5,
+      "state": "Settled",
+      "txs": 12,
+      "gas_burnt": "28231364483787",
+      "tokens_burnt_yocto": "2532999117128700000000"
+    },
+    {
+      "round": 6,
+      "state": "Settled",
+      "txs": 10,
+      "gas_burnt": "23577963238423",
+      "tokens_burnt_yocto": "2112295505092300000000"
+    },
+    {
+      "round": 7,
+      "state": "Refunded",
+      "txs": 10,
+      "gas_burnt": "23352628460890",
+      "tokens_burnt_yocto": "2089762027339000000000"
+    },
+    {
+      "round": 8,
+      "state": "Settled",
+      "txs": 14,
+      "gas_burnt": "32916007526719",
+      "tokens_burnt_yocto": "2956826908921900000000"
+    }
+  ],
+  "total": {
+    "txs": 98,
+    "gas_burnt": "229389668032026",
+    "tokens_burnt_yocto": "20573231640702600000000"
+  },
+  "per_round_average": {
+    "gas_burnt": "28673708504003",
+    "tokens_burnt_yocto": "2571653955087825000000"
+  }
+}

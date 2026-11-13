@@ -1,0 +1,53 @@
+{
+  "unidad": "USD estimado (coste_estimado del ledger); verificado = outcome LOCKED",
+  "fuente_datos": {
+    "dataset": "data/hidra_week.jsonl",
+    "ejecuciones": 22957,
+    "verificados": 386,
+    "tasa_verificados_pct": 1.68
+  },
+  "status_quo_enjambre": {
+    "regla_pago": "paga toda ejecucion (sin escrow ni reputacion): lo que hace el enjambre hoy",
+    "coste_total_usd": 23.5734,
+    "coste_por_verificado_usd": 0.061071,
+    "gasto_no_verificado_pct": 90.55
+  },
+  "mercado_escrow_mismos_datos": {
+    "regla_pago": "escrow R12/R14: paga solo resultados verificados (LOCKED); fallo -> Refunded sin coste",
+    "coste_total_usd": 2.2268,
+    "coste_por_verificado_usd": 0.005769,
+    "verificados": 386
+  },
+  "ahorro_real": {
+    "factor_coste": 10.586,
+    "ahorro_pct": 90.55,
+    "titular": "El enjambre gastó $23.5734 para 386 resultados verificados ($0.061071/verificado); con la regla de escrow del mercado sobre los mismos outcomes habría pagado $2.2268 (10.586x menos), 90.55% del gasto evitado."
+  },
+  "gobernanza_mercado_vs_round_robin": {
+    "unidad": "unidades de recompensa del simulador (ver out/multiseed.json)",
+    "nota": "subasta sellada + reputacion Beta vs rotacion fija, sobre las tasas reales del ledger",
+    "por_horizonte_rondas": {
+      "200": {
+        "factor_coste_media": 76.67,
+        "factor_coste_ic95": [
+          30.43,
+          122.9
+        ]
+      },
+      "1000": {
+        "factor_coste_media": 61.15,
+        "factor_coste_ic95": [
+          50.93,
+          71.37
+        ]
+      },
+      "5000": {
+        "factor_coste_media": 62.04,
+        "factor_coste_ic95": [
+          54.52,
+          69.56
+        ]
+      }
+    }
+  }
+}

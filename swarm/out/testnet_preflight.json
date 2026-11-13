@@ -1,0 +1,76 @@
+{
+  "network": "testnet",
+  "rpc": "https://test.rpc.fastnear.com",
+  "market": "market.hidra-mkt-221016.testnet",
+  "checked_at_proof": "testnet_market.json",
+  "min_balance_near": 0.05,
+  "workers": [
+    {
+      "account_id": "worker-1.hidra-mkt-221016.testnet",
+      "balance_near": 1.4376,
+      "allowance_near": 0.2377,
+      "key_ok": true,
+      "registered": true,
+      "reputation": {
+        "alpha": "9",
+        "beta": "5"
+      },
+      "ready": true,
+      "issues": []
+    },
+    {
+      "account_id": "worker-2.hidra-mkt-221016.testnet",
+      "balance_near": 0.3427,
+      "allowance_near": 0.2428,
+      "key_ok": true,
+      "registered": true,
+      "reputation": {
+        "alpha": "1",
+        "beta": "2"
+      },
+      "ready": true,
+      "issues": []
+    },
+    {
+      "account_id": "worker-3.hidra-mkt-221016.testnet",
+      "balance_near": 0.3435,
+      "allowance_near": 0.2436,
+      "key_ok": true,
+      "registered": true,
+      "reputation": {
+        "alpha": "1",
+        "beta": "2"
+      },
+      "ready": true,
+      "issues": []
+    },
+    {
+      "account_id": "worker-4.hidra-mkt-221016.testnet",
+      "balance_near": 0.3441,
+      "allowance_near": 0.2442,
+      "key_ok": true,
+      "registered": true,
+      "reputation": {
+        "alpha": "1",
+        "beta": "3"
+      },
+      "ready": true,
+      "issues": []
+    },
+    {
+      "account_id": "worker-5b.hidra-mkt-221016.testnet",
+      "balance_near": 0.344,
+      "allowance_near": 0.2441,
+      "key_ok": true,
+      "registered": true,
+      "reputation": {
+        "alpha": "1",
+        "beta": "2"
+      },
+      "ready": true,
+      "issues": []
+    }
+  ],
+  "ready": true,
+  "ready_count": 5
+}

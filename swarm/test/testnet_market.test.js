@@ -1,4 +1,4 @@
-// test/testnet_market.test.js v1.0 - pins the network-free plan behind `npm run testnet:market`.
+// test/testnet_market.test.js v1.1 - pins the network-free plan behind `npm run testnet:market`.
 // Exercises scripts/market_plan.mjs (no NEAR, no keys): the same deterministic rounds, winners and
 // Beta reputations that the on-chain replay will submit. Locks the P1 acceptance criteria.
 import { describe, it, expect } from 'vitest';
@@ -6,7 +6,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { loadWorkers, planRounds, betaMean, priceMultiplier, mulberry32 } from '../scripts/market_plan.mjs';
+import { loadWorkers, planRounds, betaMean, priceMultiplier, mulberry32, proofFileName } from '../scripts/market_plan.mjs';
 
 describe('plan del mercado vivo en testnet (sin red)', () => {
   const workers = loadWorkers();
@@ -23,6 +23,15 @@ describe('plan del mercado vivo en testnet (sin red)', () => {
     const rates = workers.map((w) => w.locked_rate);
     expect([...rates]).toEqual([...rates].sort((a, b) => b - a)); // orden descendente
     expect(workers[0].locked_rate).toBeGreaterThan(workers[4].locked_rate); // hay divergencia real
+  });
+
+  it('selecciona el siguiente tramo de 5 cerebros sin reutilizar las cuentas del primer tramo', () => {
+    const next = loadWorkers(join(__dirname, '..'), { offset: 5 });
+    const nextPlan = planRounds(next);
+    expect(next.map((w) => w.index)).toEqual([6, 7, 8, 9, 10]);
+    expect(next.map((w) => w.alias).some((alias) => workers.some((w) => w.alias === alias))).toBe(false);
+    expect(next.every((w) => w.runs >= 200)).toBe(true);
+    expect(nextPlan.rounds.every((r) => r.bidders.every((b) => b.index >= 6 && b.index <= 10))).toBe(true);
   });
 
   it('>=6 rondas, cada una con >=3 pujas selladas y un ganador que es el mas barato', () => {
@@ -84,5 +93,32 @@ describe('plan del mercado vivo en testnet (sin red)', () => {
       expect(v).toBeLessThan(1);
     }
     expect(mulberry32(479)()).toBe(mulberry32(479)());
+  });
+
+  it('un segundo tramo (MARKET_RUN != c) escribe un fichero distinto y nunca pisa el proof congelado', () => {
+    expect(proofFileName('c')).toBe('testnet_market.json');
+    expect(proofFileName('d')).toBe('testnet_market-d.json');
+    expect(proofFileName('d')).not.toBe(proofFileName('c'));
+  });
+
+  it('el segundo tramo continua las reputaciones del primero (cap-safe, solo gas) y las separa mas', () => {
+    const extra = planRounds(workers, { rounds: 16 });
+    expect(extra.rounds.length).toBe(16); // mas rondas sobre los mismos cerebros financiados
+
+    // arranca desde las alpha/beta que el primer tramo dejo on-chain
+    const initialRep = Object.fromEntries(plan.reputations.map((r) => [r.index, { alpha: r.alpha, beta: r.beta }]));
+    const cont = planRounds(workers, { rounds: 8, initialRep });
+    const total = (reps) => reps.reduce((s, r) => s + r.alpha + r.beta, 0);
+    // cada ronda incrementa exactamente un ganador -> el total de observaciones crece justo en `rounds`
+    expect(total(cont.reputations)).toBe(total(plan.reputations) + 8);
+    for (const r of cont.reputations) {
+      const base = plan.reputations.find((p) => p.index === r.index);
+      expect(r.alpha).toBeGreaterThanOrEqual(base.alpha); // continua, nunca reinicia a Beta(1,1)
+      expect(r.beta).toBeGreaterThanOrEqual(base.beta);
+    }
+    // el fiable (index 1) sigue siendo el de mayor media tras continuar
+    const best = cont.reputations.find((r) => r.index === 1);
+    const others = cont.reputations.filter((r) => r.index !== 1);
+    expect(best.mean).toBeGreaterThan(Math.max(...others.map((o) => o.mean)));
   });
 });

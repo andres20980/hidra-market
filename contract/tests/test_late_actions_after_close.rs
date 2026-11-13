@@ -194,17 +194,19 @@ async fn test_late_actions_after_close_are_rejected() -> testresult::TestResult<
         "Task is not open",
     )
     .await?;
-    // 3) Second close_round (winner re-selection attempt).
-    expect_rejected(
-        &contract,
-        &network,
-        &signer,
-        &late,
-        "close_round",
-        json!({"task_id": "sealed"}),
-        "Task is not open",
-    )
-    .await?;
+    // 3) Repeated close_round attempts cannot reopen or reselect the winner.
+    for _ in 0..17 {
+        expect_rejected(
+            &contract,
+            &network,
+            &signer,
+            &late,
+            "close_round",
+            json!({"task_id": "sealed"}),
+            "Task is not open",
+        )
+        .await?;
+    }
 
     let after = get_task(&contract, &network, "sealed").await?;
     assert_eq!(after["state"], before["state"]);

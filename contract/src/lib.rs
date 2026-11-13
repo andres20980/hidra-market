@@ -125,6 +125,14 @@ pub struct Contract {
     pub cap_per_agent: u128,
 }
 
+/// Max byte length of a task id stored in state (storage-griefing guard).
+const MAX_ID_LEN: usize = 64;
+/// Max byte length of a submitted result hash stored in state.
+const MAX_RESULT_HASH_LEN: usize = 128;
+/// Fixed safety margin the contract keeps free on top of its staked storage,
+/// so a burst of spam rounds is rejected before it can freeze open escrows.
+const STORAGE_RESERVE: u128 = 10_000_000_000_000_000_000_000; // 0.01 NEAR
+
 #[near]
 impl Contract {
     #[init]
@@ -140,6 +148,10 @@ impl Contract {
 
     #[payable]
     pub fn post_task(&mut self, id: String, verifier: AccountId, commit_len: u64, reveal_len: u64) {
+        require!(
+            !id.is_empty() && id.len() <= MAX_ID_LEN,
+            "Task id length out of bounds"
+        );
         require!(self.tasks.get(&id).is_none(), "Task ID already exists");
         require!(
             env::attached_deposit().as_yoctonear() > 0,
@@ -166,6 +178,29 @@ impl Contract {
             result_hash: None,
         };
         self.tasks.insert(id, task);
+        self.require_storage_reserve();
+    }
+
+    /// Storage-griefing guard (see tests/test_round_spam.rs): the contract's own
+    /// funds (balance minus the escrows it still owes) must cover its staked
+    /// storage plus a fixed reserve. Spam rounds grow staked storage faster than
+    /// their 1-yocto escrows, so this rejects them before an honest payout can be
+    /// frozen by `LackBalanceForState`. Does not change the state layout.
+    fn require_storage_reserve(&self) {
+        let staked = env::storage_byte_cost()
+            .as_yoctonear()
+            .saturating_mul(env::storage_usage() as u128);
+        let liabilities: u128 = self
+            .tasks
+            .values()
+            .filter(|task| matches!(task.state, TaskState::Open | TaskState::Closed))
+            .map(|task| task.reward.as_yoctonear())
+            .sum();
+        let own_funds = env::account_balance().as_yoctonear().saturating_sub(liabilities);
+        require!(
+            own_funds >= staked.saturating_add(STORAGE_RESERVE),
+            "Storage reserve exhausted: would risk freezing open escrows"
+        );
     }
 
     pub fn register_worker(&mut self) {
@@ -287,6 +322,10 @@ impl Contract {
             "Only the winner can submit a result"
         );
         require!(task.result_hash.is_none(), "Result already submitted");
+        require!(
+            !result_hash.is_empty() && result_hash.len() <= MAX_RESULT_HASH_LEN,
+            "Result hash length out of bounds"
+        );
         task.result_hash = Some(result_hash);
         self.tasks.insert(task_id, task);
     }
@@ -1703,6 +1742,62 @@ mod tests {
             contract.get_reputation(winner.clone()),
             before,
             "foreign attest must not move reputation"
+        );
+    }
+
+    #[test]
+    fn post_task_accepts_64b_id_and_rejects_65b() {
+        set_context("publisher.testnet", 1, 100);
+        let mut contract = Contract::init(1_000);
+        let id64 = "a".repeat(super::MAX_ID_LEN);
+        contract.post_task(id64.clone(), "verifier.testnet".parse().unwrap(), 10, 10);
+        assert!(contract.tasks.get(&id64).is_some(), "64-byte id must be stored");
+
+        let id65 = "b".repeat(super::MAX_ID_LEN + 1);
+        let rejected = catch_unwind(AssertUnwindSafe(|| {
+            contract.post_task(id65, "verifier.testnet".parse().unwrap(), 10, 10)
+        }));
+        assert!(rejected.is_err(), "65-byte id must be rejected");
+    }
+
+    #[test]
+    fn submit_result_accepts_128b_hash_and_rejects_129b() {
+        let worker: AccountId = "worker.testnet".parse().unwrap();
+        set_context("publisher.testnet", 1, 100);
+        let mut contract = Contract::init(1_000);
+        contract.post_task(
+            "task-1".to_string(),
+            "verifier.testnet".parse().unwrap(),
+            10,
+            10,
+        );
+        set_context(worker.as_str(), 2, 0);
+        contract.register_worker();
+        set_context("worker.testnet", 3, 0);
+        contract.commit_bid("task-1".to_string(), bid_commitment(&worker, 7, 9));
+        set_context("worker.testnet", 11, 0);
+        contract.reveal_bid("task-1".to_string(), 7, 9);
+        set_context("publisher.testnet", 21, 0);
+        contract.close_round("task-1".to_string());
+
+        set_context("worker.testnet", 22, 0);
+        let too_long = "x".repeat(super::MAX_RESULT_HASH_LEN + 1);
+        let rejected = catch_unwind(AssertUnwindSafe(|| {
+            contract.submit_result("task-1".to_string(), too_long)
+        }));
+        assert!(rejected.is_err(), "129-byte result_hash must be rejected");
+
+        let ok_hash = "y".repeat(super::MAX_RESULT_HASH_LEN);
+        contract.submit_result("task-1".to_string(), ok_hash.clone());
+        assert_eq!(
+            contract
+                .tasks
+                .get(&"task-1".to_string())
+                .unwrap()
+                .result_hash
+                .as_ref(),
+            Some(&ok_hash),
+            "128-byte result_hash must be stored"
         );
     }
 }
