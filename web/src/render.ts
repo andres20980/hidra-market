@@ -1,5 +1,5 @@
-// render.ts v1.3 — render HTML estático (sin framework) + hooks data-testid estables + hero
-import { Round, Sim, Worker, headline, reputation } from "./sim";
+// render.ts v1.6 — render HTML estático (sin framework) + hooks data-testid estables + hero
+import { Round, Sim, Worker, reputation } from "./sim";
 import { DEMO_CONTRACT } from "./rpc";
 
 // testnet block explorer for the deployed market contract (docs/TESTNET_DEPLOY.md)
@@ -40,7 +40,7 @@ export function renderHero(sim: Sim): string {
       <p class="hero-tag">AI agents bid in sealed auctions and get paid only when a verifier attests the work.</p>
       <div class="hero-cta">
         <a class="btn btn-primary" href="#replay" data-testid="watch-replay">&#9654; Watch the replay</a>
-        <a class="btn" data-testid="hero-live-link" href="${EXPLORER}${DEMO_CONTRACT}" target="_blank" rel="noopener" aria-label="View the live contract on the NEAR testnet explorer">Live on NEAR testnet &#8599;</a>
+        <a class="btn" data-testid="hero-live-link" href="${EXPLORER}${DEMO_CONTRACT}" target="_blank" rel="noopener" aria-label="View the live contract on the NEAR testnet explorer">View contract &#8599;</a>
       </div>
       <ul class="hero-badges" aria-label="Guarantees">
         <li>No LLM calls</li><li>limited function-call keys</li><li>reproducible: make demo</li>
@@ -71,14 +71,14 @@ function workerRow(w: Worker, currency: string, hot?: string | null): string {
       <td>${repBar(w)}</td>
       <td>${w.done}</td>
       <td>${w.failed}</td>
-      <td>${w.earned.toFixed(2)} ${esc(currency)}</td>
+      <td class="num">${w.earned.toFixed(2)}<span class="cur"> ${esc(currency)}</span></td>
     </tr>
   `;
 }
 
 function roundRow(r: Round, hot?: number | null): string {
   const bids = r.bids
-    .map((b) => `<li title="${esc(b.worker)}">${esc(b.worker).replace(/^worker-/, '')}:</li>`)
+    .map((b) => `<li title="${esc(b.worker)}">${esc(b.worker).replace(/^worker-/, '')}</li>`)
     .join("");
   const [chipCls, chipLabel] = r.paid
     ? ["settled", "Settled"]
@@ -89,21 +89,43 @@ function roundRow(r: Round, hot?: number | null): string {
         : r.status === `refunded`
           ? ["refunded", "Refunded"]
           : ["open", "Open"];
+  const nil = (v: unknown): string => (v == null || String(v).trim() === `` || String(v).trim() === `—` ? ` class="nil"` : ``);
   const estado = `<span class="chip ${chipCls}">${chipLabel}</span>`;
   const cls = hot === r.id ? ` class=\"flash\"` : ``;
   return `\n    <tr data-round=\"${r.id}\"${cls}>
-      <td>${r.id}</td>
-      <td>${esc(r.task || `—`)}</td>
-      <td>${esc(r.publisher || `—`)}</td>
-      <td><ul>${bids}</ul></td>
-      <td>${esc(r.winner)}</td>
-      <td>${esc(r.closePrice)}</td>
-      <td>${estado}</td>
+      <td data-label="#">${r.id}</td>
+      <td data-label="task"${nil(r.task)}>${esc(r.task || `—`)}</td>
+      <td data-label="publisher"${nil(r.publisher)}>${esc(r.publisher || `—`)}</td>
+      <td data-label="bids"${nil(bids)}><ul>${bids}</ul></td>
+      <td data-label="winner"${nil(r.winner)}>${esc(r.winner)}</td>
+      <td data-label="price"${nil(r.closePrice)}>${esc(r.closePrice)}</td>
+      <td data-label="status">${estado}</td>
     </tr>
   `;
 }
+// Shimmer placeholder so the frame-0 / loading state reads as intentional, never as an empty broken table.
+function skel(w: string): string {
+  return `<span class="skel" style="width:${w}"></span>`;
+}
+function skeletonRounds(n = 3): string {
+  const widths = ["1rem", "7rem", "4.5rem", "3.5rem", "4.5rem", "2.5rem", "5rem"];
+  const row = () => `<tr class="skel-row" aria-hidden="true">${widths.map((w) => `<td>${skel(w)}</td>`).join("")}</tr>`;
+  return Array.from({ length: n }, row).join("");
+}
+function skeletonWorkers(n = 3): string {
+  const row = () => `<tr class="skel-row" aria-hidden="true"><td>${skel("5rem")}</td>`
+    + `<td><span class="rep"><span class="rep-track"><span class="skel skel-full"></span></span></span></td>`
+    + `<td>${skel("1.5rem")}</td><td>${skel("1.5rem")}</td><td>${skel("4rem")}</td></tr>`;
+  return Array.from({ length: n }, row).join("");
+}
 export function render(sim: Sim, flash?: { round?: number; worker?: string } | null): string {
-  return `<p class="headline" data-testid="cost-per-result">${esc(headline(sim))}</p><section><details class="round-details" open><summary>Show round details</summary><div class="table-wrap" role="region" aria-label="Rounds; scroll horizontally to see all columns" tabindex="0"><table class="rounds" data-testid="rounds"><thead><tr><th scope="col">#</th><th scope="col">task</th><th scope="col">publisher</th><th scope="col">bids</th><th scope="col">winner</th><th scope="col">price</th><th scope="col">status</th></tr></thead><tbody>${sim.rounds.length ? sim.rounds.map((r) => roundRow(r, flash?.round)).join("") : `<tr class="empty"><td colspan="7">No rounds yet. The replay starts in a moment.</td></tr>`}</tbody></table></div></details></section><section><h2>Worker reputation</h2><details class="round-details worker-details" open><summary>Show worker details</summary><div class="table-wrap" role="region" aria-label="Worker reputation; scroll horizontally to see all columns" tabindex="0"><table class="workers" data-testid="workers"><thead><tr><th scope="col">agent</th><th scope="col">rep. (Beta mean)</th><th scope="col">done</th><th scope="col">failed</th><th scope="col">earned (${esc(sim.meta.currency)})</th></tr></thead><tbody>${sim.workers.length ? sim.workers.map((w) => workerRow(w, sim.meta.currency, flash?.worker)).join("") : `<tr class="empty"><td colspan="5">No worker reputation yet.</td></tr>`}</tbody></table></div></details></section>`;
+  const roundsBody = sim.rounds.length
+    ? sim.rounds.map((r) => roundRow(r, flash?.round)).join("")
+    : `<tr class="empty"><td colspan="7">No rounds yet. The replay starts in a moment.</td></tr>${skeletonRounds()}`;
+  const workersBody = sim.workers.length
+    ? sim.workers.map((w) => workerRow(w, sim.meta.currency, flash?.worker)).join("")
+    : `<tr class="empty"><td colspan="5">No worker reputation yet.</td></tr>${skeletonWorkers()}`;
+  return `<section><details class="round-details" open><summary>Rounds</summary><div class="table-wrap" role="region" aria-label="Rounds" tabindex="0"><table class="rounds" data-testid="rounds"><thead><tr><th scope="col">#</th><th scope="col">task</th><th scope="col">publisher</th><th scope="col">bids</th><th scope="col">winner</th><th scope="col">price</th><th scope="col">status</th></tr></thead><tbody>${roundsBody}</tbody></table></div></details></section><section><details class="round-details worker-details" open><summary>Worker reputation</summary><div class="table-wrap" role="region" aria-label="Worker reputation; scroll horizontally to see all columns" tabindex="0"><table class="workers" data-testid="workers"><thead><tr><th scope="col">agent</th><th scope="col"><abbr title="Reputation: Beta posterior mean">rep.</abbr></th><th scope="col">done</th><th scope="col">failed</th><th scope="col">earned <span class="unit">${esc(sim.meta.currency)}</span></th></tr></thead><tbody>${workersBody}</tbody></table></div></details></section>`;
 }
 // How it works: 4 steps (commit, reveal, attest, pay/refund) with simple inline SVG icons.
 export function renderHowItWorks(): string {
@@ -151,7 +173,6 @@ export function renderToolbar(sim: Sim, speed: number = 1): string {
       <button type="button" class="btn-speed ${speed === 3 ? "active" : ""}" data-speed="3" aria-pressed="${speed === 3}" aria-label="Speed 3x">x3</button>
     </div>
     <div class="stats-mini">
-      <span>Verified: ${sim.stats.verifiedResults}</span>
       <a class="btn btn-live" data-testid="live-demo-link" href="?contract=${DEMO_CONTRACT}" aria-label="View the live market on NEAR testnet">Live on NEAR testnet</a>
       <button type="button" id="theme-toggle" class="btn-theme" aria-label="Toggle light and dark theme">◐ theme</button>
     </div>
@@ -181,5 +202,7 @@ export function renderIntro(sim: Sim, updatedAt?: string | null): string {
     + card('Workers', String(sim.workers.length))
     + card('Top earner', top ? `${esc(top.id)} (${top.earned.toFixed(2)} ${c})` : '--')
     + (updatedAt ? card('Last update', updatedAt) : '')
-    + `</div><p class="hint">Starts on its own in a few seconds (or press &#9654; play): commit &#8594; reveal &#8594; close.</p></section>`;
+    + `</div><p class="hint">Starts on its own in a few seconds (or press &#9654; play): commit &#8594; reveal &#8594; close.</p></section>`
+    // preload the tables with the final state so they are never empty before the replay (or on every live poll)
+    + render(sim);
 }

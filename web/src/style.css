@@ -1,4 +1,4 @@
-/* style.css v1.3 — NEAR palette (green accent), dark default, replay, hero, how-it-works */
+/* style.css v1.9 — NEAR palette (green accent), dark default, unified control card, replay, hero */
 :root {
   --bg: #f6f7f9; --fg: #17202a; --panel: #fff; --muted: #5b6b7b; --line: #d8dee6;
   --accent: #0a7d55; --ok: #157347; --bad: #b02a37; --warn: #8a5a00; --info: #0b6bcb;
@@ -146,6 +146,16 @@ tr.flash > td { animation: flash 900ms ease-out 1; }
 .chip.settled { color: var(--ok); } .chip.refunded { color: var(--warn); }
 .chip.open { color: var(--info); } .chip.closed { color: var(--muted); }
 
+/* v1.5: shimmer skeleton rows for the empty / frame-0 state (reads as loading, not broken) */
+tr.empty td { color: var(--muted); font-size: 0.85rem; }
+.skel-row td { opacity: 0.55; }
+.skel { display: inline-block; height: 0.7rem; max-width: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--line) 0%, color-mix(in srgb, var(--line) 35%, transparent) 50%, var(--line) 100%);
+  background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
+.skel.skel-full { width: 100%; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
+
 /* v1.3: per-worker reputation bar (Beta mean + sample size as confidence) */
 .rep { display: flex; align-items: center; gap: 0.5rem; min-width: 9rem; }
 .rep-track { flex: 1 1 4rem; height: 0.55rem; background: var(--line); border-radius: 999px; overflow: hidden; }
@@ -165,4 +175,60 @@ tr.flash > td { animation: flash 900ms ease-out 1; }
 .footer-links a { color: var(--muted); }
 .footer-links a:hover { color: var(--accent); }
 
-.headline { font: 600 1rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted, inherit); margin: 0.5rem 0 1rem; }
+
+/* v1.4: one product-looking control card (segmented speed, styled live/theme buttons) */
+.controls { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+  padding: 0.65rem 0.8rem; margin: 0 0 1.25rem; display: flex; flex-direction: column; gap: 0.65rem; }
+.controls .toolbar { margin: 0; }
+.controls .replay { margin: 0; padding-top: 0.65rem; border-top: 1px solid var(--line); }
+.speed-controls { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.speed-controls .btn-speed { border: 0; border-right: 1px solid var(--line); border-radius: 0;
+  background: transparent; color: var(--muted); padding: 0.35rem 0.65rem; font: 0.82rem var(--mono); }
+.speed-controls .btn-speed:last-child { border-right: 0; }
+.speed-controls .btn-speed:hover { color: var(--fg); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.speed-controls .btn-speed.active { background: var(--accent); color: var(--bg); font-weight: 600; }
+.speed-controls .btn-speed:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+.stats-mini { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+.stats-mini > span { font: 0.8rem var(--mono); color: var(--muted); }
+.btn-live { text-decoration: none; font-size: 0.82rem; padding: 0.35rem 0.7rem; }
+.btn-live:hover { border-color: var(--accent); color: var(--accent); }
+.btn-theme { color: var(--muted); font-size: 0.82rem; padding: 0.35rem 0.7rem; }
+#replay-toggle { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+#replay-toggle:hover { filter: brightness(1.08); }
+#replay-restart { font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { #replay-toggle:hover { filter: none; } }
+/* v1.6: compact worker table on phones (fits 375 px without horizontal scroll) */
+th abbr { text-decoration: none; cursor: help; }
+th .unit { color: var(--muted); font-weight: 400; font-size: 0.85em; }
+@media (max-width: 480px) {
+  .table-wrap table.workers { min-width: 0; width: 100%; }
+  table.workers th, table.workers td { padding: 0.35rem 0.3rem; }
+  table.workers td:first-child { max-width: 6.5rem; }
+  table.workers .rep { min-width: 0; gap: 0.3rem; }
+  table.workers .rep-track { flex: 1 1 2.5rem; min-width: 2.5rem; }
+  table.workers .rep-val { min-width: 2.2rem; font-size: 0.74rem; }
+}
+/* v1.7: rounds become stacked cards on phones (no horizontal scroll at 375 px) */
+@media (max-width: 480px) {
+  .table-wrap table.rounds { min-width: 0; width: 100%; }
+  table.rounds thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  table.rounds, table.rounds tbody, table.rounds tr, table.rounds td { display: block; }
+  table.rounds tr { border: 1px solid var(--line); border-radius: 8px; padding: 8px 16px; margin: 0 0 8px; background: var(--panel); }
+  table.rounds td { display: grid; grid-template-columns: 5.5rem 1fr; gap: 8px; align-items: start; padding: 4px 0; border: 0; white-space: normal; overflow-wrap: anywhere; }
+  table.rounds td::before { content: attr(data-label); color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  table.rounds tr.empty td { display: block; }
+  table.rounds tr.empty td::before { content: none; }
+  table.rounds tr.skel-row { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 16px; }
+  table.rounds tr.skel-row td { display: block; padding: 0; }
+  table.rounds tr.skel-row td::before { content: none; }
+  table.rounds tr.skel-row td:nth-child(n+4) { display: none; }
+  table.rounds td ul { display: flex; flex-wrap: wrap; gap: 4px; padding: 0; margin: 0; }
+}
+/* v1.8: inline elements inside the rep track need a box; currency already in the header on phones */
+.rep-track, .rep-fill { display: block; }
+@media (max-width: 480px) { table.workers .cur { display: none; } }
+/* v1.9: status chip hugs its label in phone cards; empty fields collapse */
+@media (max-width: 480px) {
+  table.rounds td > .chip { justify-self: start; }
+  table.rounds td.nil { display: none; }
+}

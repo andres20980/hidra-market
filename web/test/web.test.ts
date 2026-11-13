@@ -12,10 +12,12 @@ describe('web demo', () => {
   it('esc neutraliza HTML de un id de contrato hostil', () => {
     expect(esc('<img src=x onerror=1>')).not.toContain('<');
   });
-  it('pinta el titular de coste por resultado verificado', () => {
+  it('el titular de coste vive solo en el hero, no duplicado sobre las tablas', () => {
     expect(headline(sim)).toContain('Cost per verified result');
     expect(headline(sim)).toContain('round-robin');
-    expect(render(sim)).toContain(headline(sim));
+    // the figure is the hero; render() must not repeat it above the tables
+    expect(render(sim)).not.toContain('class="headline"');
+    expect(render(sim)).not.toContain('data-testid="cost-per-result"');
   });
   it('nombra el control de reproducción como toggle con etiqueta estable', () => {
     const button = renderReplayToggle();
@@ -35,18 +37,17 @@ describe('web demo', () => {
   it('muestra la divisa del mercado en el cobro de cada trabajador', () => {
     const currency = 'TST';
     const html = render({ ...sim, meta: { ...sim.meta, currency } });
-    expect(html).toContain(`${sim.workers[0].earned.toFixed(2)} ${currency}`);
+    expect(html).toContain(`${sim.workers[0].earned.toFixed(2)}<span class="cur"> ${currency}</span>`);
     expect(html).not.toContain('undefined');
   });
-  it('el titular no contradice los stats ni deja celdas vacías', () => {
+  it('las tablas no dejan celdas vacías con tarea/publicador en blanco', () => {
     const html = render({ ...sim, rounds: sim.rounds.map((r) => ({ ...r, task: '', publisher: '' })) });
-    expect(html).toMatch(/<p class="headline"[^>]*>[^<]*<\/p>/);
-    expect(html).not.toContain('0.00 vs round-robin 0.00');
-    expect(html).toContain('<td>—</td>');
+    expect(html).toContain('data-label="task" class="nil">—</td>');
+    expect(html).toContain('data-label="publisher" class="nil">—</td>');
   });
   it('etiqueta de puja sin prefijo worker- y nombre completo en title', () => {
     const html = render({ ...sim, rounds: [{ ...sim.rounds[0], bids: [{ worker: 'worker-32', revealed: false, reveal: '' } as any] }] });
-    expect(html).toContain('<li title="worker-32">32:');
+    expect(html).toContain('<li title="worker-32">32</li>');
   });
   it('pujas en chips y CSS móvil con min-width en td li', () => {
     const html = render(sim);
@@ -75,7 +76,7 @@ describe('web demo', () => {
     const html = render(sim);
     expect((html.match(/class="table-wrap"/g) || []).length).toBe(2);
     expect((html.match(/role="region" aria-label="[^"]+" tabindex="0"/g) || []).length).toBe(2);
-    expect(html).toContain('aria-label="Rounds; scroll horizontally');
+    expect(html).toContain('aria-label="Rounds"');
     expect(html).toContain('aria-label="Worker reputation; scroll horizontally');
     const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
     expect(css).toContain('.table-wrap:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }');
@@ -111,12 +112,12 @@ describe('estado de carga inicial', () => {
 });
 
 describe('barra de stats', () => {
-  it('no duplica los costes del titular/tarjetas y conserva verificados', async () => {
+  it('no duplica costes ni stats del titular/tarjetas (solo controles de reproducción)', async () => {
     const { renderToolbar } = await import('../src/render');
     const t = renderToolbar(sim);
     expect(t).not.toContain('Market cost');
     expect(t).not.toContain('Round-robin cost');
-    expect(t).toContain(`Verified: ${sim.stats.verifiedResults}`);
+    expect(t).not.toContain('Verified:');
     expect(t).toContain('role="group" aria-label="Playback controls"');
     expect(t).not.toContain('role="toolbar"');
   });

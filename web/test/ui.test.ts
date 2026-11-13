@@ -10,9 +10,8 @@ import { Sim } from '../src/sim';
 const sim = JSON.parse(readFileSync(fileURLToPath(new URL('../fixtures/sim.sample.json', import.meta.url)), 'utf8')) as Sim;
 
 describe('stable UI hooks', () => {
-  it('exposes the headline, the rounds and the workers tables', () => {
+  it('exposes the rounds and the workers tables', () => {
     const html = render(sim);
-    expect(html).toContain('data-testid="cost-per-result"');
     expect(html).toContain('data-testid="rounds"');
     expect(html).toContain('data-testid="workers"');
   });
@@ -43,7 +42,8 @@ describe('stable UI hooks', () => {
 describe('live mode refresh (datos en vivo del contrato)', () => {
   it('repaints the intro with the update time on every poll, not only the tables', () => {
     const main = readFileSync(fileURLToPath(new URL('../src/main.ts', import.meta.url)), 'utf8');
-    expect(main).toContain('renderIntro(x, new Date().toLocaleTimeString()) + render(x)');
+    // renderIntro now carries the tables (preloaded final state), so one call repaints both
+    expect(main).toContain('renderIntro(x, new Date().toLocaleTimeString())');
   });
   it('surfaces the queried testnet account in the live label (provenance of the live claim)', () => {
     const main = readFileSync(fileURLToPath(new URL('../src/main.ts', import.meta.url)), 'utf8');

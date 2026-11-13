@@ -12,7 +12,7 @@ function themeInit(): 'light' | 'dark' {
 }
 
 import { Sim } from './sim';
-import { render, renderHero, renderIntro, renderToolbar, renderReplayToggle, renderSkipLink, renderHowItWorks, renderFooter, loadingSpinner, esc } from './render';
+import { renderHero, renderIntro, renderToolbar, renderReplayToggle, renderSkipLink, renderHowItWorks, renderFooter, loadingSpinner, esc } from './render';
 import { Replay, Dom } from './replay';
 import { normalizeSim } from './normalize';
 import { LivePoller } from './live';
@@ -104,11 +104,12 @@ themeInit();
 app.innerHTML = loadingSpinner();
 load().then(async ({ sim, live }) => {
   const badge = live ? '' : await loadSandboxBadge();
-  app.innerHTML = renderSkipLink() + renderHero(sim) + renderToolbar(sim, currentSpeed)
+  app.innerHTML = renderSkipLink() + renderHero(sim)
+    + `<section class="controls" aria-label="Playback">` + renderToolbar(sim, currentSpeed)
     + `<div id="replay" class="replay"> ${renderReplayToggle()}`
     + ` <button id="replay-restart" type="button" aria-label="restart simulation">↺ restart</button>`
-    + `<span id="replay-status" class="status" role="status" aria-live="polite" aria-atomic="true"></span>${live ? '<span id="live-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>' : ''}${badge}</div>`
-    + `<main id="view" tabindex="-1">${live ? renderIntro(sim, new Date().toLocaleTimeString()) + render(sim) : ''}</main>`
+    + `<span id="replay-status" class="status" role="status" aria-live="polite" aria-atomic="true"></span>${live ? '<span id="live-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>' : ''}${badge}</div></section>`
+    + `<main id="view" tabindex="-1">${live ? renderIntro(sim, new Date().toLocaleTimeString()) : renderIntro(sim)}</main>`
     + renderHowItWorks() + renderFooter();
   initSpeedControl();
   const themeToggle = document.getElementById('theme-toggle');
@@ -134,7 +135,7 @@ load().then(async ({ sim, live }) => {
         visible: () => document.visibilityState !== 'hidden',
       },
       {
-        update: (x) => { const v = document.getElementById('view'); if (v) v.innerHTML = renderIntro(x, new Date().toLocaleTimeString()) + render(x); },
+        update: (x) => { const v = document.getElementById('view'); if (v) v.innerHTML = renderIntro(x, new Date().toLocaleTimeString()); },
         status: (t) => { if (s) s.textContent = t; },
         announce: (t) => { const a = document.getElementById('live-announcement'); if (a) a.textContent = t; },
       },

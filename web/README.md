@@ -36,7 +36,7 @@ In demo mode the page shows a "validated on near-sandbox" badge read from `publi
 | Sub-account per agent, every on-chain action traceable | `swarm/scripts/create_testnet_account.mjs`, `swarm/scripts/deploy_and_seed_testnet.mjs` (buyer/seller sub-accounts under one parent) |
 | Coordinator contract: open round, collect sealed bids, reveal, pick winner | `contract/src/lib.rs` (commit→reveal), `cd contract && cargo test -q` |
 | RULES.md written before code | `producto/RULES.md` (rules + one-round sequence diagram) |
-| Simulation 20 buyers / 5 sellers, no LLM | `cd swarm && npm run sim` (`deterministic_simulator.py` → `out/sim.json`); `swarm/test/simulator.test.js` |
+| Simulation 20 workers / 5 publishers, no LLM | `cd swarm && npm run sim` (`deterministic_simulator.py` → `out/sim.json`); `swarm/test/simulator.test.js` |
 | Live page: rounds, bids, clearing price, who got what | this page — demo mode replays `sim.json`; live mode reads the testnet contract (`?contract=…`); `cd web && npm test` |
 
 ## Track fit — `security` (function-call keys, spend limits, reputation)

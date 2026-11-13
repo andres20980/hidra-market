@@ -50,7 +50,8 @@ describe('replay del modo demo (motor)', () => {
     s.r.load(sim);
     expect(s.els['view'].innerHTML).toContain('Market savings');
     expect(s.els['view'].innerHTML).toContain('Verified results');
-    expect(s.els['view'].innerHTML).not.toContain('data-round=');
+    // tables are preloaded with the final state so they are never empty before play
+    expect(s.els['view'].innerHTML).toContain('data-round=');
     expect(s.els['replay-status'].textContent).toContain('press play');
     expect(s.r.running).toBe(false);
     expect(s.els['replay-toggle'].textContent).toBe('\u25b6 play');
@@ -73,7 +74,7 @@ describe('replay del modo demo (motor)', () => {
     s.r.load(sim);
     s.r.start();
     expect(s.r.index).toBe(0);
-    expect(s.els['view'].innerHTML).toContain('Cost per verified result');
+    expect(s.els['view'].innerHTML).toContain('data-testid="rounds"');
     s.advance(stepMs(1) - 1);
     expect(s.r.index).toBe(0);
     s.advance(2);

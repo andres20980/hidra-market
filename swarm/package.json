@@ -20,7 +20,8 @@
     "release": "python3 scripts/package_release.py",
     "testnet:deploy": "node --env-file=.env scripts/deploy_and_seed_testnet.mjs",
     "testnet:market": "node --env-file=.env scripts/testnet_market_rounds.mjs",
-    "testnet:account": "node scripts/create_testnet_account.mjs"
+    "testnet:account": "node scripts/create_testnet_account.mjs",
+    "verify:testnet": "node scripts/verify_testnet_market.mjs"
   },
   "devDependencies": {
     "near-kit": "^0.20.2",

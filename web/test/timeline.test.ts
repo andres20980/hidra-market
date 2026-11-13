@@ -52,11 +52,10 @@ describe('timeline (replay del modo demo)', () => {
     expect(Math.max(...seen.map((v) => Math.abs(v - finalRep)))).toBeLessThan(1);
   });
 
-  it('el ultimo fotograma reproduce la simulacion completa y el titular', () => {
+  it('el ultimo fotograma reproduce la simulacion completa', () => {
     const sim = normalizeSim(load('sim.swarm.sample.json'));
     const fr = frames(sim);
     const html = render(fr.at(-1)!.view);
-    expect(html).toContain(headline(fr.at(-1)!.view));
     expect(html).toContain(`data-round="${sim.rounds[0].id}"`);
     expect(html).toContain('worker-320');
     expect(renderToolbar(fr.at(-1)!.view, 3)).toContain('x3');

@@ -13,6 +13,7 @@
 - `npm run testnet:account` → cuenta testnet del faucet y `.env` (modo 600). `npm run testnet:deploy` → despliega el mercado y juega una ronda hasta `Settled` → `out/testnet_live_proof.json`.
 - `npm run market:plan` → `out/market_plan.json`: preview determinista SIN red (seed 479) del mercado vivo: 5 trabajadores (cerebros reales del ledger), 8 rondas, 3 `Settled` / 5 `Refunded`, reputación Beta divergiendo (mejor worker-48 media 0,80 → precio ×1,25; peor worker-39 media 0,25 → ×4). Un juez sin cuenta NEAR reproduce la economía con un comando.
 - `npm run testnet:market` → envía ESAS MISMAS rondas a `market.hidra-mkt-221016.testnet`: es un **replay del ledger real sobre la cadena real**, 5 sub-cuentas `worker-1..5` con key FunctionCall limitada, cada una con la tasa LOCKED de su cerebro; prueba pública en `out/testnet_market.json` (cuentas, hashes de tx, estados, reputaciones; sin claves). ≤2,5 NEAR.
+- `npm run verify:testnet` → re-comprueba SIN claves y sin gastar (solo lectura RPC) cada hash de `out/testnet_market.json`, el estado/ganador de cada tarea (`get_task`) y la reputación Beta de cada worker (`get_reputation`) en `market.hidra-mkt-221016.testnet`. Resultado del 13-nov: `OK 8/8 rounds, 98 txs` (salida ≠0 si algo no cuadra).
 - `data/hidra_week.jsonl` → replay anónimo del ledger real; `npm run sim` → `out/sim.json` (coste/verificado mercado vs round-robin).
 
 Sandbox: `export NEAR_SANDBOX_BIN_PATH=<ruta>/near-sandbox` si near-kit no lo descarga. Si falta, `sandbox:round` y `client:worker` hacen SKIP (exit 0) y `verify:swarm` no falla.

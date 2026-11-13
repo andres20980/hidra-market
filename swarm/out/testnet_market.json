@@ -1,0 +1,478 @@
+{
+  "network": "testnet",
+  "rpc": "https://test.rpc.fastnear.com",
+  "root": "hidra-mkt-221016.testnet",
+  "market": "market.hidra-mkt-221016.testnet",
+  "verifier": "verifier.hidra-mkt-221016.testnet",
+  "seed": 479,
+  "reward_per_round": "0.05 NEAR",
+  "workers": [
+    {
+      "index": 1,
+      "alias": "worker-48",
+      "account_id": "worker-1.hidra-mkt-221016.testnet",
+      "locked_rate": 0.14797136038186157,
+      "limited_public_key": "ed25519:AFUPQ6tSrRUZqgNVcxtfmfFax2NoQ36tix7CEsamsdwc",
+      "key_ok": true
+    },
+    {
+      "index": 2,
+      "alias": "worker-44",
+      "account_id": "worker-2.hidra-mkt-221016.testnet",
+      "locked_rate": 0.032418952618453865,
+      "limited_public_key": "ed25519:FQPhbFJp2QvPo6YattynNtvses3TQUPZxVy7BuEurVAU",
+      "key_ok": true
+    },
+    {
+      "index": 3,
+      "alias": "worker-17",
+      "account_id": "worker-3.hidra-mkt-221016.testnet",
+      "locked_rate": 0.024390243902439025,
+      "limited_public_key": "ed25519:9ZXiAiodtgfMWmLpWZL7oHwoLEyWqUxrD1GANsg19Soi",
+      "key_ok": true
+    },
+    {
+      "index": 4,
+      "alias": "worker-39",
+      "account_id": "worker-4.hidra-mkt-221016.testnet",
+      "locked_rate": 0.02,
+      "limited_public_key": "ed25519:62KZDrTsv9Z4f4gS5Xk7tqtTJj1c4oAkNXPDmae69CXK",
+      "key_ok": true
+    },
+    {
+      "index": 5,
+      "alias": "worker-107",
+      "account_id": "worker-5b.hidra-mkt-221016.testnet",
+      "locked_rate": 0.014652014652014652,
+      "limited_public_key": "ed25519:5FXA3UjLfH8JvftdKT4m1YbjpEYosXxSkcgXufqmjBkU",
+      "key_ok": true
+    }
+  ],
+  "rounds": [
+    {
+      "round": 1,
+      "task_id": "round-1-d-hidra-mkt-221016.testnet",
+      "bidders": [
+        {
+          "account_id": "worker-1.hidra-mkt-221016.testnet",
+          "price": 216
+        },
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "price": 234
+        },
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "price": 216
+        },
+        {
+          "account_id": "worker-4.hidra-mkt-221016.testnet",
+          "price": 208
+        },
+        {
+          "account_id": "worker-5b.hidra-mkt-221016.testnet",
+          "price": 206
+        }
+      ],
+      "winner": "worker-1.hidra-mkt-221016.testnet",
+      "expected_winner": "worker-5b.hidra-mkt-221016.testnet",
+      "attest_ok": false,
+      "expected_state": "Refunded",
+      "state": "Refunded",
+      "reward_yocto": "50000000000000000000000",
+      "txs": {
+        "post_task": "DLMqZkSSq22GFgqbSpAM7JGKGWKKgRLV9YJ3sHmpJ7jR",
+        "commit_bid": {
+          "worker-1.hidra-mkt-221016.testnet": "ALw3Hfi4uTaQQay8MXiDXuw1K3QoPBpGWkvGxZdNjBQa",
+          "worker-2.hidra-mkt-221016.testnet": "3cGvEXTafo6z3Qcjj3rPHf6XMZd2zTAJhEu4Ho2ueSDy",
+          "worker-3.hidra-mkt-221016.testnet": "4aSTMv3cBQxR3i9iCWLAdedp8rE8kkATM4epvT3dASBm",
+          "worker-4.hidra-mkt-221016.testnet": "CJKUyN72nmKjYKoXiSKPaP8ncnMa9Uzc4F69czjEmTND",
+          "worker-5b.hidra-mkt-221016.testnet": "6JLXtiHh656Foi9J9ftSGz6QTW8DBogH4sG181hPousK"
+        },
+        "reveal_bid": {
+          "worker-1.hidra-mkt-221016.testnet": "7PzXYCxzAGjbyxxBnKZe4m1PdQs8VHCKF2AP1aECLeUA",
+          "worker-2.hidra-mkt-221016.testnet": "5QrcXQoEFo1UKtxeb5qw3yh2vCbwAemp9PThqRmSAxBZ",
+          "worker-3.hidra-mkt-221016.testnet": "8ZdNuQwyKTYgeVPQ3icDLYZo6SSu7pnfUfi7Mg2HoBqr",
+          "worker-4.hidra-mkt-221016.testnet": "ARvBNSDSFEtwT7Y3BwutzL4dWSivWrGiP2yC5qtK9vQ8",
+          "worker-5b.hidra-mkt-221016.testnet": "9vZu6mERNfhc4zqGr2UE1185xojrvASWZtn84nEEpcco"
+        },
+        "close_round": "6568dUf2yfSZHVsvyZRBaF3pEAKEHkcPzoShx5sWYHGH",
+        "submit_result": "42Lkn2vMjfKFUx7cuefdxTHkhALYYsAPKXquLSRGkWhw",
+        "attest": "52qXc3Kk1qyAJx29WfgFwK4JdL5buY9d6HRUzuDykUvH"
+      }
+    },
+    {
+      "round": 2,
+      "task_id": "round-2-d-hidra-mkt-221016.testnet",
+      "bidders": [
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "price": 232
+        },
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "price": 214
+        },
+        {
+          "account_id": "worker-4.hidra-mkt-221016.testnet",
+          "price": 220
+        },
+        {
+          "account_id": "worker-5b.hidra-mkt-221016.testnet",
+          "price": 312
+        }
+      ],
+      "winner": "worker-5b.hidra-mkt-221016.testnet",
+      "expected_winner": "worker-3.hidra-mkt-221016.testnet",
+      "attest_ok": false,
+      "expected_state": "Refunded",
+      "state": "Refunded",
+      "reward_yocto": "50000000000000000000000",
+      "txs": {
+        "post_task": "F552kWuKo5viKuqYnMh7iWBz3jQN6QZBakCsJMoebWW4",
+        "commit_bid": {
+          "worker-2.hidra-mkt-221016.testnet": "3dJDmSKYftTCSvCnFBK1B9XjvG6bXqjoX3L4YHg5ciT6",
+          "worker-3.hidra-mkt-221016.testnet": "AbE22h3KwdcD351VKGGyU6nDimp7NexaMnqd8XE2foEs",
+          "worker-4.hidra-mkt-221016.testnet": "49uTc2KqSpKFkBivy3DQifbAHvPs78cZ5i9Fi4irTy2J",
+          "worker-5b.hidra-mkt-221016.testnet": "4GX1g8FFjEWtpbRvU7LidBncjzuK3HNEqz7ZGqvgpQQ9"
+        },
+        "reveal_bid": {
+          "worker-2.hidra-mkt-221016.testnet": "GbGjuwn9BXysgg6NfS5qCZkJUtApx6ihXWg5BrMTRXaC",
+          "worker-3.hidra-mkt-221016.testnet": "pAu84KyHbxsvXMgLaxD6bUcNsPkriGCmLjKgdAAivkK",
+          "worker-4.hidra-mkt-221016.testnet": "9Lk7ZKphJmXhS5c37mEd6xqvvnnxaiiWaZukSnmweC5A",
+          "worker-5b.hidra-mkt-221016.testnet": "C3U93BZRh1is3AVaEqf27LqPQ6anrQdh3izkxJjF8BQW"
+        },
+        "close_round": "7WaMytTXJxA8nXW9ugRJBkb8gfHgaEE2SaU2DsUfmtoe",
+        "submit_result": "BrhnCE4EEjLvCA3aif4LLgWec4QNAR1BTFTcf9kxwhkQ",
+        "attest": "yBfi2UwiTECn9UqQ1rsrUJUvzYv1NMTHDY3ri64S24P"
+      }
+    },
+    {
+      "round": 3,
+      "task_id": "round-3-d-hidra-mkt-221016.testnet",
+      "bidders": [
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "price": 351
+        },
+        {
+          "account_id": "worker-4.hidra-mkt-221016.testnet",
+          "price": 214
+        },
+        {
+          "account_id": "worker-5b.hidra-mkt-221016.testnet",
+          "price": 327
+        },
+        {
+          "account_id": "worker-1.hidra-mkt-221016.testnet",
+          "price": 228
+        },
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "price": 212
+        }
+      ],
+      "winner": "worker-1.hidra-mkt-221016.testnet",
+      "expected_winner": "worker-2.hidra-mkt-221016.testnet",
+      "attest_ok": false,
+      "expected_state": "Refunded",
+      "state": "Refunded",
+      "reward_yocto": "50000000000000000000000",
+      "txs": {
+        "post_task": "FQ6S3fM5be5Qu17J6VNbN6QF5MoJJbPo5GUaG8zv4dwR",
+        "commit_bid": {
+          "worker-3.hidra-mkt-221016.testnet": "4oq55bg5X6StL5hrBEAMu3EmwsAHW9i754kDzDEPnE3b",
+          "worker-4.hidra-mkt-221016.testnet": "6ap8LXEvLr5AGwbaZ2yCQUyKhUCFviwhAdSuDCF3Zjwc",
+          "worker-5b.hidra-mkt-221016.testnet": "6BUS1JV3HAT3JZ9LQzh8VMYe3Ev6EjmZvpTM5oKQxHH",
+          "worker-1.hidra-mkt-221016.testnet": "9jjCwMB3MGcN8VorQrNsSjFp76wXSRG6z2gsghJqAhxb",
+          "worker-2.hidra-mkt-221016.testnet": "AZ4DwR4cLtiuqhgb1EbbFaEzxheiSNSc73wGR7PBC8f6"
+        },
+        "reveal_bid": {
+          "worker-3.hidra-mkt-221016.testnet": "H6368zbK1dgqPnpoRvMr5rGzJF99vfjnNAug3bFwgxdP",
+          "worker-4.hidra-mkt-221016.testnet": "7GsqFnVP6xELUKqkfzAVsPWodge3AG9cUvrw3bpzCDCS",
+          "worker-5b.hidra-mkt-221016.testnet": "4YwD2XwPEuVqz5pVQ6T4NpmhtD6djQshARTQ5UjAx14t",
+          "worker-1.hidra-mkt-221016.testnet": "5JxUQqH28NsRdiXd1M7MQF9QHtPwQYpsH36ex442aNph",
+          "worker-2.hidra-mkt-221016.testnet": "6QbbLgnqg7buccNLyEHLAn251W17v13R6m1sgrWxfRms"
+        },
+        "close_round": "8impZaPLVjaqRjHaSCLWhtRNNJjrXQ24tgcoyGo6oX3x",
+        "submit_result": "DGeeH3wnjA84faqJg3FxUNAkViGnLLnU919ycAUfgtZz",
+        "attest": "BNzNFZMpgU41TczNMaWC3L1QfY2pQHBBxQvcdHv5Z4pQ"
+      }
+    },
+    {
+      "round": 4,
+      "task_id": "round-4-d-hidra-mkt-221016.testnet",
+      "bidders": [
+        {
+          "account_id": "worker-4.hidra-mkt-221016.testnet",
+          "price": 212
+        },
+        {
+          "account_id": "worker-5b.hidra-mkt-221016.testnet",
+          "price": 351
+        },
+        {
+          "account_id": "worker-1.hidra-mkt-221016.testnet",
+          "price": 240
+        },
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "price": 309
+        }
+      ],
+      "winner": "worker-1.hidra-mkt-221016.testnet",
+      "expected_winner": "worker-4.hidra-mkt-221016.testnet",
+      "attest_ok": false,
+      "expected_state": "Refunded",
+      "state": "Refunded",
+      "reward_yocto": "50000000000000000000000",
+      "txs": {
+        "post_task": "E2RwVz4QAEtTtQTDwrdGDkgzeKgPKDqwn3kYfKdrT5oY",
+        "commit_bid": {
+          "worker-4.hidra-mkt-221016.testnet": "5HgY1nD67b7SJRiFrPM8Nh1yZ3f2sGG9aYf36GUeTPrj",
+          "worker-5b.hidra-mkt-221016.testnet": "5edxdAboJfF5aUEGyyMdi4UxAfeHCfk5RkSbXg5C3qPv",
+          "worker-1.hidra-mkt-221016.testnet": "25pNhuFBR9ffVNnSxgDdvAbvhfgaew6DsTk4UmqgyJFP",
+          "worker-2.hidra-mkt-221016.testnet": "6pduDJyYvBi92VzSXC1TJzz9NiyExeTdA51BxzF3bvHh"
+        },
+        "reveal_bid": {
+          "worker-4.hidra-mkt-221016.testnet": "HnXGsLkro2tqd64tWqBpJFeSUkrzuYaHiN9pgj2VekQQ",
+          "worker-5b.hidra-mkt-221016.testnet": "HiSFZwUmxAc7epDaSRyTXG1h7PqGKyCHNonJ4Y4XYak5",
+          "worker-1.hidra-mkt-221016.testnet": "48djD6839vZjZ7jJPmoYYdnM4WsDJx9Q4TkreVNfoKDY",
+          "worker-2.hidra-mkt-221016.testnet": "FqxWJ8dzsFEz7Q4eZD5ufHbGBZW1A8htG5SECxYH2oaq"
+        },
+        "close_round": "CspDgtRfy31hGZihh5G7q7Xb2e1yrRXvSVDriVte2Ssv",
+        "submit_result": "BQQiC3CKx3RbXHmUTkW2j4RLCRE6S86NpjcwSYkmQPCe",
+        "attest": "J3PBA5aVbTqqGBsETdAw1r9UnBMY4Yky2Kt3oMwhsjgZ"
+      }
+    },
+    {
+      "round": 5,
+      "task_id": "round-5-d-hidra-mkt-221016.testnet",
+      "bidders": [
+        {
+          "account_id": "worker-5b.hidra-mkt-221016.testnet",
+          "price": 333
+        },
+        {
+          "account_id": "worker-1.hidra-mkt-221016.testnet",
+          "price": 210
+        },
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "price": 348
+        },
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "price": 327
+        }
+      ],
+      "winner": "worker-1.hidra-mkt-221016.testnet",
+      "expected_winner": "worker-1.hidra-mkt-221016.testnet",
+      "attest_ok": true,
+      "expected_state": "Settled",
+      "state": "Settled",
+      "reward_yocto": "50000000000000000000000",
+      "txs": {
+        "post_task": "455qoGaF2jBrvtfWSQAEMG2rktXsJbjDDgSFZz1xKis8",
+        "commit_bid": {
+          "worker-5b.hidra-mkt-221016.testnet": "EpkrEDrRtbRTQzpw6ckS4DguVMXMyGb6JGpbrV6AhsiT",
+          "worker-1.hidra-mkt-221016.testnet": "CCJbBpqnfxe37gNpgVR9cH328CdVv5trGT8JrUQHW13P",
+          "worker-2.hidra-mkt-221016.testnet": "nakmAu4euHwPacSt6oJAggBhbkccodf3kn9XED5kgJU",
+          "worker-3.hidra-mkt-221016.testnet": "6RuMN775VFNTgCgR7VACNdTutN59RNcmKBCMeAV3ak8M"
+        },
+        "reveal_bid": {
+          "worker-5b.hidra-mkt-221016.testnet": "8AKBJq5eyizQ5Hs2o3Ud8TdaU2x9mknBfRGXHxMq14hY",
+          "worker-1.hidra-mkt-221016.testnet": "6HC5ip4cGNERKi1AsZ9g9LKsn7aNDE7J8nwneRBVCKXZ",
+          "worker-2.hidra-mkt-221016.testnet": "FbfjfX5itT5vSbeDQsjy3sGJhTPoLxFgSXM7QRiGGvF4",
+          "worker-3.hidra-mkt-221016.testnet": "FUuQ3Qe8ZBZaLz1VYgYunesRaqMg3gzZjTtHcAii3DQR"
+        },
+        "close_round": "Pibv1UsdS5sXmmUjVaKAvbnBnhYzzGEkpi6Bakso3TG",
+        "submit_result": "2vBYXqMH36XsTZaWA8zh9HRiv449tmYBq8ciZbQ7emxU",
+        "attest": "2nRfNFS9WhiVotRcuaXZfVCvJccv5odjHGjyGH5eGo5w"
+      }
+    },
+    {
+      "round": 6,
+      "task_id": "round-6-d-hidra-mkt-221016.testnet",
+      "bidders": [
+        {
+          "account_id": "worker-1.hidra-mkt-221016.testnet",
+          "price": 176
+        },
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "price": 354
+        },
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "price": 360
+        }
+      ],
+      "winner": "worker-1.hidra-mkt-221016.testnet",
+      "expected_winner": "worker-1.hidra-mkt-221016.testnet",
+      "attest_ok": true,
+      "expected_state": "Settled",
+      "state": "Settled",
+      "reward_yocto": "50000000000000000000000",
+      "txs": {
+        "post_task": "3rngdKpDjkHovrDHs1myooVtDmygLvQ9BDLSkwWh97Xp",
+        "commit_bid": {
+          "worker-1.hidra-mkt-221016.testnet": "FJLuofmi3oubXyDmTPDyCWqXgfLSzD4z41kky54YhDxX",
+          "worker-2.hidra-mkt-221016.testnet": "CHT5RCxK3wCW2hRXKtkyk9n81dvEHTXfJU67QoX9e266",
+          "worker-3.hidra-mkt-221016.testnet": "Hr6hbWr2HDEtC3x8LruTryVPLb8463ossYb2B121Aa76"
+        },
+        "reveal_bid": {
+          "worker-1.hidra-mkt-221016.testnet": "DdEj4iVnWT5Q3TvJemxFA4k78sXqqZcq3sxXaQfy7Mt2",
+          "worker-2.hidra-mkt-221016.testnet": "6DZ96APEcFadYbh4ucUuxc7dU9LdQn2fBL9MeLYMB5LR",
+          "worker-3.hidra-mkt-221016.testnet": "HJRaAKMuDekVX6GmMHuyDpVUmc948L4ARQdfq77prxAG"
+        },
+        "close_round": "CcRbZMruS8DSvxMVqxYC5GqwhKtNvEn2i29CPSZqwzXj",
+        "submit_result": "GALDxLS8fbaw8Vu1MPQF5GNFTaKeqMNX1jJXRE179xbm",
+        "attest": "3wvLGeoFfrUCb6Bdv25esXX9u79chANoyt245LAtDmQx"
+      }
+    },
+    {
+      "round": 7,
+      "task_id": "round-7-d-hidra-mkt-221016.testnet",
+      "bidders": [
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "price": 324
+        },
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "price": 315
+        },
+        {
+          "account_id": "worker-4.hidra-mkt-221016.testnet",
+          "price": 309
+        }
+      ],
+      "winner": "worker-4.hidra-mkt-221016.testnet",
+      "expected_winner": "worker-4.hidra-mkt-221016.testnet",
+      "attest_ok": false,
+      "expected_state": "Refunded",
+      "state": "Refunded",
+      "reward_yocto": "50000000000000000000000",
+      "txs": {
+        "post_task": "E9D9bcFYH41wxyiyoyo8ySJnPfxunz6ZdXGvKHa1UXUB",
+        "commit_bid": {
+          "worker-2.hidra-mkt-221016.testnet": "3Lc3cDRTSKTUmEjaG91LzkNjTi7ZrrM4yCrNxwgvuahj",
+          "worker-3.hidra-mkt-221016.testnet": "AqETPXh2ujrVUFaM2vi2JBc3UwcwYdjG2WX3DxKA9eVb",
+          "worker-4.hidra-mkt-221016.testnet": "CA9doy2hDXwjfaTGkeaRmV3YyBaz47AxxZubNU77FRmz"
+        },
+        "reveal_bid": {
+          "worker-2.hidra-mkt-221016.testnet": "ADXXD92U97Yb8EjosBDcFt12hoC5pEoC2xLkBpSxEXPd",
+          "worker-3.hidra-mkt-221016.testnet": "7SuHnbR5wuNvsvYM6AdwdKPjwZGYHCFgBE7Exw1iohVE",
+          "worker-4.hidra-mkt-221016.testnet": "uAa8qxfUK1y7ph1bmrn3rYu6pQ1m6VAzrQz9WqdzYGB"
+        },
+        "close_round": "BuamkDfVaSqqQ32YpQs6hbF4UAG2CKDN3yuTgZxNyDR8",
+        "submit_result": "ALN3nmX19BfiYdZfXFnymcdVPW6xPq52AwZZUHEsd8oC",
+        "attest": "4kDQH5Fxum9QvGZsY4p1tZNoUiyzy9roQPHTLMkxb8a8"
+      }
+    },
+    {
+      "round": 8,
+      "task_id": "round-8-d-hidra-mkt-221016.testnet",
+      "bidders": [
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "price": 348
+        },
+        {
+          "account_id": "worker-4.hidra-mkt-221016.testnet",
+          "price": 476
+        },
+        {
+          "account_id": "worker-5b.hidra-mkt-221016.testnet",
+          "price": 321
+        },
+        {
+          "account_id": "worker-1.hidra-mkt-221016.testnet",
+          "price": 152
+        },
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "price": 342
+        }
+      ],
+      "winner": "worker-1.hidra-mkt-221016.testnet",
+      "expected_winner": "worker-1.hidra-mkt-221016.testnet",
+      "attest_ok": true,
+      "expected_state": "Settled",
+      "state": "Settled",
+      "reward_yocto": "50000000000000000000000",
+      "txs": {
+        "post_task": "AUUDRNUF13HxWrRuyraT9sXtVgdF66nKbAeo1ai3RYac",
+        "commit_bid": {
+          "worker-3.hidra-mkt-221016.testnet": "94Fhb4mzCKgCAL8YmMrs7P1aVBFgguiJhCgCn5fgkGx6",
+          "worker-4.hidra-mkt-221016.testnet": "HnroAM8kwR6VpamrZr1vLL7jBqkvFWS1oAfWU9KfRc4D",
+          "worker-5b.hidra-mkt-221016.testnet": "4JKCRwYJZPR5btQoFSoaC5oMMoSEH4Q3WBviwhiUt34U",
+          "worker-1.hidra-mkt-221016.testnet": "NUZu3AMG7bhxP5qaCdwfczHTWdrT92deAsfueCyC87c",
+          "worker-2.hidra-mkt-221016.testnet": "D3B2M76MPD2g7QzM2jd3VbDKymbd1LQXQyAyyBcasUzE"
+        },
+        "reveal_bid": {
+          "worker-3.hidra-mkt-221016.testnet": "fUm9cckHf1i13SVp3P9MYXewHNPzCNViaXfezGP3CST",
+          "worker-4.hidra-mkt-221016.testnet": "6rmCKEAiM95nbSc7Gh1Ai9LVMKfJbMn9ePnJL5QZXy4E",
+          "worker-5b.hidra-mkt-221016.testnet": "9gkfjgXJhiEARLcb38ejHCZCkYLbL79x3SQu1Jjq2LsU",
+          "worker-1.hidra-mkt-221016.testnet": "Bs8VkvnbiU9LJAPGqWeNyGDiEhLa6JbH16AXZUfdTJ1v",
+          "worker-2.hidra-mkt-221016.testnet": "C2Lwh37H3XwY3LZnntSCVcHE7jQLgNPdqWmtMfbQ9pUn"
+        },
+        "close_round": "DnnBPkx7fvJsZyRSnwnPnfmyKUmkwv5vUtME28jx4hMQ",
+        "submit_result": "98aPzcoYXKhKtTAjgrmTDgTtSLiqUADoCRnDCmnZeydQ",
+        "attest": "5PZ5roYpusmt2zVkkCHAH3SF2dqNH9AbY2Cvu7bXqGY4"
+      }
+    }
+  ],
+  "reputations": [
+    {
+      "index": 1,
+      "alias": "worker-48",
+      "account_id": "worker-1.hidra-mkt-221016.testnet",
+      "locked_rate": 0.14797136038186157,
+      "alpha": "6",
+      "beta": "5",
+      "mean": "0.5454545454545454"
+    },
+    {
+      "index": 2,
+      "alias": "worker-44",
+      "account_id": "worker-2.hidra-mkt-221016.testnet",
+      "locked_rate": 0.032418952618453865,
+      "alpha": "1",
+      "beta": "2",
+      "mean": "0.3333333333333333"
+    },
+    {
+      "index": 3,
+      "alias": "worker-17",
+      "account_id": "worker-3.hidra-mkt-221016.testnet",
+      "locked_rate": 0.024390243902439025,
+      "alpha": "1",
+      "beta": "2",
+      "mean": "0.3333333333333333"
+    },
+    {
+      "index": 4,
+      "alias": "worker-39",
+      "account_id": "worker-4.hidra-mkt-221016.testnet",
+      "locked_rate": 0.02,
+      "alpha": "1",
+      "beta": "3",
+      "mean": "0.25"
+    },
+    {
+      "index": 5,
+      "alias": "worker-107",
+      "account_id": "worker-5b.hidra-mkt-221016.testnet",
+      "locked_rate": 0.014652014652014652,
+      "alpha": "1",
+      "beta": "2",
+      "mean": "0.3333333333333333"
+    }
+  ],
+  "settled_count": 3,
+  "refunded_count": 5,
+  "market_explorer": "https://testnet.nearblocks.io/address/market.hidra-mkt-221016.testnet",
+  "generated_at": "2026-11-13T13:20:57.731Z"
+}

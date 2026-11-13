@@ -37,7 +37,9 @@ describe('collapsible round details', () => {
   it('wraps the rounds table in a details/summary disclosure', () => {
     expect(html).toContain('<details class="round-details"');
     expect(html).toContain('worker-details');
-    expect(html).toContain('<summary>Show round details</summary>');
+    expect(html).toContain('<summary>Rounds</summary>');
+    expect(html).toContain('<summary>Worker reputation</summary>');
+    expect(html).not.toContain('<h2>Worker reputation</h2>');
     expect(html).toMatch(/<details[^>]*>[\s\S]*data-testid="rounds"[\s\S]*<\/details>/);
   });
 });
@@ -60,5 +62,21 @@ d2('empty state', () => {
     const sim: any = { meta: { currency: 'NEAR' }, rounds: [], workers: [], stats: { marketCostPerVerified: 0, roundRobinCostPerVerified: 0 } };
     let h = ''; h = rb(sim);
     e2(h).toContain('No rounds yet');
+  });
+  i2('fills the empty state with shimmer skeleton rows', () => {
+    const sim: any = { meta: { currency: 'NEAR' }, rounds: [], workers: [], stats: { marketCostPerVerified: 0, roundRobinCostPerVerified: 0 } };
+    const h = rb(sim);
+    e2((h.match(/skel-row/g) || []).length).toBeGreaterThanOrEqual(6);
+    e2(h).toContain('aria-hidden="true"');
+  });
+});
+
+import { readFileSync as _rf } from 'node:fs';
+describe('rounds mobile cards', () => {
+  it('labels every round cell and stacks rounds as cards under 480px', () => {
+    const css = _rf(new URL('../src/style.css', import.meta.url), 'utf8');
+    expect(css).toMatch(/table\.rounds td::before \{ content: attr\(data-label\)/);
+    const src = _rf(new URL('../src/render.ts', import.meta.url), 'utf8');
+    for (const l of ['#', 'task', 'publisher', 'bids', 'winner', 'price', 'status']) expect(src).toContain(`data-label="${l}"`);
   });
 });

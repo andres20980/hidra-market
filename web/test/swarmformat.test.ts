@@ -48,10 +48,9 @@ describe('swarm/out/sim.json contract', () => {
     }
   });
 
-  it('renders rounds, workers and headline from the real simulation', () => {
+  it('renders rounds and workers from the real simulation', () => {
     const html = render(sim);
     for (const r of sim.rounds) expect(html).toContain(`data-round="${r.id}"`);
     for (const w of sim.workers) expect(html).toContain(`data-worker="${w.id}"`);
-    expect(html).toContain(headline(sim));
   });
 });
