@@ -61,12 +61,14 @@ d2('empty state', () => {
   i2('shows text when no rows', () => {
     const sim: any = { meta: { currency: 'NEAR' }, rounds: [], workers: [], stats: { marketCostPerVerified: 0, roundRobinCostPerVerified: 0 } };
     let h = ''; h = rb(sim);
-    e2(h).toContain('No rounds yet');
+    e2(h).toContain('Round 1 is open');
+    e2(h).not.toContain('No rounds yet');
+    e2(h).toContain('class="live-dot" aria-hidden="true"');
   });
   i2('fills the empty state with shimmer skeleton rows', () => {
     const sim: any = { meta: { currency: 'NEAR' }, rounds: [], workers: [], stats: { marketCostPerVerified: 0, roundRobinCostPerVerified: 0 } };
     const h = rb(sim);
-    e2((h.match(/skel-row/g) || []).length).toBeGreaterThanOrEqual(6);
+    e2((h.match(/skel-row/g) || []).length).toBe(4);
     e2(h).toContain('aria-hidden="true"');
   });
 });
@@ -108,15 +110,45 @@ describe('hero factor chip on phones', () => {
     const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
     expect(css).toMatch(/\.factor-chip \{[^}]*white-space: nowrap; flex-shrink: 0;/);
   });
+  it('packs hero guarantee tags into two rows on phones', () => {
+    const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
+    expect(css).toMatch(/@media \(max-width: 480px\) \{ \.hero-badges \{ gap: 0\.3rem; \} \.hero-badges li \{[^}]*white-space: nowrap;/);
+  });
   it('fits phone controls in two rows with short labels', () => {
     const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
     expect(css).toMatch(/\.controls \.toolbar \{ flex-wrap: nowrap;/);
     expect(css).toMatch(/\.controls \.lbl-long \{ display: none; \}/);
   });
 
-  it('keeps replay status and sandbox badge on one line each on phones', () => {
+  it('keeps replay status on one line and the sandbox winner visible on phones', () => {
     const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
-    expect(css).toMatch(/\.controls #sandbox-badge \{ flex: 1 1 100%; white-space: nowrap;[^}]*text-overflow: ellipsis;/);
+    expect(css).toMatch(/\.controls #sandbox-badge \{ flex: 1 1 100%;[^}]*white-space: normal;[^}]*overflow-wrap: anywhere;/);
+    expect(css).not.toMatch(/#sandbox-badge \{[^}]*text-overflow: ellipsis/);
     expect(css).toMatch(/\.controls #replay-status \{ flex: 1 1 100%; white-space: nowrap;/);
+  });
+});
+
+describe('section rhythm', () => {
+  it('separates the rounds and reputation cards and keeps the desktop sandbox badge unbroken', () => {
+    const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
+    expect(css).toContain('section:has(> .round-details) { margin-bottom: 1rem; }');
+    expect(css).toContain('.how > h2 { margin-top: 0.25rem; }');
+    expect(css).toMatch(/\.controls #sandbox-badge \{ flex: 1 1 100%; white-space: nowrap; \}/);
+  });
+});
+
+describe('hero bars', () => {
+  it('keeps the small market bar visible as a glowing dot', () => {
+    const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
+    expect(css).toContain('.bar-fill { min-width: 1.1rem; }');
+    expect(css).toMatch(/\.bar-fill\.good \{[^}]*box-shadow:/);
+  });
+});
+import { readFileSync as rf18 } from 'node:fs';
+d2('live empty state', () => {
+  i2('pulsing dot respects prefers-reduced-motion', () => {
+    const css = rf18(new URL('../src/style.css', import.meta.url), 'utf8');
+    e2(css).toMatch(/\.live-dot\s*\{[^}]*animation:\s*livepulse/);
+    e2(css).toMatch(/prefers-reduced-motion: reduce\)\s*\{\s*\.live-dot\s*\{\s*animation:\s*none/);
   });
 });

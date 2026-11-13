@@ -1,4 +1,4 @@
-// render.ts v1.8 — render HTML estático (sin framework) + hooks data-testid estables + hero
+// render.ts v1.10 — render HTML estático (sin framework) + hooks data-testid estables + hero
 import { Round, Sim, Worker, reputation } from "./sim";
 import { DEMO_CONTRACT } from "./rpc";
 
@@ -109,12 +109,12 @@ function roundRow(r: Round, hot?: number | null): string {
 function skel(w: string): string {
   return `<span class="skel" style="width:${w}"></span>`;
 }
-function skeletonRounds(n = 3): string {
+function skeletonRounds(n = 2): string {
   const widths = ["1rem", "7rem", "4.5rem", "3.5rem", "4.5rem", "2.5rem", "5rem"];
   const row = () => `<tr class="skel-row" aria-hidden="true">${widths.map((w) => `<td>${skel(w)}</td>`).join("")}</tr>`;
   return Array.from({ length: n }, row).join("");
 }
-function skeletonWorkers(n = 3): string {
+function skeletonWorkers(n = 2): string {
   const row = () => `<tr class="skel-row" aria-hidden="true"><td>${skel("5rem")}</td>`
     + `<td><span class="rep"><span class="rep-track"><span class="skel skel-full"></span></span></span></td>`
     + `<td>${skel("1.5rem")}</td><td>${skel("1.5rem")}</td><td>${skel("4rem")}</td></tr>`;
@@ -123,10 +123,10 @@ function skeletonWorkers(n = 3): string {
 export function render(sim: Sim, flash?: { round?: number; worker?: string } | null): string {
   const roundsBody = sim.rounds.length
     ? sim.rounds.map((r) => roundRow(r, flash?.round)).join("")
-    : `<tr class="empty"><td colspan="7">No rounds yet. The replay starts in a moment.</td></tr>${skeletonRounds()}`;
+    : `<tr class="empty"><td colspan="7"><span class="live-dot" aria-hidden="true"></span>Round 1 is open: workers are committing sealed bids…</td></tr>${skeletonRounds()}`;
   const workersBody = sim.workers.length
     ? sim.workers.map((w) => workerRow(w, sim.meta.currency, flash?.worker)).join("")
-    : `<tr class="empty"><td colspan="5">No worker reputation yet.</td></tr>${skeletonWorkers()}`;
+    : `<tr class="empty"><td colspan="5"><span class="live-dot" aria-hidden="true"></span>Reputation appears after the first verified result…</td></tr>${skeletonWorkers()}`;
   return `<section><details class="round-details" open><summary>Rounds</summary><div class="table-wrap" role="region" aria-label="Rounds" tabindex="0"><table class="rounds" data-testid="rounds"><thead><tr><th scope="col">#</th><th scope="col">task</th><th scope="col">publisher</th><th scope="col">bids</th><th scope="col">winner</th><th scope="col">price</th><th scope="col">status</th></tr></thead><tbody>${roundsBody}</tbody></table></div></details></section><section><details class="round-details worker-details" open><summary>Worker reputation</summary><div class="table-wrap" role="region" aria-label="Worker reputation; scroll horizontally to see all columns" tabindex="0"><table class="workers" data-testid="workers"><thead><tr><th scope="col">agent</th><th scope="col"><abbr title="Reputation: Beta posterior mean">rep.</abbr></th><th scope="col">done</th><th scope="col">failed</th><th scope="col">earned <span class="unit">${esc(sim.meta.currency)}</span></th></tr></thead><tbody>${workersBody}</tbody></table></div></details></section>`;
 }
 // How it works: 4 steps (commit, reveal, attest, pay/refund) with simple inline SVG icons.

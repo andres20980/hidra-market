@@ -50,7 +50,7 @@ Requirements: Rust (toolchain pinned in `contract/rust-toolchain.toml`) with [`c
 
 | Do | See |
 | --- | --- |
-| `make verify` | Contract wasm built; 57 Rust tests pass (36 unit + 21 near-sandbox integration); 30 swarm tests; web typecheck, 102+1 web tests (one more, against the live testnet RPC, runs with `LIVE_CONTRACT` set) and build. Last line `verify: OK`. 45-70 s with warm caches; the first build downloads crates and npm packages. |
+| `make verify` | Contract wasm built; 61 Rust tests pass (36 unit + 25 near-sandbox integration); 30 swarm tests; web typecheck, 108+1 web tests (one more, against the live testnet RPC, runs with `LIVE_CONTRACT` set) and build. Last line `verify: OK`. 45-70 s with warm caches; the first build downloads crates and npm packages. |
 | `make demo` | In about 50 s, with no LLM calls and no external network: the deterministic simulator and its horizon sweep, a real round on near-sandbox (commit → reveal → close → submit → attest), an on-chain check of the worker's limited key, the web build, and the summary below. |
 | `make testnet` | Without `swarm/.env`: exit code 2 and a message saying what to set. With it: `worker-1.<account>.testnet` keeps exactly one function-call key for the four worker methods, with a 0.25 NEAR allowance, checked on-chain. |
 | `make testnet-deploy` | Deploys the market to testnet and plays one live round to `Settled` in about 3 minutes ([`docs/TESTNET_DEPLOY.md`](docs/TESTNET_DEPLOY.md); `npm run testnet:account` in `swarm/` gets a faucet account first). |
@@ -102,7 +102,7 @@ Existed before 1 Nov 2026 (baseline, not part of this submission):
 Built during the hackathon window, from scratch, in this directory:
 
 - [`RULES.md`](RULES.md): auction, escrow, reputation and spending-cap rules, written before the contract.
-- [`contract/`](contract/): Rust contract (near-sdk 5.30): sealed-bid reverse auction with commit-reveal, escrow, attestation, refunds, Beta(α, β) reputation, per-agent spending cap, views. 57 tests (36 unit + 21 near-sandbox).
+- [`contract/`](contract/): Rust contract (near-sdk 5.30): sealed-bid reverse auction with commit-reveal, escrow, attestation, refunds, Beta(α, β) reputation, per-agent spending cap, views. 61 tests (36 unit + 25 near-sandbox).
 - [`swarm/`](swarm/): ledger exporter and anonymiser, deterministic simulator (market vs round-robin) and horizon sweep, near-sandbox scripts (one round, five rounds, limited-key worker), testnet account, deployment and live-round scripts.
 - [`web/`](web/): static page (Vite + TypeScript, no backend) for simulation replay and live contract views.
 - `Makefile`, this README and [`docs/`](docs/).
@@ -132,6 +132,8 @@ verifier --attest(ok)-->                 +--> ok: pay winner, alpha+1     not ok
 - Maintained as open source (MIT). Every change must keep `make verify` green: contract, swarm and web tests plus the offline demo, with no network and no LLM calls.
 - Continuous integration: [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the contract (wasm build + unit and near-sandbox tests), web (typecheck, tests, build, 150 kB code budget) and swarm tests on every push and pull request, without testnet calls or keys.
 - The rules live in [`RULES.md`](RULES.md) and are written before the code; any change to the auction, escrow or reputation starts there, then a test, then the contract.
+- How to contribute: open an issue describing the rule or behaviour; change `RULES.md` first if the auction, escrow or reputation logic moves; add a failing test in `contract/tests/`, `swarm/test/` or `web/test/`; make it pass; run `make verify` before the pull request. CI must stay green and the web code budget under 150 kB.
+- Operating cost, measured on testnet: the 8 rounds in `swarm/out/testnet_market.json` (98 transactions, 5 workers each) burnt on average 0.0026 NEAR and 28.7 Tgas per round in total (post, 5 commits, 5 reveals, close, submit, attest), about 5 % of the 0.05 NEAR reward; read from the public RPC `tx` method, no keys needed.
 - Who pays for it: publishers already lose most of their agent spend on unverified work (see the data above); the market only charges for verified results, so a small per-settlement fee is the natural revenue model. Not implemented yet.
 - Next steps, in order (none is part of this submission): NEAR Intents to settle rewards across chains; a verifier running in a NEAR AI Cloud TEE so attestations do not depend on a trusted account; listing the market in the NEAR Agent Market.
 
