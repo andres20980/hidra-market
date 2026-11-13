@@ -48,12 +48,12 @@ describe('replay del modo demo (motor)', () => {
   it('arranca con el resumen y no reproduce solo', () => {
     const s = stub();
     s.r.load(sim);
-    expect(s.els['view'].innerHTML).toContain('Ahorro del mercado');
-    expect(s.els['view'].innerHTML).toContain('Resultados verificados');
+    expect(s.els['view'].innerHTML).toContain('Market savings');
+    expect(s.els['view'].innerHTML).toContain('Verified results');
     expect(s.els['view'].innerHTML).not.toContain('data-round=');
-    expect(s.els['replay-status'].textContent).toContain('pulsa reproducir');
+    expect(s.els['replay-status'].textContent).toContain('press play');
     expect(s.r.running).toBe(false);
-    expect(s.els['replay-toggle'].textContent).toBe('\u25b6 reproducir');
+    expect(s.els['replay-toggle'].textContent).toBe('\u25b6 play');
     expect(s.els['replay-toggle'].ariaPressed).toBe('false');
   });
 
@@ -73,19 +73,19 @@ describe('replay del modo demo (motor)', () => {
     s.r.load(sim);
     s.r.start();
     expect(s.r.index).toBe(0);
-    expect(s.els['view'].innerHTML).toContain('Coste por resultado verificado');
+    expect(s.els['view'].innerHTML).toContain('Cost per verified result');
     s.advance(stepMs(1) - 1);
     expect(s.r.index).toBe(0);
     s.advance(2);
     expect(s.r.index).toBe(1);
     expect(s.els['view'].innerHTML).toContain('data-round="1"');
-    expect(s.els['view'].innerHTML).toContain('abierta');
+    expect(s.els['view'].innerHTML).toContain('open');
     s.advance(stepMs(1) + 1);
     expect(s.r.index).toBe(2);
     expect(s.els['view'].innerHTML).not.toContain('abierta');
     s.advance(stepMs(1) + 1);
     expect(s.r.index).toBe(3);
-    expect(s.els['view'].innerHTML).toMatch(/cobrado|reembolsada/);
+    expect(s.els['view'].innerHTML).toMatch(/paid|refunded/);
   });
 
   it('un cambio de velocidad reprograma el paso pendiente', () => {
@@ -111,7 +111,7 @@ describe('replay del modo demo (motor)', () => {
     expect(s.r.index).toBe(1);
     s.r.toggle();
     expect(s.r.running).toBe(false);
-    expect(s.els['replay-toggle'].textContent).toBe('\u25b6 reproducir');
+    expect(s.els['replay-toggle'].textContent).toBe('\u25b6 play');
     expect(s.els['replay-toggle'].ariaPressed).toBe('false');
     s.advance(stepMs(1) * 3);
     expect(s.r.index).toBe(1);

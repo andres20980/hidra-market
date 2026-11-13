@@ -37,6 +37,6 @@ describe('loadLive (fetch mock)', () => {
   it('rejects without contract and wraps RPC errors', async () => {
     await expect(loadLive('')).rejects.toThrow(/contract/);
     vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 500 })));
-    await expect(loadLive('m.testnet', 'http://x')).rejects.toThrow(/modo en vivo.*500/);
+    await expect(loadLive('m.testnet', 'http://x')).rejects.toThrow(/Live mode.*500/);
   });
 });

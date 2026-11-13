@@ -3,8 +3,9 @@
 // Beta reputations that the on-chain replay will submit. Locks the P1 acceptance criteria.
 import { describe, it, expect } from 'vitest';
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { loadWorkers, planRounds, betaMean, priceMultiplier, mulberry32 } from '../scripts/market_plan.mjs';
 
 describe('plan del mercado vivo en testnet (sin red)', () => {
@@ -58,10 +59,15 @@ describe('plan del mercado vivo en testnet (sin red)', () => {
     expect(JSON.stringify(a)).toBe(JSON.stringify(b));
   });
 
-  it('npm run market:plan escribe un preview sin red que coincide con el plan', () => {
+  it('el out/market_plan.json commiteado no esta obsoleto: byte-identico a una emision fresca', () => {
     const dir = join(__dirname, '..');
-    execFileSync('node', ['scripts/market_plan_emit.mjs'], { cwd: dir, encoding: 'utf8' });
-    const art = JSON.parse(readFileSync(join(dir, 'out', 'market_plan.json'), 'utf8'));
+    const committed = readFileSync(join(dir, 'out', 'market_plan.json')); // raw bytes del repo
+    const tmp = join(tmpdir(), `market_plan_${process.pid}.json`);
+    execFileSync('node', ['scripts/market_plan_emit.mjs', tmp], { cwd: dir, encoding: 'utf8' });
+    const fresh = readFileSync(tmp);
+    unlinkSync(tmp);
+    expect(fresh.equals(committed)).toBe(true); // artefacto generado desfasado = test en rojo, sin drift silencioso
+    const art = JSON.parse(fresh.toString('utf8'));
     expect(art.kind).toBe('market_plan_preview');
     expect(art.seed).toBe(479);
     expect(art.rounds).toEqual(plan.rounds);

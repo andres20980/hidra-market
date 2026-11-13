@@ -14,11 +14,11 @@ describe('timeline (replay del modo demo)', () => {
     const sim = normalizeSim(load('sim.sample.json'));
     const fr = frames(sim);
     expect(fr).toHaveLength(1 + sim.rounds.length * 3 + 1);
-    expect(fr[0].phase).toBe('apertura');
-    expect(fr.at(-1)!.phase).toBe('cierre');
+    expect(fr[0].phase).toBe('opening');
+    expect(fr.at(-1)!.phase).toBe('close');
     expect(fr.at(-1)!.view.rounds).toHaveLength(sim.rounds.length);
     const phases = fr.map((f) => f.phase);
-    expect(phases.slice(1, -1).every((p, i) => p === ['compromiso', 'revelado', 'cierre'][i % 3])).toBe(true);
+    expect(phases.slice(1, -1).every((p, i) => p === ['commit', 'reveal', 'close'][i % 3])).toBe(true);
   });
 
   it('oculta los compromisos antes del reveal y solo muestra el precio en el cierre', () => {

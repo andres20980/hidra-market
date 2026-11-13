@@ -54,16 +54,16 @@ describe('normalizeSim', () => {
     expect(sim.rounds[0].status).toBe('refunded');
     expect(sim.rounds[0].paid).toBe(false);
     expect(sim.rounds[0].verified).toBe(false);
-    expect(render(sim)).toContain('reembolsada');
+    expect(render(sim)).toContain('refunded');
   });
 
   it('renders rounds and headline for the real swarm snapshot', () => {
     const html = render(normalizeSim(load('sim.swarm.sample.json')));
     expect(html).toContain('data-round="2"');
-    expect(html).toContain('cobrado');
+    expect(html).toContain('earned');
     expect(html).toContain('worker-');
     const h = headline(normalizeSim(load('sim.swarm.sample.json')));
-    expect(h).toContain('mercado 100.00 NEAR vs round-robin 1000.00 NEAR');
+    expect(h).toContain('market 100.00 NEAR vs round-robin 1000.00 NEAR');
     expect(renderToolbar(normalizeSim(load('sim.swarm.sample.json')), 2)).toContain('2');
   });
 });

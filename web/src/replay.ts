@@ -61,7 +61,7 @@ export class Replay {
   private btn(): void {
     const b = this.host.dom.id('replay-toggle');
     if (b) {
-      b.textContent = this.playing ? '\u23f8 pausa' : '\u25b6 reproducir';
+      b.textContent = this.playing ? '\u23f8 pause' : '\u25b6 play';
       b.ariaPressed = String(this.playing);
     }
   }
@@ -124,6 +124,6 @@ export class Replay {
     const v = this.host.dom.id('view');
     if (v && this.sim) v.innerHTML = renderIntro(this.sim);
     const s = this.host.dom.id('replay-status');
-    if (s) s.textContent = `listo - ${this.fr.length} pasos - pulsa reproducir`;
+    if (s) s.textContent = `ready - ${this.fr.length} steps - press play`;
   }
 }

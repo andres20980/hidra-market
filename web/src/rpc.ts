@@ -43,17 +43,17 @@ export async function callView<T>(
       clearTimeout(timeoutId);
       if (!res.ok) {
         let msg = "";
-        if (res.status === 400) msg = "rechazó (HTTP 400) - id de contrato";
-        else if (res.status === 503) msg = "caído (HTTP 503)";
+        if (res.status === 400) msg = "rejected (HTTP 400) - contract id";
+        else if (res.status === 503) msg = "down (HTTP 503)";
         else msg = "error (HTTP " + res.status + ")";
         throw new Error(`RPC ${rpc} (method ${method}) ${msg}`);
       }
       const json = (await res.json()) as { error?: unknown; result?: { result?: number[]; error?: string } };
-      if (json.error) throw new Error(`RPC error en ${method} (contract ${contract}) - ${JSON.stringify(json.error).slice(0, 200)}`);
+      if (json.error) throw new Error(`RPC error in ${method} (contract ${contract}) - ${JSON.stringify(json.error).slice(0, 200)}`);
       const rerr = json.result?.error;
-      if (rerr) if (rerr.includes("does not exist while viewing")) throw new Error(`RPC error en ${method} (contract ${contract}) - contrato inexistente`); else throw new Error(`RPC error en ${method} (contract ${contract}) - ${rerr}`);
+      if (rerr) if (rerr.includes("does not exist while viewing")) throw new Error(`RPC error in ${method} (contract ${contract}) - contract does not exist`); else throw new Error(`RPC error in ${method} (contract ${contract}) - ${rerr}`);
       const bytes = json.result?.result;
-      if (!bytes) throw new Error(`RPC sin resultado en ${method}`);
+      if (!bytes) throw new Error(`RPC no result in ${method}`);
       return JSON.parse(new TextDecoder().decode(new Uint8Array(bytes))) as T;
     } catch (e: any) {
       lastError = e;
@@ -61,7 +61,7 @@ export async function callView<T>(
       throw e;
     }
   }
-  throw new Error(`RPC timeout tras 3 intentos: ${lastError?.message}`);
+  throw new Error(`RPC timeout after 3 attempts: ${lastError?.message}`);
 }
 
 const YOCTO_BIG = BigInt('1000000000000000000000000'); // 1e24 exacto
@@ -141,7 +141,7 @@ export function toSim(
   tasks: RawTask[], reputations: Record<string, [string, string, string]>, contract: string, rpc: string,
 ): Sim {
   return {
-    meta: { seed: 0, generatedAt: new Date().toISOString(), currency: 'NEAR', mode: `en vivo · ${contract} @ ${rpc}` },
+    meta: { seed: 0, generatedAt: new Date().toISOString(), currency: 'NEAR', mode: `live · ${contract} @ ${rpc}` },
     rounds: tasks.map(taskToRound),
     workers: buildWorkers(tasks, reputations),
     stats: buildStats(tasks),
@@ -149,7 +149,7 @@ export function toSim(
 }
 
 export async function loadLive(contract: string, rpc: string = DEFAULT_RPC): Promise<Sim> {
-  if (!contract) throw new Error('falta ?contract=<cuenta.testnet>');
+  if (!contract) throw new Error('missing ?contract=<account.testnet>');
   try {
     const tasks = await callView<RawTask[]>(rpc, contract, 'list_tasks', { from: 0, limit: TASKS_LIMIT });
     const reps = await Promise.all(workerIds(tasks).slice(0, REPUTATION_LIMIT).map(async (id) => {
@@ -166,6 +166,6 @@ export async function loadLive(contract: string, rpc: string = DEFAULT_RPC): Pro
     }
     return toSim(tasks, reputations, contract, rpc);
   } catch (e) {
-    throw new Error(`Error en modo en vivo: ${e instanceof Error ? e.message : String(e)}. Verifica que el contrato '${contract}' esté desplegado en testnet.`);
+    throw new Error(`Live mode error: ${e instanceof Error ? e.message : String(e)}. Check that contract '${contract}' is deployed on testnet.`);
   }
 }

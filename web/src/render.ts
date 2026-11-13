@@ -17,7 +17,7 @@ function esc(s: any): string {
 export { esc };
 
 export function renderSkipLink(): string {
-  return '<a class="skip-link" href="#view">Saltar al contenido principal</a>';
+  return '<a class="skip-link" href="#view">Skip to main content</a>';
 }
 
 function workerRow(w: Worker, currency: string, hot?: string | null): string {
@@ -38,14 +38,14 @@ function roundRow(r: Round, hot?: number | null): string {
     .map((b) => `<li title="${esc(b.worker)}">${esc(b.worker).replace(/^worker-/, '')}:</li>`)
     .join("");
   const estado = r.paid
-    ? `cobrado ✦`
+    ? `paid ✦`
     : r.verified
-      ? `verificado, pendiente de pago`
+      ? `verified, payment pending`
       : r.status === `closed`
-        ? `cerrada sin pago (cayó)`
+        ? `closed unpaid (dropped out)`
         : r.status === `refunded`
-          ? `reembolsada (cayó)`
-          : `abierta`;
+          ? `refunded (dropped out)`
+          : `open`;
   const cls = hot === r.id ? ` class=\"flash\"` : ``;
   return `\n    <tr data-round=\"${r.id}\"${cls}>
       <td>${r.id}</td>
@@ -59,12 +59,12 @@ function roundRow(r: Round, hot?: number | null): string {
   `;
 }
 export function render(sim: Sim, flash?: { round?: number; worker?: string } | null): string {
-  return `<h1 data-testid="cost-per-result">${esc(headline(sim))}</h1><section><h2>Rondas</h2><div class="table-wrap" role="region" aria-label="Rondas; desplaza horizontalmente para ver todas las columnas" tabindex="0"><table class="rounds" data-testid="rounds"><thead><tr><th scope="col">#</th><th scope="col">tarea</th><th scope="col">publicador</th><th scope="col">pujas</th><th scope="col">ganador</th><th scope="col">precio</th><th scope="col">estado</th></tr></thead><tbody>${sim.rounds.map((r) => roundRow(r, flash?.round)).join("")}</tbody></table></div></section><section><h2>Reputación de trabajadores</h2><div class="table-wrap" role="region" aria-label="Reputación de trabajadores; desplaza horizontalmente para ver todas las columnas" tabindex="0"><table class="workers" data-testid="workers"><thead><tr><th scope="col">agente</th><th scope="col">rep. (media Beta)</th><th scope="col">hechos</th><th scope="col">fallados</th><th scope="col">cobrado (${esc(sim.meta.currency)})</th></tr></thead><tbody>${sim.workers.map((w) => workerRow(w, sim.meta.currency, flash?.worker)).join("")}</tbody></table></div></section>`;
+  return `<h1 data-testid="cost-per-result">${esc(headline(sim))}</h1><section><h2>Rounds</h2><div class="table-wrap" role="region" aria-label="Rounds; scroll horizontally to see all columns" tabindex="0"><table class="rounds" data-testid="rounds"><thead><tr><th scope="col">#</th><th scope="col">task</th><th scope="col">publisher</th><th scope="col">bids</th><th scope="col">winner</th><th scope="col">price</th><th scope="col">status</th></tr></thead><tbody>${sim.rounds.map((r) => roundRow(r, flash?.round)).join("")}</tbody></table></div></section><section><h2>Worker reputation</h2><div class="table-wrap" role="region" aria-label="Worker reputation; scroll horizontally to see all columns" tabindex="0"><table class="workers" data-testid="workers"><thead><tr><th scope="col">agent</th><th scope="col">rep. (Beta mean)</th><th scope="col">done</th><th scope="col">failed</th><th scope="col">earned (${esc(sim.meta.currency)})</th></tr></thead><tbody>${sim.workers.map((w) => workerRow(w, sim.meta.currency, flash?.worker)).join("")}</tbody></table></div></section>`;
 }
 export function renderFooter(): string {
   return `<footer class="footer">
     <div class="footer-content">
-      <span>NearHackaton 2026 · Mercado de Verificación de Resultados</span>
+      <span>NearHackaton 2026 · Verified Results Market</span>
       <span class="version">v0.8</span>
     </div>
   </footer>`;
@@ -72,27 +72,27 @@ export function renderFooter(): string {
 
 export function renderToolbar(sim: Sim, speed: number = 1): string {
   const cur = esc(sim.meta.currency);
-  return `<div class="toolbar" role="group" aria-label="Controles de reproducción">
+  return `<div class="toolbar" role="group" aria-label="Playback controls">
     <div class="speed-controls">
-      <button type="button" class="btn-speed ${speed === 0.5 ? "active" : ""}" data-speed="0.5" aria-pressed="${speed === 0.5}" aria-label="Velocidad 0.5x">x0.5</button>
-      <button type="button" class="btn-speed ${speed === 1 ? "active" : ""}" data-speed="1" aria-pressed="${speed === 1}" aria-label="Velocidad 1x">x1</button>
-      <button type="button" class="btn-speed ${speed === 2 ? "active" : ""}" data-speed="2" aria-pressed="${speed === 2}" aria-label="Velocidad 2x">x2</button>
-      <button type="button" class="btn-speed ${speed === 3 ? "active" : ""}" data-speed="3" aria-pressed="${speed === 3}" aria-label="Velocidad 3x">x3</button>
+      <button type="button" class="btn-speed ${speed === 0.5 ? "active" : ""}" data-speed="0.5" aria-pressed="${speed === 0.5}" aria-label="Speed 0.5x">x0.5</button>
+      <button type="button" class="btn-speed ${speed === 1 ? "active" : ""}" data-speed="1" aria-pressed="${speed === 1}" aria-label="Speed 1x">x1</button>
+      <button type="button" class="btn-speed ${speed === 2 ? "active" : ""}" data-speed="2" aria-pressed="${speed === 2}" aria-label="Speed 2x">x2</button>
+      <button type="button" class="btn-speed ${speed === 3 ? "active" : ""}" data-speed="3" aria-pressed="${speed === 3}" aria-label="Speed 3x">x3</button>
     </div>
     <div class="stats-mini">
-      <span>Verificados: ${sim.stats.verifiedResults}</span>
-      <a class="btn-live" data-testid="live-demo-link" href="?contract=${DEMO_CONTRACT}" aria-label="Ver el mercado en vivo en NEAR testnet">Live on NEAR testnet</a>
-      <button type="button" id="theme-toggle" class="btn-theme" aria-label="Cambiar entre tema claro y oscuro">◐ tema</button>
+      <span>Verified: ${sim.stats.verifiedResults}</span>
+      <a class="btn-live" data-testid="live-demo-link" href="?contract=${DEMO_CONTRACT}" aria-label="View the live market on NEAR testnet">Live on NEAR testnet</a>
+      <button type="button" id="theme-toggle" class="btn-theme" aria-label="Toggle light and dark theme">◐ theme</button>
     </div>
   </div>`;
 }
 
 export function renderReplayToggle(): string {
-  return `<button id="replay-toggle" type="button" aria-label="reproducir o pausar simulación" aria-pressed="false">▶ reproducir</button>`;
+  return `<button id="replay-toggle" type="button" aria-label="play or pause the simulation" aria-pressed="false">▶ play</button>`;
 }
 
 export function loadingSpinner(): string {
-  return `<div class="spinner-wrap" role="status" aria-live="polite"><div class="spinner"></div><span class="sr-only">Cargando...</span></div>`;
+  return `<div class="spinner-wrap" role="status" aria-live="polite"><div class="spinner"></div><span class="sr-only">Loading...</span></div>`;
 }
 export function renderIntro(sim: Sim, updatedAt?: string | null): string {
   const s = sim.stats, c = esc(sim.meta.currency);
@@ -100,15 +100,15 @@ export function renderIntro(sim: Sim, updatedAt?: string | null): string {
     ? Math.max(0, (1 - s.marketCostPerVerified / s.roundRobinCostPerVerified) * 100) : 0;
   const top = [...sim.workers].sort((a, b) => b.earned - a.earned)[0];
   const card = (k: string, v: string) => `<div class="card"><span class="k">${k}</span><span class="v">${v}</span></div>`;
-  return `<section class="intro"><h2>Mercado listo</h2><div class="cards">`
-    + card('Coste mercado / verificado', `${s.marketCostPerVerified.toFixed(2)} ${c}`)
-    + card('Coste round-robin / verificado', `${s.roundRobinCostPerVerified.toFixed(2)} ${c}`)
-    + card(`Ahorro del mercado`, `${saving.toFixed(1)} %`)
-    + card('Rondas', String(sim.rounds.length))
-    + card('Resultados verificados', String(s.verifiedResults))
-    + card('Gasto total', `${s.totalSpent.toFixed(2)} ${c}`)
-    + card('Trabajadores', String(sim.workers.length))
-    + card('Mayor cobro', top ? `${esc(top.id)} (${top.earned.toFixed(2)} ${c})` : '--')
-    + (updatedAt ? card('Última actualización', updatedAt) : '')
-    + `</div><p class="hint">Arranca solo en unos segundos (o pulsa &#9654; reproducir): compromiso &#8594; revelado &#8594; cierre.</p></section>`;
+  return `<section class="intro"><h2>Market ready</h2><div class="cards">`
+    + card('Market cost / verified', `${s.marketCostPerVerified.toFixed(2)} ${c}`)
+    + card('Round-robin cost / verified', `${s.roundRobinCostPerVerified.toFixed(2)} ${c}`)
+    + card(`Market savings`, `${saving.toFixed(1)} %`)
+    + card('Rounds', String(sim.rounds.length))
+    + card('Verified results', String(s.verifiedResults))
+    + card('Total spent', `${s.totalSpent.toFixed(2)} ${c}`)
+    + card('Workers', String(sim.workers.length))
+    + card('Top earner', top ? `${esc(top.id)} (${top.earned.toFixed(2)} ${c})` : '--')
+    + (updatedAt ? card('Last update', updatedAt) : '')
+    + `</div><p class="hint">Starts on its own in a few seconds (or press &#9654; play): commit &#8594; reveal &#8594; close.</p></section>`;
 }

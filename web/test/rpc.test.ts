@@ -29,14 +29,14 @@ describe('callView errores legibles', () => {
 
   it('HTTP 400 -> pide revisar el contrato', async () => {
     stub(400, {});
-    await expect(callView('http://r', 'x.testnet', 'm')).rejects.toThrow(/rechazó.*400.*id de contrato/);
+    await expect(callView('http://r', 'x.testnet', 'm')).rejects.toThrow(/rejected.*400.*contract id/);
   });
   it('HTTP 503 -> RPC caído', async () => {
     stub(503, {});
-    await expect(callView('http://r', 'x.testnet', 'm')).rejects.toThrow(/caído \(HTTP 503\)/);
+    await expect(callView('http://r', 'x.testnet', 'm')).rejects.toThrow(/down \(HTTP 503\)/);
   });
   it('result.error de cuenta inexistente -> contrato inexistente', async () => {
     stub(200, { result: { error: 'wasm execution failed: account x.testnet does not exist while viewing' } });
-    await expect(callView('http://r', 'x.testnet', 'm')).rejects.toThrow(/contrato inexistente/);
+    await expect(callView('http://r', 'x.testnet', 'm')).rejects.toThrow(/contract does not exist/);
   });
 });

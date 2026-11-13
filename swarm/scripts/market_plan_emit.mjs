@@ -9,7 +9,9 @@ import { fileURLToPath } from "node:url";
 import { loadWorkers, planRounds } from "./market_plan.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const OUT = join(HERE, "..", "out", "market_plan.json");
+// Optional override (argv[2] or env) lets a staleness test emit to a temp file
+// without touching the committed artefact; default is the canonical out/ path.
+const OUT = process.argv[2] || process.env.MARKET_PLAN_OUT || join(HERE, "..", "out", "market_plan.json");
 
 const SEED = 479;
 const workers = loadWorkers();

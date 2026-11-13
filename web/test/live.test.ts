@@ -43,14 +43,14 @@ describe('refresco del modo en vivo', () => {
     let finish!: (value: Sim) => void;
     const p = new LivePoller(c.host,
       { update: () => { painted += 1; }, status: (s) => status.push(s), announce: (s) => announcements.push(s) },
-      { intervalMs: 10000, label: 'en vivo', load: () => new Promise((resolve) => { finish = resolve; }) });
+      { intervalMs: 10000, label: 'live', load: () => new Promise((resolve) => { finish = resolve; }) });
     p.start();
     p.stop();
     finish(sim);
     await flush();
     expect(painted).toBe(0);
     expect(status).toEqual([]);
-    expect(announcements).toEqual(['en vivo · sondeo iniciado']);
+    expect(announcements).toEqual(['live · polling started']);
   });
 
   it('pinta y reprograma el siguiente sondeo', async () => {
@@ -61,12 +61,12 @@ describe('refresco del modo en vivo', () => {
     let painted = 0;
     const p = new LivePoller(c.host,
       { update: () => { painted += 1; }, status: (s) => status.push(s), announce: (s) => announcements.push(s) },
-      { intervalMs: 10000, label: 'en vivo', load: async () => { loads += 1; return sim; }, now: () => new Date(0) });
+      { intervalMs: 10000, label: 'live', load: async () => { loads += 1; return sim; }, now: () => new Date(0) });
     p.start();
     await flush();
     expect(loads).toBe(1); expect(painted).toBe(1);
-    expect(status[0]).toContain('en vivo'); expect(status[0]).toContain('actualizado');
-    expect(announcements).toEqual(['en vivo · sondeo iniciado']);
+    expect(status[0]).toContain('live'); expect(status[0]).toContain('updated');
+    expect(announcements).toEqual(['live · polling started']);
     c.advance(10000);
     await flush();
     expect(loads).toBe(2);
@@ -83,12 +83,12 @@ describe('refresco del modo en vivo', () => {
     let painted = 0;
     const p = new LivePoller(c.host,
       { update: () => { painted += 1; }, status: (s) => status.push(s), announce: (s) => announcements.push(s) },
-      { intervalMs: 10000, label: 'en vivo', load: async () => { loads += 1; if (loads < 3) throw new Error('rpc caído'); return sim; } });
+      { intervalMs: 10000, label: 'live', load: async () => { loads += 1; if (loads < 3) throw new Error('rpc caído'); return sim; } });
     p.start();
     await flush();
     expect(painted).toBe(0); expect(p.failed).toBe(1);
-    expect(status[0]).toContain('error de refresco');
-    expect(announcements).toEqual(['en vivo · sondeo iniciado', 'en vivo · error de conexión, se reintenta']);
+    expect(status[0]).toContain('refresh error');
+    expect(announcements).toEqual(['live · polling started', 'live · connection error, retrying']);
     c.advance(10000);
     await flush();
     expect(p.failed).toBe(2);
@@ -97,9 +97,9 @@ describe('refresco del modo en vivo', () => {
     await flush();
     expect(p.failed).toBe(0);
     expect(announcements).toEqual([
-      'en vivo · sondeo iniciado',
-      'en vivo · error de conexión, se reintenta',
-      'en vivo · conexión recuperada',
+      'live · polling started',
+      'live · connection error, retrying',
+      'live · connection restored',
     ]);
     p.stop();
   });
@@ -108,7 +108,7 @@ describe('refresco del modo en vivo', () => {
     const c = fakeHost();
     let loads = 0;
     const p = new LivePoller(c.host, { update: () => {}, status: () => {} },
-      { intervalMs: 10000, label: 'en vivo', load: async () => { loads += 1; return sim; } });
+      { intervalMs: 10000, label: 'live', load: async () => { loads += 1; return sim; } });
     c.host.setVisible(false);
     p.start();
     await flush();
@@ -122,7 +122,7 @@ describe('refresco del modo en vivo', () => {
     const c = fakeHost();
     let loads = 0;
     const p = new LivePoller(c.host, { update: () => {}, status: () => {} },
-      { intervalMs: 10000, label: 'en vivo', load: async () => { loads += 1; return sim; } });
+      { intervalMs: 10000, label: 'live', load: async () => { loads += 1; return sim; } });
     c.host.setVisible(false);
     p.start();
     c.advance(20000);
@@ -138,7 +138,7 @@ describe('refresco del modo en vivo', () => {
     let loads = 0;
     const p = new LivePoller(c.host,
       { update: () => {}, status: () => {} },
-      { intervalMs: 10000, label: 'en vivo', load: async () => { loads += 1; return sim; } });
+      { intervalMs: 10000, label: 'live', load: async () => { loads += 1; return sim; } });
     p.refresh();
     expect(loads).toBe(0);
     p.start();
@@ -158,14 +158,14 @@ describe('refresco del modo en vivo', () => {
     let painted = 0;
     const p = new LivePoller(c.host,
       { update: () => { painted += 1; }, status: (s) => status.push(s), announce: () => {} },
-      { intervalMs: 10000, label: 'en vivo', fingerprint: () => 'misma-huella', load: async () => sim });
+      { intervalMs: 10000, label: 'live', fingerprint: () => 'misma-huella', load: async () => sim });
     p.start();
     await flush();
     expect(painted).toBe(1);
     c.advance(10000);
     await flush();
     expect(painted).toBe(1);
-    expect(status[1]).toContain('sin cambios');
+    expect(status[1]).toContain('unchanged');
     p.stop();
   });
 
@@ -177,7 +177,7 @@ describe('refresco del modo en vivo', () => {
     const p = new LivePoller(c.host,
       { update: () => { painted += 1; }, status: (s) => status.push(s), announce: () => {} },
       {
-        intervalMs: 10000, label: 'en vivo',
+        intervalMs: 10000, label: 'live',
         fingerprint: (x) => String(x.stats.verifiedResults),
         load: async () => { n += 1; return { ...sim, stats: { ...sim.stats, verifiedResults: n } }; },
       });
@@ -186,7 +186,7 @@ describe('refresco del modo en vivo', () => {
     c.advance(10000);
     await flush();
     expect(painted).toBe(2);
-    expect(status.every((t) => t.includes('actualizado'))).toBe(true);
+    expect(status.every((t) => t.includes('updated'))).toBe(true);
     p.stop();
   });
 });

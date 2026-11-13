@@ -19,7 +19,7 @@ describe('stable UI hooks', () => {
   it('renders a theme toggle button in the toolbar', () => {
     const t = renderToolbar(sim);
     expect(t).toContain('id="theme-toggle"');
-    expect(t).toContain('aria-label="Cambiar entre tema claro y oscuro"');
+    expect(t).toContain('aria-label="Toggle light and dark theme"');
   });
   it('links the live demo to the deployed contract on testnet', () => {
     const t = renderToolbar(sim);
@@ -47,7 +47,7 @@ describe('live mode refresh (datos en vivo del contrato)', () => {
   });
   it('surfaces the queried testnet account in the live label (provenance of the live claim)', () => {
     const main = readFileSync(fileURLToPath(new URL('../src/main.ts', import.meta.url)), 'utf8');
-    expect(main).toContain('`en vivo · ${contract}`');
+    expect(main).toContain('`live · ${contract}`');
     expect(main).toContain('label: liveLabel');
   });
 });

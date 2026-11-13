@@ -31,7 +31,7 @@ DATASET_REL = "data/hidra_week.jsonl"
 
 EXCLUDED_DIRS = {"release", "node_modules", "__pycache__"}
 EXCLUDED_NAMES = {".env", ".DS_Store"}
-EXCLUDED_SUFFIXES = (".key", ".log")
+EXCLUDED_SUFFIXES = (".key", ".log", ".tmp")  # .tmp: transient atomic-write temporaries, never shipped
 KEEP_NAMES = {".env.example"}
 
 PLACEHOLDERS = ("<", ">", "{", "}", "your", "xxx", "change", "example", "replace", "todo")

@@ -7,7 +7,7 @@ const has = (needle: string) => html.includes(needle);
 
 describe("index.html metadata", () => {
   it("declares the language and the viewport", () => {
-    expect(has('<html lang="es">')).toBe(true);
+    expect(has('<html lang="en">')).toBe(true);
     expect(has('name="viewport"')).toBe(true);
   });
 
@@ -26,7 +26,7 @@ describe("index.html metadata", () => {
 
   it("degrades gracefully without JavaScript on the hosted demo", () => {
     expect(has("<noscript>")).toBe(true);
-    expect(has("necesita JavaScript")).toBe(true);
+    expect(has("needs JavaScript")).toBe(true);
     expect(has("github.com/andres20980/hidra-market")).toBe(true);
   });
 

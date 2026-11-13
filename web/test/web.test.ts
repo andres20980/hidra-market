@@ -13,18 +13,18 @@ describe('web demo', () => {
     expect(esc('<img src=x onerror=1>')).not.toContain('<');
   });
   it('pinta el titular de coste por resultado verificado', () => {
-    expect(headline(sim)).toContain('Coste por resultado verificado');
+    expect(headline(sim)).toContain('Cost per verified result');
     expect(headline(sim)).toContain('round-robin');
     expect(render(sim)).toContain(headline(sim));
   });
   it('nombra el control de reproducción como toggle con etiqueta estable', () => {
     const button = renderReplayToggle();
-    expect(button).toContain('aria-label="reproducir o pausar simulación"');
+    expect(button).toContain('aria-label="play or pause the simulation"');
     expect(button).toContain('aria-pressed="false"');
-    expect(button).toContain('>▶ reproducir</button>');
+    expect(button).toContain('>▶ play</button>');
   });
   it('ofrece un salto de teclado al contenido principal', () => {
-    expect(renderSkipLink()).toContain('href="#view">Saltar al contenido principal</a>');
+    expect(renderSkipLink()).toContain('href="#view">Skip to main content</a>');
   });
   it('el destino del salto recibe foco y conserva un indicador visible', () => {
     const main = readFileSync(fileURLToPath(new URL('../src/main.ts', import.meta.url)), 'utf8');
@@ -75,8 +75,8 @@ describe('web demo', () => {
     const html = render(sim);
     expect((html.match(/class="table-wrap"/g) || []).length).toBe(2);
     expect((html.match(/role="region" aria-label="[^"]+" tabindex="0"/g) || []).length).toBe(2);
-    expect(html).toContain('aria-label="Rondas; desplaza horizontalmente');
-    expect(html).toContain('aria-label="Reputación de trabajadores; desplaza horizontalmente');
+    expect(html).toContain('aria-label="Rounds; scroll horizontally');
+    expect(html).toContain('aria-label="Worker reputation; scroll horizontally');
     const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
     expect(css).toContain('.table-wrap:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }');
   });
@@ -88,12 +88,12 @@ describe('web demo', () => {
   it('el resumen inicial muestra el ahorro del mercado y los totales', () => {
     const html = renderIntro(sim);
     const c = sim.meta.currency;
-    expect(html).toContain('Ahorro del mercado');
+    expect(html).toContain('Market savings');
     expect(html).toContain(`${sim.stats.marketCostPerVerified.toFixed(2)} ${c}`);
     expect(html).toContain(`${sim.stats.roundRobinCostPerVerified.toFixed(2)} ${c}`);
     expect(html).toContain(`>${sim.stats.verifiedResults}<`);
     expect(html).toContain(`>${sim.rounds.length}<`);
-    expect(html).toContain('Arranca solo'); expect(html).toContain('reproducir');
+    expect(html).toContain('Starts on its own'); expect(html).toContain('play');
     const saving = 1 - sim.stats.marketCostPerVerified / sim.stats.roundRobinCostPerVerified;
     expect(html).toContain(`${(saving * 100).toFixed(1)} %`);
   });
@@ -106,7 +106,7 @@ describe('estado de carga inicial', () => {
     const s = loadingSpinner();
     expect(s).toContain('class="spinner"');
     expect(s).toContain('role="status"');
-    expect(s).toContain('Cargando');
+    expect(s).toContain('Loading');
   });
 });
 
@@ -114,10 +114,10 @@ describe('barra de stats', () => {
   it('no duplica los costes del titular/tarjetas y conserva verificados', async () => {
     const { renderToolbar } = await import('../src/render');
     const t = renderToolbar(sim);
-    expect(t).not.toContain('Coste mercado');
-    expect(t).not.toContain('Coste round-robin');
-    expect(t).toContain(`Verificados: ${sim.stats.verifiedResults}`);
-    expect(t).toContain('role="group" aria-label="Controles de reproducción"');
+    expect(t).not.toContain('Market cost');
+    expect(t).not.toContain('Round-robin cost');
+    expect(t).toContain(`Verified: ${sim.stats.verifiedResults}`);
+    expect(t).toContain('role="group" aria-label="Playback controls"');
     expect(t).not.toContain('role="toolbar"');
   });
   it('mantiene los controles de velocidad en el orden de tabulación nativo', async () => {
@@ -134,11 +134,11 @@ describe('barra de stats', () => {
 describe('renderIntro con modo live', () => {
   it('muestra "Última actualización" cuando se pasa updatedAt', () => {
     const html = renderIntro(sim, '12:34');
-    expect(html).toContain('Última actualización');
+    expect(html).toContain('Last update');
     expect(html).toContain('12:34');
   });
   it('no muestra "Última actualización" sin updatedAt', () => {
     const html = renderIntro(sim);
-    expect(html).not.toContain('Última actualización');
+    expect(html).not.toContain('Last update');
   });
 });

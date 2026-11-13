@@ -22,5 +22,5 @@ export function reputation(w: Worker): number {
 // el precio del mercado con el precio del round-robin.
 export function headline(sim: Sim): string {
   const c = sim.meta.currency;
-  return `Coste por resultado verificado: mercado ${sim.stats.marketCostPerVerified.toFixed(2)} ${c} vs round-robin ${sim.stats.roundRobinCostPerVerified.toFixed(2)} ${c}`;
+  return `Cost per verified result: market ${sim.stats.marketCostPerVerified.toFixed(2)} ${c} vs round-robin ${sim.stats.roundRobinCostPerVerified.toFixed(2)} ${c}`;
 }

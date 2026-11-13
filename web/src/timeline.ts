@@ -1,7 +1,7 @@
 // timeline.ts v1.0
 import { Round, Sim, Worker, reputation } from './sim';
 
-export type Phase = 'apertura' | 'compromiso' | 'revelado' | 'cierre';
+export type Phase = 'opening' | 'commit' | 'reveal' | 'close';
 export interface Frame {
   i: number; phase: Phase; label: string;
   view: Sim;                 // estado parcial listo para render()
@@ -82,27 +82,27 @@ function frame(i: number, phase: Phase, label: string, view: Sim, flash: Frame['
 // fotogramas del replay: apertura + (commit, reveal, cierre) por ronda + final
 export function frames(sim: Sim): Frame[] {
   const base = clone(sim);
-  const out: Frame[] = [frame(0, 'apertura', 'esperando pujas (compromisos ocultos)', { ...base, rounds: [], workers: [] }, {})];
+  const out: Frame[] = [frame(0, 'opening', 'waiting for bids (hidden commits)', { ...base, rounds: [], workers: [] }, {})];
   let idx = 0;
   for (const r of base.rounds) {
     const c = sim.meta.currency;
     const sealed: Round = { ...r, status: 'open', winner: null, closePrice: null, verified: false, paid: false, payment: 0, bids: r.bids.map((b) => ({ ...b, revealed: false })) };
-    out.push(frame(out.length, 'compromiso', `ronda ${r.id}: ${r.bids.length} pujas selladas (commit)`, viewAt(base, idx, sealed, idx, earnedOf(base, idx)), { round: r.id }));
+    out.push(frame(out.length, 'commit', `round ${r.id}: ${r.bids.length} sealed bids (commit)`, viewAt(base, idx, sealed, idx, earnedOf(base, idx)), { round: r.id }));
 
     const opened: Round = { ...r, status: 'closed', winner: null, closePrice: null, verified: false, paid: false, payment: 0, bids: r.bids.map((b) => ({ ...b, revealed: true })) };
-    out.push(frame(out.length, 'revelado', `ronda ${r.id}: pujas abiertas (reveal)`, viewAt(base, idx, opened, idx, earnedOf(base, idx)), { round: r.id }));
+    out.push(frame(out.length, 'reveal', `round ${r.id}: bids opened (reveal)`, viewAt(base, idx, opened, idx, earnedOf(base, idx)), { round: r.id }));
 
     const closed = idx + 1;
     const settled: Round = { ...r, status: r.status === 'open' ? 'closed' : r.status };
     const em = earnedOf(base, closed);
     const w = settled.winner;
     const price = settled.closePrice;
-    out.push(frame(out.length, 'cierre',
-      `ronda ${r.id}: ${price != null ? `cierre ${price} ${c}` : 'sin precio'} · ${w ?? 'sin ganador'} · ${settled.verified ? 'verificada' : 'no verificada'}${settled.paid ? ' · pagada' : ''}`,
+    out.push(frame(out.length, 'close',
+      `round ${r.id}: ${price != null ? `close ${price} ${c}` : 'no price'} · ${w ?? 'no winner'} · ${settled.verified ? 'verified' : 'unverified'}${settled.paid ? ' · paid' : ''}`,
       viewAt(base, idx, settled, closed, em), { round: r.id, worker: w ?? undefined }));
     idx = closed;
   }
-  out.push(frame(out.length, 'cierre', `simulacion completa: ${sim.stats.verifiedResults} resultados verificados`, clone(sim), {}));
+  out.push(frame(out.length, 'close', `simulation complete: ${sim.stats.verifiedResults} verified results`, clone(sim), {}));
   return out;
 }
 

@@ -80,7 +80,7 @@ async function load(): Promise<{ sim: Sim; live: boolean }> {
   if (contract) return { sim: await loadLive(contract, params.get('rpc') ?? DEFAULT_RPC), live: true };
   const url = params.get('sim') ?? 'sim.json';
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`no se pudo cargar ${url}: ${res.status}`);
+  if (!res.ok) throw new Error(`could not load ${url}: ${res.status}`);
   return { sim: normalizeSim(await res.json()), live: false };
 }
 
@@ -105,7 +105,7 @@ load().then(async ({ sim, live }) => {
   const badge = live ? '' : await loadSandboxBadge();
   app.innerHTML = renderSkipLink() + renderToolbar(sim, currentSpeed)
     + `<div class="replay"> ${renderReplayToggle()}`
-    + ` <button id="replay-restart" type="button" aria-label="reiniciar simulación">↺ reiniciar</button>`
+    + ` <button id="replay-restart" type="button" aria-label="restart simulation">↺ restart</button>`
     + `<span id="replay-status" class="status" role="status" aria-live="polite" aria-atomic="true"></span>${live ? '<span id="live-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>' : ''}${badge}</div>`
     + `<main id="view" tabindex="-1">${live ? renderIntro(sim, new Date().toLocaleTimeString()) + render(sim) : ''}</main>`;
   initSpeedControl();
@@ -121,7 +121,7 @@ load().then(async ({ sim, live }) => {
   if (live) {
     // provenance: show WHICH testnet account the page is reading, not a generic label
     const contract = new URLSearchParams(location.search).get('contract') ?? '';
-    const liveLabel = contract ? `en vivo · ${contract}` : 'modo en vivo (testnet)';
+    const liveLabel = contract ? `live · ${contract}` : 'live mode (testnet)';
     const s = document.getElementById('replay-status');
     if (s) s.textContent = liveLabel;
     // sondeo cada 10 s; LivePoller se pausa con la pestaña oculta

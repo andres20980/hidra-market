@@ -40,7 +40,7 @@ export class LivePoller {
 
   start(): void {
     this.stopped = false;
-    this.sink.announce?.(`${this.opts.label} · sondeo iniciado`);
+    this.sink.announce?.(`${this.opts.label} · polling started`);
     this.tick();
   }
 
@@ -77,16 +77,16 @@ export class LivePoller {
         this.failures = 0;
         if (!unchanged) this.sink.update(sim);
         const now = (this.opts.now ?? (() => new Date()))();
-        this.sink.status(`${this.opts.label} ${unchanged ? '· sin cambios' : '· actualizado'} ${now.toLocaleTimeString()}`);
-        if (recovered) this.sink.announce?.(`${this.opts.label} · conexión recuperada`);
+        this.sink.status(`${this.opts.label} ${unchanged ? '· unchanged' : '· updated'} ${now.toLocaleTimeString()}`);
+        if (recovered) this.sink.announce?.(`${this.opts.label} · connection restored`);
         this.reschedule();
       })
       .catch(() => {
         this.inflight = false;
         if (this.stopped) return;
         this.failures += 1;
-        this.sink.status(`${this.opts.label} · error de refresco ${this.failures} (se reintenta)`);
-        if (this.failures === 1) this.sink.announce?.(`${this.opts.label} · error de conexión, se reintenta`);
+        this.sink.status(`${this.opts.label} · refresh error ${this.failures} (retrying)`);
+        if (this.failures === 1) this.sink.announce?.(`${this.opts.label} · connection error, retrying`);
         this.reschedule();
       });
   }
