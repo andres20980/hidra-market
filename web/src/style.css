@@ -1,4 +1,4 @@
-/* style.css v1.9 — NEAR palette (green accent), dark default, unified control card, replay, hero */
+/* style.css v1.14 — NEAR palette (green accent), dark default, unified control card, replay, hero */
 :root {
   --bg: #f6f7f9; --fg: #17202a; --panel: #fff; --muted: #5b6b7b; --line: #d8dee6;
   --accent: #0a7d55; --ok: #157347; --bad: #b02a37; --warn: #8a5a00; --info: #0b6bcb;
@@ -129,7 +129,7 @@ tr.flash > td { animation: flash 900ms ease-out 1; }
 .hero-figure-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.9rem; }
 .hero-figure-head .k { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
 .factor-chip { font-size: 0.82rem; font-weight: 600; color: var(--bg); background: var(--accent);
-  border-radius: 999px; padding: 0.2rem 0.6rem; }
+  border-radius: 999px; padding: 0.2rem 0.6rem; white-space: nowrap; flex-shrink: 0; }
 .bar-row { display: grid; grid-template-columns: 5.5rem 1fr auto; align-items: center; gap: 0.6rem; margin: 0.5rem 0; }
 .bar-label { font-size: 0.8rem; color: var(--muted); }
 .bar-track { height: 1.1rem; background: var(--line); border-radius: 999px; overflow: hidden; }
@@ -231,4 +231,34 @@ th .unit { color: var(--muted); font-weight: 400; font-size: 0.85em; }
 @media (max-width: 480px) {
   table.rounds td > .chip { justify-self: start; }
   table.rounds td.nil { display: none; }
+}
+/* v1.10: bid cloud collapses to 5 chips + "+N" on phones (desktop keeps the full list) */
+td li.more { display: none; }
+@media (max-width: 480px) {
+  table.rounds td li.x { display: none; }
+  table.rounds td li.more { display: inline-block; color: var(--muted); border-style: dashed; }
+}
+/* v1.11: active round highlights the whole phone card (border + background), not just the cells */
+@media (max-width: 480px) {
+  table.rounds tr { transition: border-color 300ms ease, box-shadow 300ms ease; }
+  table.rounds tr.flash { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; animation: cardflash 900ms ease-out 1; }
+  table.rounds tr.flash > td { animation: none; background: transparent; }
+  @keyframes cardflash { from { background: color-mix(in srgb, var(--accent) 22%, var(--panel)); } to { background: var(--panel); } }
+}
+@media (max-width: 480px) and (prefers-reduced-motion: reduce) {
+  table.rounds tr, table.rounds tr.flash { transition: none; animation: none; }
+  table.rounds tr.flash { background: color-mix(in srgb, var(--accent) 12%, var(--panel)); }
+}
+/* v1.12: hero figure head — label may wrap, factor chip never splits */
+.hero-figure-head .k { min-width: 0; }
+/* v1.13: phone controls in 2 rows (speed+live+theme, then play/restart); long labels collapse */
+@media (max-width: 480px) {
+  .controls .toolbar { flex-wrap: nowrap; gap: 0.4rem; }
+  .controls .stats-mini { flex-wrap: nowrap; gap: 0.4rem; }
+  .controls .lbl-long { display: none; }
+  .speed-controls .btn-speed { padding: 0.35rem 0.5rem; }
+  .btn-live, .btn-theme { padding: 0.35rem 0.55rem; white-space: nowrap; }
+  .controls .replay > button { padding: 0.35rem 0.8rem; font-size: 0.9rem; }
+  .controls #sandbox-badge { flex: 1 1 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .controls #replay-status { flex: 1 1 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }

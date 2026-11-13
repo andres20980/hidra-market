@@ -25,7 +25,7 @@ describe('stable UI hooks', () => {
     expect(t).toContain('data-testid="live-demo-link"');
     expect(t).toContain(`href="?contract=${DEMO_CONTRACT}"`);
     expect(DEMO_CONTRACT.endsWith('.testnet')).toBe(true);
-    expect(t).toContain('Live on NEAR testnet');
+    expect(t.replace(/<[^>]+>/g, '')).toContain('Live on NEAR testnet');
   });
 
   it('marks the sandbox badge with a stable hook', () => {

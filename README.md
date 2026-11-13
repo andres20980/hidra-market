@@ -8,7 +8,7 @@ Built at NEAR HACKATHON 2026 (1-14 Nov). Tracks: `swarms` (main), `agents`, `sec
 
 Live on NEAR testnet: [`market.hidra-mkt-221016.testnet`](https://testnet.nearblocks.io/address/market.hidra-mkt-221016.testnet). One full round there ended `Settled` with the worker at reputation Beta(2,1); the attestation that released the escrow is [`7P7EjoEh...`](https://testnet.nearblocks.io/txns/7P7EjoEh1EBxL6i7hNEqFVsHtFAdhMWffNxphsiLinkQ). All hashes are in [`docs/TESTNET_DEPLOY.md`](docs/TESTNET_DEPLOY.md).
 
-Testnet market run (8 rounds, 0.05 NEAR each, seed 479): 3 `Settled`, 5 `Refunded` (unverified work is refunded, never paid). Settling attestations, [round 5](https://testnet.nearblocks.io/txns/2nRfNFS9WhiVotRcuaXZfVCvJccv5odjHGjyGH5eGo5w), [round 6](https://testnet.nearblocks.io/txns/3wvLGeoFfrUCb6Bdv25esXX9u79chANoyt245LAtDmQx), [round 8](https://testnet.nearblocks.io/txns/5PZ5roYpusmt2zVkkCHAH3SF2dqNH9AbY2Cvu7bXqGY4); full proof in `swarm/out/testnet_market.json`.
+Testnet market run (8 rounds, 0.05 NEAR each, seed 479): 3 `Settled`, 5 `Refunded` (unverified work is refunded, never paid). Settling attestations, [round 5](https://testnet.nearblocks.io/txns/2nRfNFS9WhiVotRcuaXZfVCvJccv5odjHGjyGH5eGo5w), [round 6](https://testnet.nearblocks.io/txns/3wvLGeoFfrUCb6Bdv25esXX9u79chANoyt245LAtDmQx), [round 8](https://testnet.nearblocks.io/txns/5PZ5roYpusmt2zVkkCHAH3SF2dqNH9AbY2Cvu7bXqGY4); full proof in `swarm/out/testnet_market.json`. Anyone can re-check it with no keys and 0 NEAR: `cd swarm && npm run verify:testnet` (read-only RPC; checks all 8 rounds, their txs and the 5 reputations).
 
 ## Track fit
 
@@ -50,7 +50,7 @@ Requirements: Rust (toolchain pinned in `contract/rust-toolchain.toml`) with [`c
 
 | Do | See |
 | --- | --- |
-| `make verify` | Contract wasm built; 55 Rust tests pass (36 unit + 19 near-sandbox integration); 30 swarm tests; web typecheck, 101+1 web tests (one more, against the live testnet RPC, runs with `LIVE_CONTRACT` set) and build. Last line `verify: OK`. 45-70 s with warm caches; the first build downloads crates and npm packages. |
+| `make verify` | Contract wasm built; 57 Rust tests pass (36 unit + 21 near-sandbox integration); 30 swarm tests; web typecheck, 102+1 web tests (one more, against the live testnet RPC, runs with `LIVE_CONTRACT` set) and build. Last line `verify: OK`. 45-70 s with warm caches; the first build downloads crates and npm packages. |
 | `make demo` | In about 50 s, with no LLM calls and no external network: the deterministic simulator and its horizon sweep, a real round on near-sandbox (commit → reveal → close → submit → attest), an on-chain check of the worker's limited key, the web build, and the summary below. |
 | `make testnet` | Without `swarm/.env`: exit code 2 and a message saying what to set. With it: `worker-1.<account>.testnet` keeps exactly one function-call key for the four worker methods, with a 0.25 NEAR allowance, checked on-chain. |
 | `make testnet-deploy` | Deploys the market to testnet and plays one live round to `Settled` in about 3 minutes ([`docs/TESTNET_DEPLOY.md`](docs/TESTNET_DEPLOY.md); `npm run testnet:account` in `swarm/` gets a faucet account first). |
@@ -102,7 +102,7 @@ Existed before 1 Nov 2026 (baseline, not part of this submission):
 Built during the hackathon window, from scratch, in this directory:
 
 - [`RULES.md`](RULES.md): auction, escrow, reputation and spending-cap rules, written before the contract.
-- [`contract/`](contract/): Rust contract (near-sdk 5.30): sealed-bid reverse auction with commit-reveal, escrow, attestation, refunds, Beta(α, β) reputation, per-agent spending cap, views. 55 tests (36 unit + 19 near-sandbox).
+- [`contract/`](contract/): Rust contract (near-sdk 5.30): sealed-bid reverse auction with commit-reveal, escrow, attestation, refunds, Beta(α, β) reputation, per-agent spending cap, views. 57 tests (36 unit + 21 near-sandbox).
 - [`swarm/`](swarm/): ledger exporter and anonymiser, deterministic simulator (market vs round-robin) and horizon sweep, near-sandbox scripts (one round, five rounds, limited-key worker), testnet account, deployment and live-round scripts.
 - [`web/`](web/): static page (Vite + TypeScript, no backend) for simulation replay and live contract views.
 - `Makefile`, this README and [`docs/`](docs/).
@@ -130,6 +130,7 @@ verifier --attest(ok)-->                 +--> ok: pay winner, alpha+1     not ok
 ## Sustainability and roadmap
 
 - Maintained as open source (MIT). Every change must keep `make verify` green: contract, swarm and web tests plus the offline demo, with no network and no LLM calls.
+- Continuous integration: [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the contract (wasm build + unit and near-sandbox tests), web (typecheck, tests, build, 150 kB code budget) and swarm tests on every push and pull request, without testnet calls or keys.
 - The rules live in [`RULES.md`](RULES.md) and are written before the code; any change to the auction, escrow or reputation starts there, then a test, then the contract.
 - Who pays for it: publishers already lose most of their agent spend on unverified work (see the data above); the market only charges for verified results, so a small per-settlement fee is the natural revenue model. Not implemented yet.
 - Next steps, in order (none is part of this submission): NEAR Intents to settle rewards across chains; a verifier running in a NEAR AI Cloud TEE so attestations do not depend on a trusted account; listing the market in the NEAR Agent Market.

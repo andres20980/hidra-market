@@ -1,4 +1,4 @@
-// render.ts v1.6 — render HTML estático (sin framework) + hooks data-testid estables + hero
+// render.ts v1.8 — render HTML estático (sin framework) + hooks data-testid estables + hero
 import { Round, Sim, Worker, reputation } from "./sim";
 import { DEMO_CONTRACT } from "./rpc";
 
@@ -77,9 +77,11 @@ function workerRow(w: Worker, currency: string, hot?: string | null): string {
 }
 
 function roundRow(r: Round, hot?: number | null): string {
+  const BID_PREVIEW = 5;
+  const extra = r.bids.length - BID_PREVIEW;
   const bids = r.bids
-    .map((b) => `<li title="${esc(b.worker)}">${esc(b.worker).replace(/^worker-/, '')}</li>`)
-    .join("");
+    .map((b, i) => `<li${i >= BID_PREVIEW ? ` class="x"` : ``} title="${esc(b.worker)}">${esc(b.worker).replace(/^worker-/, '')}</li>`)
+    .join("") + (extra > 0 ? `<li class="more" aria-hidden="true">+${extra}</li>` : ``);
   const [chipCls, chipLabel] = r.paid
     ? ["settled", "Settled"]
     : r.verified
@@ -173,8 +175,8 @@ export function renderToolbar(sim: Sim, speed: number = 1): string {
       <button type="button" class="btn-speed ${speed === 3 ? "active" : ""}" data-speed="3" aria-pressed="${speed === 3}" aria-label="Speed 3x">x3</button>
     </div>
     <div class="stats-mini">
-      <a class="btn btn-live" data-testid="live-demo-link" href="?contract=${DEMO_CONTRACT}" aria-label="View the live market on NEAR testnet">Live on NEAR testnet</a>
-      <button type="button" id="theme-toggle" class="btn-theme" aria-label="Toggle light and dark theme">◐ theme</button>
+      <a class="btn btn-live" data-testid="live-demo-link" href="?contract=${DEMO_CONTRACT}" aria-label="View the live market on NEAR testnet">Live<span class="lbl-long"> on NEAR testnet</span></a>
+      <button type="button" id="theme-toggle" class="btn-theme" aria-label="Toggle light and dark theme">◐<span class="lbl-long"> theme</span></button>
     </div>
   </div>`;
 }

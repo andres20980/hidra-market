@@ -80,3 +80,43 @@ describe('rounds mobile cards', () => {
     for (const l of ['#', 'task', 'publisher', 'bids', 'winner', 'price', 'status']) expect(src).toContain(`data-label="${l}"`);
   });
 });
+
+describe('bid cloud on phones', () => {
+  it('marks bids beyond 5 as collapsible and adds a +N counter', () => {
+    const r0 = sim.rounds[0];
+    const many = { ...sim, rounds: [{ ...r0, bids: Array.from({ length: 10 }, (_, i) => ({ ...(r0.bids[0] ?? {}), worker: `worker-${i}` })) }] } as Sim;
+    const html = render(many);
+    expect((html.match(/<li class="x"/g) ?? []).length).toBe(5);
+    expect(html).toContain('<li class="more" aria-hidden="true">+5</li>');
+    const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
+    expect(css).toMatch(/table\.rounds td li\.x \{ display: none; \}/);
+  });
+});
+
+describe('active round on phones', () => {
+  it('flags the hot round row and highlights the whole card', () => {
+    const id = sim.rounds[0].id;
+    expect(render(sim, { round: id })).toMatch(/<tr data-round="\d+" class="flash"/);
+    const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
+    expect(css).toMatch(/table\.rounds tr\.flash \{ border-color: var\(--accent\)/);
+    expect(css).toMatch(/prefers-reduced-motion: reduce\) \{\s*table\.rounds tr, table\.rounds tr\.flash \{ transition: none; animation: none; \}/);
+  });
+});
+
+describe('hero factor chip on phones', () => {
+  it('never splits the "N× cheaper" chip across lines', () => {
+    const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
+    expect(css).toMatch(/\.factor-chip \{[^}]*white-space: nowrap; flex-shrink: 0;/);
+  });
+  it('fits phone controls in two rows with short labels', () => {
+    const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
+    expect(css).toMatch(/\.controls \.toolbar \{ flex-wrap: nowrap;/);
+    expect(css).toMatch(/\.controls \.lbl-long \{ display: none; \}/);
+  });
+
+  it('keeps replay status and sandbox badge on one line each on phones', () => {
+    const css = readFileSync(fileURLToPath(new URL('../src/style.css', import.meta.url)), 'utf8');
+    expect(css).toMatch(/\.controls #sandbox-badge \{ flex: 1 1 100%; white-space: nowrap;[^}]*text-overflow: ellipsis;/);
+    expect(css).toMatch(/\.controls #replay-status \{ flex: 1 1 100%; white-space: nowrap;/);
+  });
+});
