@@ -19,6 +19,17 @@ describe("index.html metadata", () => {
     expect(has('name="twitter:card"')).toBe(true);
   });
 
+  it("ships a self-contained SVG favicon (no 404 on the hosted demo)", () => {
+    expect(has('rel="icon"')).toBe(true);
+    expect(has("data:image/svg+xml,")).toBe(true);
+  });
+
+  it("degrades gracefully without JavaScript on the hosted demo", () => {
+    expect(has("<noscript>")).toBe(true);
+    expect(has("necesita JavaScript")).toBe(true);
+    expect(has("github.com/andres20980/hidra-market")).toBe(true);
+  });
+
   it("honours light/dark colour schemes on mobile", () => {
     expect(has('name="color-scheme" content="light dark"')).toBe(true);
     expect(has('media="(prefers-color-scheme: light)"')).toBe(true);

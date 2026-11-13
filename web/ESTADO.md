@@ -1,0 +1,2 @@
+## 11:49 · trabajando en: a11y/sostenibilidad — noscript fallback en index.html (nota sost=7)
+## 11:51 · hecho: a11y/sostenibilidad — noscript fallback en index.html (SPA degrada sin JS: titular + contexto + repo link) + test meta · resultado: 88 passed | 1 skipped (14 files, +1 test); build OK dist/index.html 2.38 kB sha256=c1a724479462d6d6 js index-Dr9TFEQF.js 21.27 kB; noscript presente en dist · siguiente paso: esperar re-cribado juez o replicar tabla Track fit en README raíz cuando se autorice

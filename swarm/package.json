@@ -15,9 +15,11 @@
     "sim:multiseed": "python3 scripts/multiseed_ci.py",
     "reproduce": "python3 scripts/reproduce_checks.py",
     "reproduce:check": "python3 scripts/reproduce_checks.py --no-regen",
+    "market:plan": "node scripts/market_plan_emit.mjs",
     "repro:fuente": "python3 scripts/reproducibilidad_desde_fuente.py",
     "release": "python3 scripts/package_release.py",
     "testnet:deploy": "node --env-file=.env scripts/deploy_and_seed_testnet.mjs",
+    "testnet:market": "node --env-file=.env scripts/testnet_market_rounds.mjs",
     "testnet:account": "node scripts/create_testnet_account.mjs"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-# scripts/reproducibilidad_desde_fuente.py v1.1 - comprueba que re-exportar los ledgers fuente
+# scripts/reproducibilidad_desde_fuente.py v1.2 - comprueba que re-exportar los ledgers fuente
 # produce un hidra_week.jsonl byte-identico (mismo sha256) al commitado.
 # Cierra el ciclo de reproducibilidad: ledgers fuente -> export -> dataset -> simulador -> cifras publicadas.
 # Uso: python3 scripts/reproducibilidad_desde_fuente.py   (solo python3, sin red)
@@ -12,6 +12,7 @@ from pathlib import Path
 
 SWARM = Path(__file__).resolve().parent.parent
 DATASET = SWARM / "data" / "hidra_week.jsonl"
+MANIFEST = SWARM / "data" / "hidra_week.manifest.json"
 EXPORT = SWARM / "scripts" / "export_ledger.py"
 
 
@@ -27,9 +28,13 @@ def main() -> None:
     antes = sha256(DATASET)
 
     # Copia de seguridad en /tmp (fuera del arbol empaquetado por release).
+    # El manifest tambien se respalda: export_ledger reescribe su timestamp
+    # `generado_en` en cada corrida, y el dataset esta CONGELADO hasta el cierre;
+    # restaurarlo deja el test sin efecto colateral sobre ficheros commitados.
     with tempfile.NamedTemporaryFile(delete=False, suffix=".jsonl") as tf:
         backup = Path(tf.name)
         tf.write(DATASET.read_bytes())
+    manifest_backup = MANIFEST.read_bytes() if MANIFEST.exists() else None
 
     try:
         res = subprocess.run(
@@ -48,6 +53,9 @@ def main() -> None:
             DATASET.write_bytes(backup.read_bytes())
             sys.exit(1)
     finally:
+        # Restaura el manifest congelado (solo cambia su timestamp al re-exportar).
+        if manifest_backup is not None:
+            MANIFEST.write_bytes(manifest_backup)
         backup.unlink(missing_ok=True)
 
 

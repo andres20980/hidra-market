@@ -149,7 +149,12 @@ manifest = {
     "sha256_dataset": digest.hexdigest(),
 }
 MANIFEST_FILE = OUTPUT_FILE.with_name("hidra_week.manifest.json")
-MANIFEST_FILE.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+# Atomic write (tmp + replace), like the .jsonl above: a concurrent `cp` of producto/
+# during the criba never catches a half-written manifest.json (cause of the intermittent
+# simulator.test.js FALLA, which reads this file).
+MANIFEST_TMP = MANIFEST_FILE.with_name(MANIFEST_FILE.name + ".tmp")
+MANIFEST_TMP.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+MANIFEST_TMP.replace(MANIFEST_FILE)
 
 print(f"Export completed: {exported_lines} lines written, {total_lines} lines read")
 print("Result distribution:", dict(result_counts))

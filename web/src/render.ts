@@ -81,7 +81,7 @@ export function renderToolbar(sim: Sim, speed: number = 1): string {
     </div>
     <div class="stats-mini">
       <span>Verificados: ${sim.stats.verifiedResults}</span>
-      <a class="btn-live" data-testid="live-demo-link" href="?contract=${DEMO_CONTRACT}">en vivo (testnet)</a>
+      <a class="btn-live" data-testid="live-demo-link" href="?contract=${DEMO_CONTRACT}" aria-label="Ver el mercado en vivo en NEAR testnet">Live on NEAR testnet</a>
       <button type="button" id="theme-toggle" class="btn-theme" aria-label="Cambiar entre tema claro y oscuro">◐ tema</button>
     </div>
   </div>`;

@@ -1,0 +1,300 @@
+{
+  "kind": "market_plan_preview",
+  "note": "network-free deterministic preview; the on-chain replay (npm run testnet:market) submits these same rounds",
+  "seed": 479,
+  "workers": [
+    {
+      "index": 1,
+      "alias": "worker-48",
+      "runs": 838,
+      "locked_rate": 0.14797136038186157
+    },
+    {
+      "index": 2,
+      "alias": "worker-44",
+      "runs": 401,
+      "locked_rate": 0.032418952618453865
+    },
+    {
+      "index": 3,
+      "alias": "worker-17",
+      "runs": 451,
+      "locked_rate": 0.024390243902439025
+    },
+    {
+      "index": 4,
+      "alias": "worker-39",
+      "runs": 450,
+      "locked_rate": 0.02
+    },
+    {
+      "index": 5,
+      "alias": "worker-107",
+      "runs": 546,
+      "locked_rate": 0.014652014652014652
+    }
+  ],
+  "settled_count": 3,
+  "refunded_count": 5,
+  "rounds": [
+    {
+      "round": 1,
+      "task_id": "round-1",
+      "bidders": [
+        {
+          "index": 1,
+          "price": 216
+        },
+        {
+          "index": 2,
+          "price": 234
+        },
+        {
+          "index": 3,
+          "price": 216
+        },
+        {
+          "index": 4,
+          "price": 208
+        },
+        {
+          "index": 5,
+          "price": 206
+        }
+      ],
+      "winner": 5,
+      "winner_price": 206,
+      "attest_ok": false,
+      "state": "Refunded"
+    },
+    {
+      "round": 2,
+      "task_id": "round-2",
+      "bidders": [
+        {
+          "index": 2,
+          "price": 232
+        },
+        {
+          "index": 3,
+          "price": 214
+        },
+        {
+          "index": 4,
+          "price": 220
+        },
+        {
+          "index": 5,
+          "price": 312
+        }
+      ],
+      "winner": 3,
+      "winner_price": 214,
+      "attest_ok": false,
+      "state": "Refunded"
+    },
+    {
+      "round": 3,
+      "task_id": "round-3",
+      "bidders": [
+        {
+          "index": 3,
+          "price": 351
+        },
+        {
+          "index": 4,
+          "price": 214
+        },
+        {
+          "index": 5,
+          "price": 327
+        },
+        {
+          "index": 1,
+          "price": 228
+        },
+        {
+          "index": 2,
+          "price": 212
+        }
+      ],
+      "winner": 2,
+      "winner_price": 212,
+      "attest_ok": false,
+      "state": "Refunded"
+    },
+    {
+      "round": 4,
+      "task_id": "round-4",
+      "bidders": [
+        {
+          "index": 4,
+          "price": 212
+        },
+        {
+          "index": 5,
+          "price": 351
+        },
+        {
+          "index": 1,
+          "price": 240
+        },
+        {
+          "index": 2,
+          "price": 309
+        }
+      ],
+      "winner": 4,
+      "winner_price": 212,
+      "attest_ok": false,
+      "state": "Refunded"
+    },
+    {
+      "round": 5,
+      "task_id": "round-5",
+      "bidders": [
+        {
+          "index": 5,
+          "price": 333
+        },
+        {
+          "index": 1,
+          "price": 210
+        },
+        {
+          "index": 2,
+          "price": 348
+        },
+        {
+          "index": 3,
+          "price": 327
+        }
+      ],
+      "winner": 1,
+      "winner_price": 210,
+      "attest_ok": true,
+      "state": "Settled"
+    },
+    {
+      "round": 6,
+      "task_id": "round-6",
+      "bidders": [
+        {
+          "index": 1,
+          "price": 176
+        },
+        {
+          "index": 2,
+          "price": 354
+        },
+        {
+          "index": 3,
+          "price": 360
+        }
+      ],
+      "winner": 1,
+      "winner_price": 176,
+      "attest_ok": true,
+      "state": "Settled"
+    },
+    {
+      "round": 7,
+      "task_id": "round-7",
+      "bidders": [
+        {
+          "index": 2,
+          "price": 324
+        },
+        {
+          "index": 3,
+          "price": 315
+        },
+        {
+          "index": 4,
+          "price": 309
+        }
+      ],
+      "winner": 4,
+      "winner_price": 309,
+      "attest_ok": false,
+      "state": "Refunded"
+    },
+    {
+      "round": 8,
+      "task_id": "round-8",
+      "bidders": [
+        {
+          "index": 3,
+          "price": 348
+        },
+        {
+          "index": 4,
+          "price": 476
+        },
+        {
+          "index": 5,
+          "price": 321
+        },
+        {
+          "index": 1,
+          "price": 152
+        },
+        {
+          "index": 2,
+          "price": 342
+        }
+      ],
+      "winner": 1,
+      "winner_price": 152,
+      "attest_ok": true,
+      "state": "Settled"
+    }
+  ],
+  "reputations": [
+    {
+      "index": 1,
+      "alias": "worker-48",
+      "locked_rate": 0.14797136038186157,
+      "alpha": 4,
+      "beta": 1,
+      "mean": 0.8,
+      "price_multiplier": 1.25
+    },
+    {
+      "index": 2,
+      "alias": "worker-44",
+      "locked_rate": 0.032418952618453865,
+      "alpha": 1,
+      "beta": 2,
+      "mean": 0.3333333333333333,
+      "price_multiplier": 3
+    },
+    {
+      "index": 3,
+      "alias": "worker-17",
+      "locked_rate": 0.024390243902439025,
+      "alpha": 1,
+      "beta": 2,
+      "mean": 0.3333333333333333,
+      "price_multiplier": 3
+    },
+    {
+      "index": 4,
+      "alias": "worker-39",
+      "locked_rate": 0.02,
+      "alpha": 1,
+      "beta": 3,
+      "mean": 0.25,
+      "price_multiplier": 4
+    },
+    {
+      "index": 5,
+      "alias": "worker-107",
+      "locked_rate": 0.014652014652014652,
+      "alpha": 1,
+      "beta": 2,
+      "mean": 0.3333333333333333,
+      "price_multiplier": 3
+    }
+  ]
+}

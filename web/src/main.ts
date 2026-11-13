@@ -106,7 +106,7 @@ load().then(async ({ sim, live }) => {
   app.innerHTML = renderSkipLink() + renderToolbar(sim, currentSpeed)
     + `<div class="replay"> ${renderReplayToggle()}`
     + ` <button id="replay-restart" type="button" aria-label="reiniciar simulación">↺ reiniciar</button>`
-    + `<span id="replay-status" class="status"></span>${live ? '<span id="live-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>' : ''}${badge}</div>`
+    + `<span id="replay-status" class="status" role="status" aria-live="polite" aria-atomic="true"></span>${live ? '<span id="live-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>' : ''}${badge}</div>`
     + `<main id="view" tabindex="-1">${live ? renderIntro(sim, new Date().toLocaleTimeString()) + render(sim) : ''}</main>`;
   initSpeedControl();
   const themeToggle = document.getElementById('theme-toggle');
@@ -119,8 +119,11 @@ load().then(async ({ sim, live }) => {
     themeToggle.setAttribute('aria-pressed', String(next === 'dark'));
   });
   if (live) {
+    // provenance: show WHICH testnet account the page is reading, not a generic label
+    const contract = new URLSearchParams(location.search).get('contract') ?? '';
+    const liveLabel = contract ? `en vivo · ${contract}` : 'modo en vivo (testnet)';
     const s = document.getElementById('replay-status');
-    if (s) s.textContent = 'modo en vivo (testnet)';
+    if (s) s.textContent = liveLabel;
     // sondeo cada 10 s; LivePoller se pausa con la pestaña oculta
     const poller = new LivePoller(
       {
@@ -133,7 +136,7 @@ load().then(async ({ sim, live }) => {
         status: (t) => { if (s) s.textContent = t; },
         announce: (t) => { const a = document.getElementById('live-announcement'); if (a) a.textContent = t; },
       },
-      { intervalMs: 10000, label: 'modo en vivo (testnet)', load: async () => (await load()).sim, fingerprint: fingerprintSim },
+      { intervalMs: 10000, label: liveLabel, load: async () => (await load()).sim, fingerprint: fingerprintSim },
     );
     poller.start();
     document.addEventListener('visibilitychange', () => {

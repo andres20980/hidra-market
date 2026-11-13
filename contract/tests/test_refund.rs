@@ -1,4 +1,6 @@
-// test_refund.rs v1.0
+// test_refund.rs v1.1
+// Pin the neard ledger version so a clean clone fetches the exact same binary.
+const SANDBOX_VERSION: &str = "2.14.0";
 use contract::TaskState;
 use near_api::types::Data;
 use near_api::{Account, Contract, NetworkConfig, Signer};
@@ -41,7 +43,7 @@ async fn _dummy() -> Result<(), Box<dyn std::error::Error>> {
 
 #[tokio::test]
 async fn test_refund_expired_no_attest() -> testresult::TestResult<()> {
-    let sandbox = near_sandbox::Sandbox::start_sandbox().await?;
+    let sandbox = near_sandbox::Sandbox::start_sandbox_with_version(SANDBOX_VERSION).await?;
     let network = NetworkConfig::from_rpc_url("sandbox", sandbox.rpc_addr.parse()?);
     let signer = Signer::from_secret_key(
         near_sandbox::config::DEFAULT_GENESIS_ACCOUNT_PRIVATE_KEY.parse()?,

@@ -1,4 +1,6 @@
-// test_rules.rs v1.0
+// test_rules.rs v1.1
+// Pin the neard ledger version so a clean clone fetches the exact same binary.
+const SANDBOX_VERSION: &str = "2.14.0";
 use near_api::types::Data;
 use near_api::{Account, Contract, NetworkConfig, Signer};
 use near_sdk::NearToken;
@@ -20,7 +22,7 @@ async fn create_subaccount(
 
 #[tokio::test]
 async fn test_full_round_with_three_workers() -> testresult::TestResult<()> {
-    let sandbox = near_sandbox::Sandbox::start_sandbox().await?;
+    let sandbox = near_sandbox::Sandbox::start_sandbox_with_version(SANDBOX_VERSION).await?;
     let network = NetworkConfig::from_rpc_url("sandbox", sandbox.rpc_addr.parse()?);
     let signer = Signer::from_secret_key(
         near_sandbox::config::DEFAULT_GENESIS_ACCOUNT_PRIVATE_KEY.parse()?,
