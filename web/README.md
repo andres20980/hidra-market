@@ -1,5 +1,7 @@
 # Web: live market page
 
+**▶ Live demo:** https://andres20980.github.io/hidra-market/ — replays a real swarm run, no backend. Append `?contract=market.hidra-mkt-221016.testnet` for live mode against the NEAR testnet contract.
+
 Static Vite + TypeScript page (no backend). Shows rounds, bids (commit → reveal), closing price, who gets paid, worker reputation, and cost per verified result (market vs round-robin).
 
 ## Demo mode (simulation, no network)
@@ -12,7 +14,7 @@ Static Vite + TypeScript page (no backend). Shows rounds, bids (commit → revea
 ## Live mode (testnet contract)
 - Open `/?contract=market.hidra-mkt-221016.testnet` → you see the live round read from the deployed contract's views over the public FastNEAR RPC (`https://test.rpc.fastnear.com`); `&rpc=<url>` overrides the endpoint. Bids are u64 milliNEAR, rewards yoctoNEAR.
 - `LIVE_CONTRACT=market.hidra-mkt-221016.testnet npx vitest run test/live_testnet.test.ts` → the same parsing against the live RPC (offline, `npm test` replays the recorded payload in `fixtures/testnet_live_views.json`).
-- Wrong id (4xx) → message "revisa id de contrato"; unknown account → "contrato inexistente"; RPC down (5xx) → "RPC caído".
+- Wrong id (HTTP 400) → `RPC … rejected (HTTP 400) - contract id`; unknown account → `… contract does not exist`; RPC down (HTTP 503) → `… down (HTTP 503)`.
 
 ## Theme
 Light/dark follows the system; force dark with `localStorage.theme = 'dark'`.
@@ -22,7 +24,7 @@ In demo mode the page shows a "validated on near-sandbox" badge read from `publi
 
 ## Offline serving (100% local)
 - Build `npm run build` copies `public/sandbox_round.json` and `public/sim.json` to `dist/`. 
-- Serve offline: `python3 -m http.server -d dist 8000` → open http://localhost:8000 . No network needed; `sim.json` y `sandbox_round.json` se cargan desde `dist/`.
+- Serve offline: `python3 -m http.server -d dist 8000` → open http://localhost:8000 . No network needed; `sim.json` and `sandbox_round.json` load from `dist/`.
 
 ## Hosted demo
 - Live on GitHub Pages: https://andres20980.github.io/hidra-market/ (built from `web/` by `.github/workflows/pages.yml`, official `upload-pages-artifact`/`deploy-pages` actions; relative `base: './'` so `sim.json`/`sandbox_round.json` load without a backend).

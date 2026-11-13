@@ -1,17 +1,18 @@
-// main.ts v1.2 — entry: ?contract= → modo en vivo por RPC; si no, demo con replay ?sim= + toggle de tema
+// main.ts v1.3 — entry: ?contract= → modo en vivo por RPC; si no, demo con replay ?sim= + toggle de tema
 import './style.css';
 import { loadSandboxBadge } from './sandbox';
 
 function themeInit(): 'light' | 'dark' {
   const saved = localStorage.getItem('theme') as 'light' | 'dark' | null;
-  const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  // dark by default; only an explicit saved choice or an explicit OS light preference turns it light
+  const dark = saved ? saved === 'dark' : !matchMedia('(prefers-color-scheme: light)').matches;
   const theme = dark ? 'dark' : 'light';
   document.documentElement.dataset.theme = theme;
   return theme;
 }
 
 import { Sim } from './sim';
-import { render, renderIntro, renderToolbar, renderReplayToggle, renderSkipLink, loadingSpinner, esc } from './render';
+import { render, renderHero, renderIntro, renderToolbar, renderReplayToggle, renderSkipLink, renderHowItWorks, renderFooter, loadingSpinner, esc } from './render';
 import { Replay, Dom } from './replay';
 import { normalizeSim } from './normalize';
 import { LivePoller } from './live';
@@ -103,11 +104,12 @@ themeInit();
 app.innerHTML = loadingSpinner();
 load().then(async ({ sim, live }) => {
   const badge = live ? '' : await loadSandboxBadge();
-  app.innerHTML = renderSkipLink() + renderToolbar(sim, currentSpeed)
-    + `<div class="replay"> ${renderReplayToggle()}`
+  app.innerHTML = renderSkipLink() + renderHero(sim) + renderToolbar(sim, currentSpeed)
+    + `<div id="replay" class="replay"> ${renderReplayToggle()}`
     + ` <button id="replay-restart" type="button" aria-label="restart simulation">↺ restart</button>`
     + `<span id="replay-status" class="status" role="status" aria-live="polite" aria-atomic="true"></span>${live ? '<span id="live-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>' : ''}${badge}</div>`
-    + `<main id="view" tabindex="-1">${live ? renderIntro(sim, new Date().toLocaleTimeString()) + render(sim) : ''}</main>`;
+    + `<main id="view" tabindex="-1">${live ? renderIntro(sim, new Date().toLocaleTimeString()) + render(sim) : ''}</main>`
+    + renderHowItWorks() + renderFooter();
   initSpeedControl();
   const themeToggle = document.getElementById('theme-toggle');
   themeToggle?.setAttribute('aria-pressed', String(document.documentElement.dataset.theme === 'dark'));
