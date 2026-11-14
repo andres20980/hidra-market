@@ -1,59 +1,59 @@
-# RULES.md v1.4 · Hidra Market — reglas del contrato
+# RULES.md v1.5 · Hidra Market — contract rules
 
-Especificación de la implementación en `contract/`. Los plazos se expresan en alturas de bloque NEAR.
+Specification of the implementation in `contract/`. Deadlines are expressed in NEAR block heights.
 
-## 1. Roles y creación de tareas
+## 1. Roles and task creation
 
-- El publicador llama `post_task(id, verifier, commit_len, reveal_len)` con un depósito adjunto mayor que cero; el depósito completo es la recompensa en escrow.
-- El identificador de tarea debe ser único. El contrato fija `commit_end = altura_actual + commit_len` y `reveal_end = commit_end + reveal_len`; los cálculos que desbordan se rechazan.
-- El publicador declara el verificador de esa tarea. No hay depósito para registrarse, comprometer ni revelar pujas.
-- Un trabajador llama `register_worker`; su reputación inicial es Beta(1,1), es decir, `alpha=1`, `beta=1`.
+- The publisher calls `post_task(id, verifier, commit_len, reveal_len)` with an attached deposit greater than zero; the full deposit is the reward held in escrow.
+- The task identifier must be unique. The contract sets `commit_end = current_height + commit_len` and `reveal_end = commit_end + reveal_len`; calculations that overflow are rejected.
+- The publisher names the verifier for that task. No deposit is required to register, commit or reveal bids.
+- A worker calls `register_worker`; its initial reputation is Beta(1,1), that is, `alpha=1`, `beta=1`.
 
-## 2. Compromiso y revelación
+## 2. Commit and reveal
 
-- Solo trabajadores registrados pueden llamar `commit_bid`. Se admite un compromiso por trabajador y tarea, de exactamente 32 bytes (SHA-256), mientras `altura < commit_end`.
-- El precio de la puja es un `u64` en miliNEAR (80 = 0,08 NEAR): es la oferta del trabajador; el pago liberado es siempre la recompensa en escrow.
-- El compromiso se calcula como `SHA-256(precio_u64_be || sal_u32_be || cuenta_utf8)`: precio `u64` y sal `u32` en big-endian, seguidos de los bytes UTF-8 del identificador de cuenta, sin separadores.
-- `reveal_bid(precio, sal)` solo se acepta en `[commit_end, reveal_end)`. Debe hacerlo la cuenta del compromiso y el hash recalculado debe coincidir; en caso contrario se rechaza. Cada compromiso válido se revela una sola vez. El precio revelado debe ser mayor que cero (`Price must be > 0`): una puja a 0 tendría precio ajustado 0 con cualquier reputación y anularía la ponderación Beta (`contract/tests/test_zero_price_bid.rs`).
-- Una duración cero es válida: `commit_len=0` impide comprometer y `reveal_len=0` impide revelar.
+- Only registered workers can call `commit_bid`. One commitment per worker and task is accepted, of exactly 32 bytes (SHA-256), while `height < commit_end`.
+- The bid price is a `u64` in milliNEAR (80 = 0.08 NEAR): it is the worker's offer; the payment released is always the reward held in escrow.
+- The commitment is computed as `SHA-256(price_u64_be || salt_u32_be || account_utf8)`: `u64` price and `u32` salt in big-endian, followed by the UTF-8 bytes of the account identifier, with no separators.
+- `reveal_bid(price, salt)` is only accepted in `[commit_end, reveal_end)`. It must come from the account that committed and the recomputed hash must match; otherwise it is rejected. Each valid commitment is revealed only once. The revealed price must be greater than zero (`Price must be > 0`): a bid of 0 would have an adjusted price of 0 at any reputation and would defeat the Beta weighting (`contract/tests/test_zero_price_bid.rs`).
+- A zero duration is valid: `commit_len=0` prevents committing and `reveal_len=0` prevents revealing.
 
-## 3. Cierre y selección del ganador
+## 3. Closing and winner selection
 
-- Cualquier cuenta puede llamar `close_round` desde `reveal_end`, inclusive. Se ignoran compromisos no revelados.
-- Para reputación Beta(`alpha`, `beta`), la media es `alpha/(alpha+beta)` y el precio ajustado es `precio / media`. Si `alpha=0`, la puja no es elegible. Una reputación no inicializada usa el prior (1,1).
-- La comparación del precio ajustado se hace como fracción exacta `precio*(alpha+beta)/alpha`, sin redondeo.
-- Gana el menor precio ajustado. En igualdad exacta, desempata, en este orden: menor precio nominal; mayor `alpha+beta`; mayor `alpha`; y cuenta con orden lexicográfico menor.
-- Si no hay pujas reveladas elegibles, la ronda se cierra sin ganador.
+- Any account can call `close_round` from `reveal_end`, inclusive. Unrevealed commitments are ignored.
+- For a Beta(`alpha`, `beta`) reputation, the mean is `alpha/(alpha+beta)` and the adjusted price is `price / mean`. If `alpha=0`, the bid is not eligible. An uninitialised reputation uses the prior (1,1).
+- Adjusted prices are compared as the exact fraction `price*(alpha+beta)/alpha`, with no rounding.
+- The lowest adjusted price wins. On an exact tie, the tie-breakers are, in this order: lower nominal price; higher `alpha+beta`; higher `alpha`; and the lexicographically smaller account.
+- If there are no eligible revealed bids, the round closes without a winner.
 
-## 4. Resultado, atestación, pago y reembolso
+## 4. Result, attestation, payment and refund
 
-- Solo el ganador de una ronda cerrada puede llamar `submit_result` y registrar un hash de resultado; solo se admite una entrega.
-- Solo el verificador declarado en `post_task` puede llamar `attest`, y solo después de recibir el resultado. La primera atestación termina la tarea.
-- Con `attest(ok=true)`, se paga la recompensa íntegra al ganador, se suma a su gasto acumulado y `alpha` aumenta en uno. El gasto solo cuenta recompensas efectivamente pagadas y se acumula entre tareas.
-- El tope de gasto por agente (`cap_per_agent`) se fija al inicializar el contrato. Si el pago excede el tope restante, la tarea se marca reembolsada y se devuelve el depósito al publicador; no se paga ni se modifica gasto o reputación.
-- Con `attest(ok=false)`, se devuelve la recompensa al publicador y `beta` del ganador aumenta en uno.
-- Desde `reveal_end + 100` bloques, inclusive, cualquier cuenta puede llamar `refund_expired` si la tarea sigue cerrada. Devuelve el depósito al publicador. Si no se presentó resultado y había ganador, se suma uno a su `beta`; si sí se presentó, no hay penalización. Una ronda cerrada sin ganador también se puede reembolsar.
+- Only the winner of a closed round can call `submit_result` and record a result hash; only one delivery is accepted.
+- Only the verifier named in `post_task` can call `attest`, and only after the result has been submitted. The first attestation ends the task.
+- With `attest(ok=true)`, the full reward is paid to the winner, it is added to the winner's cumulative spend and `alpha` increases by one. Spend only counts rewards actually paid and accumulates across tasks.
+- The per-agent spending cap (`cap_per_agent`) is set when the contract is initialised. If the payment exceeds the remaining cap, the task is marked refunded and the deposit is returned to the publisher; nothing is paid and neither spend nor reputation changes.
+- With `attest(ok=false)`, the reward is returned to the publisher and the winner's `beta` increases by one.
+- From `reveal_end + 100` blocks, inclusive, any account can call `refund_expired` if the task is still closed. It returns the deposit to the publisher. If no result was submitted and there was a winner, one is added to its `beta`; if a result was submitted, there is no penalty. A round closed without a winner can also be refunded.
 
-## 5. Vistas
+## 5. Views
 
-`get_task(id)`, `list_tasks(from, limit)`, `get_round(task_id)` y `get_reputation(account)` exponen tareas, rondas y reputación; `get_reputation` devuelve `alpha`, `beta` y media como cadenas JSON. `list_tasks` devuelve como máximo 100 tareas por llamada (tope de gas de la vista) y corta la página al superar 8.192 compromisos+pujas acumulados (siempre al menos una tarea; el cliente pagina con `from += len`), para no superar los 4 MiB de respuesta de NEAR.
+`get_task(id)`, `list_tasks(from, limit)`, `get_round(task_id)` and `get_reputation(account)` expose tasks, rounds and reputation; `get_reputation` returns `alpha`, `beta` and the mean as JSON strings. `list_tasks` returns at most 100 tasks per call (view gas cap) and cuts the page once it exceeds 8,192 accumulated commitments+bids (always at least one task; the client paginates with `from += len`), so as not to exceed NEAR's 4 MiB response limit.
 
-## 6. Secuencia textual de una ronda
+## 6. One round as a text sequence
 
-1. Publicador → `post_task` con depósito, verificador y ventanas.
-2. Trabajadores → `register_worker` y `commit_bid(SHA-256(precio||sal||cuenta))` antes de `commit_end`.
-3. Trabajadores → `reveal_bid(precio, sal)` desde `commit_end` y antes de `reveal_end`.
-4. Cualquier cuenta → `close_round` desde `reveal_end`; el contrato selecciona al ganador.
-5. Ganador → `submit_result(hash)`; verificador → `attest(ok)`.
-6. Si `ok=true` y el tope lo permite, cobra el ganador y aumenta `alpha`; si `ok=false`, se reembolsa al publicador y aumenta `beta`. Si vence el plazo sin atestación, cualquier cuenta activa el reembolso.
+1. Publisher → `post_task` with deposit, verifier and windows.
+2. Workers → `register_worker` and `commit_bid(SHA-256(price||salt||account))` before `commit_end`.
+3. Workers → `reveal_bid(price, salt)` from `commit_end` and before `reveal_end`.
+4. Any account → `close_round` from `reveal_end`; the contract selects the winner.
+5. Winner → `submit_result(hash)`; verifier → `attest(ok)`.
+6. If `ok=true` and the cap allows it, the winner is paid and `alpha` increases; if `ok=false`, the publisher is refunded and `beta` increases. If the deadline passes without an attestation, any account can trigger the refund.
 
-## 7. Reproducibilidad del artefacto (actualizado 14-nov 04:00)
+## 7. Artifact reproducibility (updated 14 Nov 04:00)
 
-- Toolchain fijado en `contract/rust-toolchain.toml` (Rust 1.95.0 + target `wasm32-unknown-unknown`) y dependencias congeladas en `Cargo.lock`; builds con `--offline`.
-- Build determinista: `contract/check-reproducible.sh` fuerza 2 rebuilds seguidos y exige bytes idénticos (demostrado el 13-nov). Artefactos del `src/lib.rs` vigente (sha256 `5ac18db0…`, build 14-nov 05:38): wasm crudo `target/wasm32-unknown-unknown/release/contract.wasm` = 222953 B, sha256 `60d6ea078f6648384a115b9e585811c980793bb1aa309c250173e475bf9c55d2`; copia de near-cli `target/near/contract.wasm` = 181063 B, sha256 `f054dc77aece86d87339adadc77201044f159ee031b6661f604dacee49cfce48` (= code_hash vivo en testnet `HB9u9hrh…`).
-- Tests: `cargo test -q --offline` → 111 (38 unitarios en `src/lib.rs` + 73 de integración near-sandbox en 42 ficheros de `tests/`).
-- Verificador del módulo: `cd producto/contract && cargo near build non-reproducible-wasm && cargo test -q`.
+- Toolchain pinned in `contract/rust-toolchain.toml` (Rust 1.95.0 + `wasm32-unknown-unknown` target) and dependencies locked in `Cargo.lock`; builds run with `--offline`.
+- Deterministic build: `contract/check-reproducible.sh` forces 2 consecutive rebuilds and requires identical bytes (demonstrated on 13 Nov). Artifacts of the current `src/lib.rs` (sha256 `5ac18db0…`, built 14 Nov 05:38): raw wasm `target/wasm32-unknown-unknown/release/contract.wasm` = 222953 B, sha256 `60d6ea078f6648384a115b9e585811c980793bb1aa309c250173e475bf9c55d2`; near-cli copy `target/near/contract.wasm` = 181063 B, sha256 `f054dc77aece86d87339adadc77201044f159ee031b6661f604dacee49cfce48` (= code_hash live on testnet `HB9u9hrh…`).
+- Tests: `cargo test -q --offline` → 111 (38 unitarios en `src/lib.rs` + 73 de integración near-sandbox en 42 ficheros de `tests/`), i.e. 38 unit tests in `src/lib.rs` + 73 near-sandbox integration tests across 42 files in `tests/` (the first wording is pinned literally by `contract/tests/test_doc_counts.rs`).
+- Module verifier: `cd producto/contract && cargo near build non-reproducible-wasm && cargo test -q`.
 
-## 8. Límite de pujas y gas del cierre
+## 8. Bid limit and closing gas
 
-- Tope de 512 compromisos por tarea (`MAX_BIDS_PER_TASK`; el 513.º se rechaza con `Task bid limit reached`). El gas de `close_round` crece ~96 Ggas por puja (medido en sandbox: 2,5 Tgas con 4 pujas, ~51 Tgas en el tope): quien cierre una ronda llena debe adjuntar ≥ 60 Tgas. Si se queda sin gas, la llamada revierte entera y la tarea sigue cerrable con más gas (`contract/tests/test_close_round_gas_sandbox.rs`).
+- Cap of 512 commitments per task (`MAX_BIDS_PER_TASK`; the 513th is rejected with `Task bid limit reached`). The gas of `close_round` grows by ~96 Ggas per bid (measured in sandbox: 2.5 Tgas with 4 bids, ~51 Tgas at the cap): whoever closes a full round must attach ≥ 60 Tgas. If it runs out of gas, the whole call reverts and the task can still be closed with more gas (`contract/tests/test_close_round_gas_sandbox.rs`).

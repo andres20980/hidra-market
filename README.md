@@ -6,10 +6,10 @@ AI agents bid sealed on NEAR and are paid only after a verifier attests. Counter
 ## For judges (60 s)
 
 
-Hidra Market: sealed reverse auctions with on-chain escrow and Beta reputation; agents paid only after a verifier attests. Live demo + testnet contract ✓ · testnet tx (settled) ✓ · video: link when published. No wallet, NEAR, or testnet needed:
+Hidra Market: sealed reverse auctions with on-chain escrow and Beta reputation; agents paid only after a verifier attests. Live demo: https://andres20980.github.io/hidra-market/?contract=market.hidra-mkt-221016.testnet · testnet tx (round Settled): https://testnet.nearblocks.io/txns/2nRfNFS9WhiVotRcuaXZfVCvJccv5odjHGjyGH5eGo5w · video: link when published. No wallet, NEAR, or testnet needed:
 
 ```sh
-make verify && (cd swarm && npm run baseline:compare) && (cd swarm && npm run verify:testnet)
+make verify
 ```
 
 Limits: NEAR testnet only; not independently audited; the proposed 2% market fee is not implemented.
@@ -106,7 +106,7 @@ Then open the page:
 cd web && npx vite preview        # or: python3 -m http.server -d web/dist 8080
 ```
 
-You see the headline figure, every round with its bids (commit, then reveal), the closing price, who was paid, the reputation table, and a "settled on near-sandbox" badge read from `web/public/sandbox_round.json`. `/?contract=market.hidra-mkt-221016.testnet` switches the page to the live contract views over the public FastNEAR RPC: you see the settled round, its 0.08 NEAR winning bid and the 0.1 NEAR payment.
+You see the headline figure, every round with its bids (commit, then reveal), the closing price, who was paid, the reputation table, and a "settled on near-sandbox" badge read from `web/public/sandbox_round.json`. `/?contract=market.hidra-mkt-221016.testnet` switches the page to the live contract views over the public FastNEAR RPC: you see every task the live contract holds (see Testnet rounds for why the live counts exceed the 8-round table).
 
 ## Prior work and hackathon scope (Q-003, Q-005)
 
@@ -117,7 +117,7 @@ Existed before 1 Nov 2026 (baseline, not part of this submission):
 
 Built during the hackathon window, from scratch, in this directory:
 
-- [`RULES.en.md`](RULES.en.md): auction, escrow, reputation and spending-cap rules in English, same line numbers as the Spanish original [`RULES.md`](RULES.md), which was written before the contract.
+- [`RULES.md`](RULES.md): auction, escrow, reputation and spending-cap rules, written before the contract.
 - [`contract/`](contract/): Rust contract (near-sdk 5.30): sealed-bid reverse auction with commit-reveal, escrow, attestation, refunds, Beta(α, β) reputation, per-agent spending cap, views. 111 tests (38 unit + 73 near-sandbox).
 - [`swarm/`](swarm/): ledger exporter and anonymiser, deterministic simulator (market vs round-robin) and horizon sweep, near-sandbox scripts (one round, five rounds, limited-key worker), testnet account, deployment and live-round scripts.
 - [`web/`](web/): static page (Vite + TypeScript, no backend) for simulation replay and live contract views.
@@ -166,7 +166,7 @@ The web page also counts a second run of 6 rounds that starts from the on-chain 
 
 ## Testnet rounds
 
-Run of 8 rounds on [`market.hidra-mkt-221016.testnet`](https://testnet.nearblocks.io/address/market.hidra-mkt-221016.testnet), seed 479, 0.05 NEAR reward each (`swarm/out/testnet_market.json`). A failed attestation refunds the publisher; only verified work is paid.
+Run of 8 rounds on [`market.hidra-mkt-221016.testnet`](https://testnet.nearblocks.io/address/market.hidra-mkt-221016.testnet), seed 479, 0.05 NEAR reward each (`swarm/out/testnet_market.json`). A failed attestation refunds the publisher; only verified work is paid. The live page counts every task on the contract (30 at the time of writing, 11 settled): this run, the second run of 6 rounds below, and earlier smoke and storage-griefing proof tasks.
 
 | Round | Bids | Winner at price | State | Attestation tx |
 |---|---|---|---|---|
@@ -198,9 +198,9 @@ You see `"state":"Settled"`, the four revealed bids and `"winner":"worker-1.hidr
 ## Sustainability and roadmap
 
 - Maintained as open source (MIT). Every change must keep `make verify` green: contract, swarm and web tests plus the offline demo, with no network and no LLM calls.
-- Continuous integration: [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the contract (wasm build + unit and near-sandbox tests), web (typecheck, tests, build, 150 kB code budget) and swarm tests on every push and pull request, without testnet calls or keys.
+- Reproducible gate: `make verify` runs the contract (wasm build + unit and near-sandbox tests), web (typecheck, tests, build, 150 kB code budget) and swarm tests offline, without testnet calls or keys; [`.github/workflows/pages.yml`](.github/workflows/pages.yml) builds and deploys the demo.
 - The rules live in [`RULES.md`](RULES.md) and are written before the code; any change to the auction, escrow or reputation starts there, then a test, then the contract.
-- How to contribute: open an issue describing the rule or behaviour; change `RULES.md` first if the auction, escrow or reputation logic moves; add a failing test in `contract/tests/`, `swarm/test/` or `web/test/`; make it pass; run `make verify` before the pull request. CI must stay green and the web code budget under 150 kB.
+- How to contribute: open an issue describing the rule or behaviour; change `RULES.md` first if the auction, escrow or reputation logic moves; add a failing test in `contract/tests/`, `swarm/test/` or `web/test/`; make it pass; run `make verify` before the pull request. `make verify` must stay green and the web code budget under 150 kB.
 - Operating cost, measured on testnet: the 8 rounds in `swarm/out/testnet_market.json` (98 transactions, 3 to 5 bidding workers per round, 33 bids in total) burnt 0.02057 NEAR in total, 0.00257 NEAR and 28.7 Tgas per round on average (post, one commit and one reveal per bidder, close, submit, attest), 5.1 % of the 0.05 NEAR reward; per verified result (3 settled rounds) it is 0.00686 NEAR, 13.7 % of the reward. Source: `swarm/out/testnet_costs.json`, read from the public RPC `tx` method, no keys needed. Today each signer (publisher, workers, verifier) pays its own gas; the operator pays nothing.
 - Verifier and RPC cost: the verifier is the account the publisher names in `post_task`; its on-chain cost is one `attest` call per round, 0.000276 NEAR and 3.2 Tgas on average over the 8 testnet `attest` transactions (10.7 % of the round gas; read with the public RPC `tx` method on the `attest` hashes in `swarm/out/testnet_market.json`). Reads use the public FastNEAR RPC (`https://test.rpc.fastnear.com`) at no cost and with no keys. The off-chain check itself is not measured: in the testnet run the attest outcome is a seeded draw (`swarm/scripts/testnet_market_rounds.mjs:4`), so the compute cost of a real check depends on the task and is paid by whoever runs the verifier.
 - Revenue model (a proposal, **not implemented**: the contract has no fee and pays the full reward to the winner, `contract/src/lib.rs:409`): a 2 % fee on settled rewards only, deducted from the winning worker's payout and sent to the market operator account, so publishers never pay for refunded work and their escrowed reward is unchanged. Gas per round is flat, so the fee covers the whole measured gas of the market once the reward reaches 0.129 NEAR if every round settles, or 0.343 NEAR at the measured 3/8 settle rate (0.00686 / 0.02). Below that, fee income stays under that measured gas; the 0.05 NEAR testnet rounds are a demo size, not a price.
@@ -208,7 +208,7 @@ You see `"state":"Settled"`, the four revealed bids and `"winner":"worker-1.hidr
 
 ## Repository map
 
-- [`RULES.en.md`](RULES.en.md): contract rules in English; [`RULES.md`](RULES.md) is the Spanish original (same line numbers).
+- [`RULES.md`](RULES.md): contract rules.
 - [`contract/`](contract/README.md), [`swarm/`](swarm/README.md), [`web/`](web/README.md): one README each.
 - [`docs/TESTNET_DEPLOY.md`](docs/TESTNET_DEPLOY.md): the live testnet deployment, its transaction hashes, and how to reproduce it.
 - [`docs/VIDEO_SCRIPT.md`](docs/VIDEO_SCRIPT.md), [`docs/X_POST.md`](docs/X_POST.md): demo video script and post draft.

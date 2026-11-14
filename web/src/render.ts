@@ -86,7 +86,7 @@ export function renderHero(sim: Sim, live = false): string {
       <p class="hero-big"><span class="hero-x num">${x}&#215;</span> <span>cheaper if escrow had paid our real ledger <span class="hero-big-sub num">${runs} runs</span></span></p>
       ${bar("Pay every run", r.perRunUsd, "muted")}
       ${bar("Pay verified", r.escrowUsd, "good")}
-      <p class="hero-scenario" data-testid="hero-scenario"><span class="tag">${live ? 'testnet' : 'simulated'}</span> ${scen}: <span class="scen-fig"><span class="num">${fmt(market)}</span> vs <span class="num">${fmt(rr)}</span> ${c}&nbsp;&middot; <span class="num">${factor.toFixed(0)}&#215; cheaper</span></span></p>
+      <p class="hero-scenario" data-testid="hero-scenario"><span class="tag">${live ? 'testnet' : 'simulated'}</span> ${scen}: <span class="scen-fig"><span class="num">${fmt(market)}</span> vs <span class="num">${fmt(rr)}</span> ${c}&nbsp;&middot; <span class="num">${factor.toFixed(factor < 10 ? 1 : 0)}&#215; cheaper</span></span></p>
       <p class="hero-figure-foot"><a data-testid="hero-live-link" href="${EXPLORER}${DEMO_CONTRACT}" target="_blank" rel="noopener" aria-label="View the contract on the NEAR testnet explorer (opens in a new tab)">Escrow contract on nearblocks &#8599;</a></p>
     </div>
   </header>`;

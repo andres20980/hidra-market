@@ -1,59 +1,59 @@
-# Contribuir y mantener el módulo `swarm`
+# Contributing to and maintaining the `swarm` module
 
-Mercado verificable de trabajo para enjambres de IA: simulador determinista, replay del
-ledger real sobre NEAR testnet y cliente on-chain. Esta guía deja el módulo mantenible más
-allá del hackathon: cómo reproducir cada cifra, cómo extenderlo y qué nunca se toca.
+A verifiable work market for AI swarms: deterministic simulator, replay of the real ledger
+on NEAR testnet and on-chain client. This guide keeps the module maintainable beyond the
+hackathon: how to reproduce every figure, how to extend it and what must never be touched.
 
-## Reproducir cada titular (offline, 0 NEAR, clon limpio)
+## Reproduce every headline (offline, 0 NEAR, clean clone)
 
 ```sh
 npm ci
 npm run verify:all
 ```
 
-Puerta única: encadena los tests de vitest, `verify:figures` (`FIGURES OK 5/5`) y
-`reproduce:check` (`reproduce_checks: 6/6 OK`). Falla con código ≠ 0 en la primera
-discrepancia. No necesita cuenta NEAR, claves ni red: es lo que ejecuta el jurado.
+Single gate: it chains the vitest tests, `verify:figures` (`FIGURES OK 5/5`) and
+`reproduce:check` (`reproduce_checks: 6/6 OK`). It exits non-zero on the first
+mismatch. It needs no NEAR account, keys or network: it is what the jury runs.
 
-Verificación pública del replay on-chain (solo lectura RPC, 0 NEAR, requiere red):
+Public verification of the on-chain replay (RPC reads only, 0 NEAR, needs network):
 
 ```sh
-npm run verify:testnet   # OK 8/8 rounds, 98 txs contra market.hidra-mkt-221016.testnet
+npm run verify:testnet   # OK 8/8 rounds, 98 txs against market.hidra-mkt-221016.testnet
 ```
 
-## Política del dataset (CONGELADO)
+## Dataset policy (FROZEN)
 
-`data/hidra_week.jsonl` es un replay anónimo del ledger real y está **congelado** en su
-versión de git durante el concurso. Su `sha256` y su reparto por resultado los fija
-`reproduce:check`. No regeneres `data/`, `out/`, `worker_rates.json` ni `workers_top20.json`:
-rompe las cifras publicadas y los candados prosa↔datos. Si derivan, restáuralos con
-`git checkout HEAD -- <fichero>`.
+`data/hidra_week.jsonl` is an anonymous replay of the real ledger and is **frozen** at its
+git version for the duration of the contest. Its `sha256` and its outcome split are pinned by
+`reproduce:check`. Do not regenerate `data/`, `out/`, `worker_rates.json` or `workers_top20.json`:
+it breaks the published figures and the prose↔data locks. If they drift, restore them with
+`git checkout HEAD -- <file>`.
 
-## Extender el mercado
+## Extending the market
 
-- **Añadir un cerebro/worker:** su tasa de éxito sale del ledger real en `worker_rates.json`
-  (derivado del dataset, no a mano). El replay usa esa tasa LOCKED por worker.
-- **Añadir una ronda o baseline:** script nuevo en `scripts/`, salida en `out/*.json`, test
-  offline en `test/`. Toda cifra impresa en `README.md` ha de derivarse de su `out/*.json`:
-  `test/readme_figures.test.js` la ata y falla si texto y dato divergen.
-- **Tocar el contrato:** si cambia el mensaje de un `require!` o una constante que el módulo
-  publica (p. ej. la reserva de storage), actualiza el proof; `test/contract_source_pins.test.js`
-  lee `contract/src/lib.rs` y falla si el proof diverge de la fuente.
+- **Adding a brain/worker:** its success rate comes from the real ledger in `worker_rates.json`
+  (derived from the dataset, not by hand). The replay uses that LOCKED rate per worker.
+- **Adding a round or baseline:** new script in `scripts/`, output in `out/*.json`, offline
+  test in `test/`. Every figure printed in `README.md` must be derived from its `out/*.json`:
+  `test/readme_figures.test.js` ties it and fails if text and data diverge.
+- **Touching the contract:** if the message of a `require!` or a constant that the module
+  publishes changes (e.g. the storage reserve), update the proof; `test/contract_source_pins.test.js`
+  reads `contract/src/lib.rs` and fails if the proof diverges from the source.
 
-## Disciplina de testnet (dinero de prueba, aun así acotado)
+## Testnet discipline (test money, still capped)
 
-- Credenciales SOLO por `.env` (plantilla en `.env.example`); los scripts las leen con
-  `node --env-file=.env`. Nunca imprimas ni copies claves ni `*.key`.
-- Presupuesto TOTAL ≤ 2,5 NEAR de testnet. Mira el saldo antes de gastar.
-- No redespliegues el estado del contrato ni borres estado; redespliegue solo de código.
-- Nunca mainnet, nunca fondos reales, nunca `git push` desde un agente.
+- Credentials ONLY via `.env` (template in `.env.example`); the scripts read them with
+  `node --env-file=.env`. Never print or copy keys or `*.key` files.
+- TOTAL budget ≤ 2.5 NEAR of testnet funds. Check the balance before spending.
+- Do not redeploy the contract's state or wipe state; code-only redeploys.
+- Never mainnet, never real funds, never `git push` from an agent.
 
-## Seguridad
+## Security
 
-- Sin secretos en el repo: `.env` y `*.key` están en `.gitignore`. `npm run release`
-  empaqueta sin ellos y escanea secretos; el manifiesto lleva el `sha256` de cada fichero.
+- No secrets in the repo: `.env` and `*.key` are in `.gitignore`. `npm run release`
+  packages without them and scans for secrets; the manifest carries the `sha256` of every file.
 
 ## Tests
 
-`npm test` corre la suite vitest completa; `npm run verify:all` es la puerta de entrega.
-Un cambio solo cuenta con su artefacto real y el verificador en verde.
+`npm test` runs the full vitest suite; `npm run verify:all` is the delivery gate.
+A change only counts with its real artefact and the verifier green.

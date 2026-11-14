@@ -13,9 +13,9 @@ interface.
 | 18-25 | Attest passes: worker paid on NEAR testnet | Local round 5 receipt: Settled, attest_ok true, 0.05 NEAR escrow, full attestation hash |
 | 25-32 | Attest fails: publisher refunded | Local round 1 receipt: Refunded, attest_ok false, 0.05 NEAR escrow, full attestation hash |
 | 32-37 | Real attack fixed: oversized result | testnet_security.json: 129-byte hash rejected, 128-byte limit, valid result subsequently Settled |
-| 37-42 | Real attack fixed: reputation laundering | testnet_reregistration.json: re-registration rejected, Beta [1, 3, 0.25] unchanged |
+| 37-42 | Attack blocked on testnet: reputation laundering | testnet_reregistration.json: re-registration rejected, Beta [1, 3, 0.25] unchanged |
 | 42-48 | Real attack fixed: zero-price bid | testnet_zero_price.json: price 0 rejected, honest bidder wins, final state Settled |
-| 48-54 | 10.6x cheaper per verified result | Frozen product ledger comparison; USD 0.061071 vs 0.005769 per verified result |
+| 48-54 | 10.6x cheaper per verified result (counterfactual, estimated cost) | Frozen product ledger comparison; USD 0.061071 vs 0.005769 per verified result |
 | 54-60 | Reproduce locally: make demo | Product lifecycle, make demo, github.com/andres20980/hidra-market |
 
 The 10.6x figure is a retrospective application of the escrow payment rule to

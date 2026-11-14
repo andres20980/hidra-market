@@ -1,4 +1,4 @@
-// test/contributing_guide.test.js v1.0
+// test/contributing_guide.test.js v1.1
 // Sustainability lock: CONTRIBUTING.md must stay honest. Every `npm run X` it
 // cites has to exist in package.json, and the non-negotiable maintenance rules
 // (single gate, dataset freeze, testnet budget cap, .env-only secrets) must be
@@ -26,13 +26,13 @@ describe("CONTRIBUTING.md stays pinned to real scripts and rules", () => {
   });
 
   it("keeps the dataset-freeze rule", () => {
-    expect(guide).toMatch(/CONGELADO/);
+    expect(guide).toMatch(/FROZEN/);
     expect(guide).toContain("data/hidra_week.jsonl");
   });
 
   it("keeps the testnet budget cap and .env-only secrets rule", () => {
-    expect(guide).toMatch(/2,5 NEAR/);
+    expect(guide).toMatch(/2\.5 NEAR/);
     expect(guide).toContain(".env");
-    expect(guide).toMatch(/nunca mainnet/i);
+    expect(guide).toMatch(/never mainnet/i);
   });
 });
