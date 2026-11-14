@@ -45,7 +45,7 @@ async function main() {
       });
       const body = await res.json().catch(() => ({}));
       if (res.status !== 429 && body?.error?.code !== -429) return body;
-      if (attempt >= 5) throw new Error(`RPC ${url} rate-limited (429)`);
+      if (attempt >= 7) throw new Error(`RPC ${url} rate-limited (429)`);
       await new Promise((ok) => setTimeout(ok, 1000 * 2 ** attempt));
     }
   };
@@ -60,8 +60,9 @@ async function main() {
       let response;
       for (const sender of senders) {
         const query = { tx_hash: tx.hash, sender_account_id: sender, wait_until: "FINAL" };
-        let result = await rpc("tx", query);
-        if (!result?.result?.transaction_outcome && archivalUrl !== rpcUrl) result = await rpc("tx", query, archivalUrl);
+        let result = await rpc("tx", query, archivalUrl);
+        if (!result?.result?.transaction_outcome && archivalUrl !== rpcUrl) result = await rpc("tx", query);
+        await new Promise((ok) => setTimeout(ok, 120));
         if (result?.result?.transaction_outcome) {
           response = result.result;
           break;

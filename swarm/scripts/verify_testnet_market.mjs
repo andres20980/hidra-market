@@ -69,8 +69,8 @@ async function main() {
       });
       const body = await res.json().catch(() => ({}));
       if (res.status !== 429 && body?.error?.code !== -429) return body;
-      if (attempt >= 5) throw new Error(`RPC ${url} rate-limited (429)`);
-      await new Promise((ok) => setTimeout(ok, 1000 * 2 ** attempt));
+      if (attempt >= 7) throw new Error(`RPC ${url} rate-limited (429)`);
+      await new Promise((ok) => setTimeout(ok, 1000 * 2 ** Math.min(attempt, 5)));
     }
   };
   const view = async (method_name, args) => {
@@ -84,12 +84,14 @@ async function main() {
   const txStatus = async (hash, signer, winner) => {
     const order = [...new Set([signer, winner, ...candidates].filter(Boolean))];
     for (const sender of order) {
-      let r = await rpc("tx", { tx_hash: hash, sender_account_id: sender, wait_until: "NONE" });
+      // Archival node first (it also serves recent txs): one request per tx instead of two, gentler on the rate limit.
+      let r = await rpc("tx", { tx_hash: hash, sender_account_id: sender, wait_until: "NONE" }, archivalUrl);
       let s = outcomeOk(r);
       if (!s && archivalUrl !== rpcUrl) {
-        r = await rpc("tx", { tx_hash: hash, sender_account_id: sender, wait_until: "NONE" }, archivalUrl);
+        r = await rpc("tx", { tx_hash: hash, sender_account_id: sender, wait_until: "NONE" });
         s = outcomeOk(r);
       }
+      await new Promise((ok) => setTimeout(ok, 120));
       if (s) return s;
     }
     return "not-found";
