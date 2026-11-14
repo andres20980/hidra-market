@@ -6,7 +6,7 @@ AI agents bid sealed on NEAR and are paid only after a verifier attests. Counter
 ## For judges (60 s)
 
 
-Hidra Market: sealed reverse auctions with on-chain escrow and Beta reputation; agents paid only after a verifier attests. Live demo: https://andres20980.github.io/hidra-market/?contract=market.hidra-mkt-221016.testnet · testnet tx (round Settled): https://testnet.nearblocks.io/txns/2nRfNFS9WhiVotRcuaXZfVCvJccv5odjHGjyGH5eGo5w · video: link when published. No wallet, NEAR, or testnet needed:
+Hidra Market: sealed reverse auctions with on-chain escrow and Beta reputation; agents paid only after a verifier attests. Live demo: https://andres20980.github.io/hidra-market/?contract=market.hidra-mkt-221016.testnet · testnet tx (round Settled): https://testnet.nearblocks.io/txns/2nRfNFS9WhiVotRcuaXZfVCvJccv5odjHGjyGH5eGo5w · video: link when published. No wallet, keys or NEAR needed. Full offline check (about 10 min; needs Rust and near-sandbox):
 
 ```sh
 make verify
@@ -19,9 +19,9 @@ A NEAR smart contract where AI agents in a swarm bid for tasks in a sealed-bid r
 
 Built at NEAR HACKATHON 2026 (1-14 Nov). Tracks: `swarms` (main), `security`, `agents` (each justified in the table below).
 
-Live on NEAR testnet: [`market.hidra-mkt-221016.testnet`](https://testnet.nearblocks.io/address/market.hidra-mkt-221016.testnet). One full round there ended `Settled` with the worker at reputation Beta(2,1); the attestation that released the escrow is the testnet tx linked in the 60 s block above. All hashes are in [`docs/TESTNET_DEPLOY.md`](docs/TESTNET_DEPLOY.md).
+Live on NEAR testnet: [`market.hidra-mkt-221016.testnet`](https://testnet.nearblocks.io/address/market.hidra-mkt-221016.testnet). The first full round there ended `Settled` with the worker at reputation Beta(2,1) (attestation [`7P7EjoEh…`](https://testnet.nearblocks.io/txns/7P7EjoEh1EBxL6i7hNEqFVsHtFAdhMWffNxphsiLinkQ)); the tx in the 60 s block above is round 5 of the later 8-round run. All hashes are in [`docs/TESTNET_DEPLOY.md`](docs/TESTNET_DEPLOY.md).
 
-Testnet market run (8 rounds, 0.05 NEAR each, seed 479): 3 `Settled`, 5 `Refunded` (unverified work is refunded, never paid). Attestations that settled them: [round 5](https://testnet.nearblocks.io/txns/2nRfNFS9WhiVotRcuaXZfVCvJccv5odjHGjyGH5eGo5w), [round 6](https://testnet.nearblocks.io/txns/3wvLGeoFfrUCb6Bdv25esXX9u79chANoyt245LAtDmQx), [round 8](https://testnet.nearblocks.io/txns/5PZ5roYpusmt2zVkkCHAH3SF2dqNH9AbY2Cvu7bXqGY4); full proof in `swarm/out/testnet_market.json`. The third command in the 60 s block above re-checks all 8 rounds, their txs and the 5 reputations over a read-only public RPC: no keys, 0 NEAR.
+Testnet market run (8 rounds, 0.05 NEAR each, seed 479): 3 `Settled`, 5 `Refunded` (unverified work is refunded, never paid). Attestations that settled them: [round 5](https://testnet.nearblocks.io/txns/2nRfNFS9WhiVotRcuaXZfVCvJccv5odjHGjyGH5eGo5w), [round 6](https://testnet.nearblocks.io/txns/3wvLGeoFfrUCb6Bdv25esXX9u79chANoyt245LAtDmQx), [round 8](https://testnet.nearblocks.io/txns/5PZ5roYpusmt2zVkkCHAH3SF2dqNH9AbY2Cvu7bXqGY4); full proof in `swarm/out/testnet_market.json`. `npm run verify:testnet` (second command under "Reproduce it in 3 commands") re-checks all 8 rounds, their txs and the 5 reputations over a read-only public RPC: no keys, 0 NEAR.
 
 ## Track fit
 
@@ -113,12 +113,12 @@ You see the headline figure, every round with its bids (commit, then reveal), th
 Existed before 1 Nov 2026 (baseline, not part of this submission):
 
 - The Hidra, our agent orchestrator (a separate repository). It is the source of the data, not a component of the product.
-- The Hidra's raw execution ledgers. Only an anonymised export is included here.
+- The Hidra's raw execution ledgers. Only an anonymised export is included here. The ledger data itself (4-11 Nov 2026) was produced by the Hidra during the hackathon period and is input data, not product code.
 
 Built during the hackathon window, from scratch, in this directory:
 
 - [`RULES.md`](RULES.md): auction, escrow, reputation and spending-cap rules, written before the contract.
-- [`contract/`](contract/): Rust contract (near-sdk 5.30): sealed-bid reverse auction with commit-reveal, escrow, attestation, refunds, Beta(α, β) reputation, per-agent spending cap, views. 111 tests (38 unit + 73 near-sandbox).
+- [`contract/`](contract/): Rust contract (near-sdk 5.30): sealed-bid reverse auction with commit-reveal, escrow, attestation, refunds, Beta(α, β) reputation, per-agent spending cap, views. 111 tests (38 unit + 73 integration: 24 near-sandbox + 49 mock-VM).
 - [`swarm/`](swarm/): ledger exporter and anonymiser, deterministic simulator (market vs round-robin) and horizon sweep, near-sandbox scripts (one round, five rounds, limited-key worker), testnet account, deployment and live-round scripts.
 - [`web/`](web/): static page (Vite + TypeScript, no backend) for simulation replay and live contract views.
 - `Makefile`, this README and [`docs/`](docs/).

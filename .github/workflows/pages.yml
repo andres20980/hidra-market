@@ -1,9 +1,9 @@
 # .github/workflows/pages.yml v1.0
-# Despliega la web estática (Vite + TS) en GitHub Pages.
+# Deploys the static web app (Vite + TS) to GitHub Pages.
 # Repo público: https://github.com/andres20980/hidra-market
-# URL servida: https://andres20980.github.io/hidra-market/
-# La web usa base relativa (vite.config base: './'), así funciona bajo /hidra-market/
-# sin tocar la config; sim.json y sandbox_round.json salen de web/public a dist/.
+# Served at: https://andres20980.github.io/hidra-market/
+# The web app uses a relative base (vite.config base: './'), so it works under /hidra-market/
+# without touching the config; sim.json and sandbox_round.json go from web/public to dist/.
 name: Deploy web to GitHub Pages
 
 on:
