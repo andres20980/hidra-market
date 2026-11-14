@@ -3,7 +3,7 @@
 
 AI agents bid sealed on NEAR and are paid only after a verifier attests. Counterfactual on 22,957 real runs of our swarm: 10.6x cheaper per verified result.
 
-## For judges (60 s)
+## For judges
 
 
 Hidra Market: sealed reverse auctions with on-chain escrow and Beta reputation; agents paid only after a verifier attests. Live demo: https://andres20980.github.io/hidra-market/?contract=market.hidra-mkt-221016.testnet · testnet tx (round Settled): https://testnet.nearblocks.io/txns/2nRfNFS9WhiVotRcuaXZfVCvJccv5odjHGjyGH5eGo5w · video: link when published. No wallet, keys or NEAR needed. Full offline check (about 10 min; needs Rust and near-sandbox):
@@ -19,7 +19,7 @@ A NEAR smart contract where AI agents in a swarm bid for tasks in a sealed-bid r
 
 Built at NEAR HACKATHON 2026 (1-14 Nov). Tracks: `swarms` (main), `security`, `agents` (each justified in the table below).
 
-Live on NEAR testnet: [`market.hidra-mkt-221016.testnet`](https://testnet.nearblocks.io/address/market.hidra-mkt-221016.testnet). The first full round there ended `Settled` with the worker at reputation Beta(2,1) (attestation [`7P7EjoEh…`](https://testnet.nearblocks.io/txns/7P7EjoEh1EBxL6i7hNEqFVsHtFAdhMWffNxphsiLinkQ)); the tx in the 60 s block above is round 5 of the later 8-round run. All hashes are in [`docs/TESTNET_DEPLOY.md`](docs/TESTNET_DEPLOY.md).
+Live on NEAR testnet: [`market.hidra-mkt-221016.testnet`](https://testnet.nearblocks.io/address/market.hidra-mkt-221016.testnet). The first full round there ended `Settled` with the worker at reputation Beta(2,1) (attestation [`7P7EjoEh…`](https://testnet.nearblocks.io/txns/7P7EjoEh1EBxL6i7hNEqFVsHtFAdhMWffNxphsiLinkQ)); the tx in the For judges block above is round 5 of the later 8-round run. All hashes are in [`docs/TESTNET_DEPLOY.md`](docs/TESTNET_DEPLOY.md).
 
 Testnet market run (8 rounds, 0.05 NEAR each, seed 479): 3 `Settled`, 5 `Refunded` (unverified work is refunded, never paid). Attestations that settled them: [round 5](https://testnet.nearblocks.io/txns/2nRfNFS9WhiVotRcuaXZfVCvJccv5odjHGjyGH5eGo5w), [round 6](https://testnet.nearblocks.io/txns/3wvLGeoFfrUCb6Bdv25esXX9u79chANoyt245LAtDmQx), [round 8](https://testnet.nearblocks.io/txns/5PZ5roYpusmt2zVkkCHAH3SF2dqNH9AbY2Cvu7bXqGY4); full proof in `swarm/out/testnet_market.json`. `npm run verify:testnet` (second command under "Reproduce it in 3 commands") re-checks all 8 rounds, their txs and the 5 reputations over a read-only public RPC: no keys, 0 NEAR.
 
@@ -108,7 +108,7 @@ cd web && npx vite preview        # or: python3 -m http.server -d web/dist 8080
 
 You see the headline figure, every round with its bids (commit, then reveal), the closing price, who was paid, the reputation table, and a "settled on near-sandbox" badge read from `web/public/sandbox_round.json`. `/?contract=market.hidra-mkt-221016.testnet` switches the page to the live contract views over the public FastNEAR RPC: you see every task the live contract holds (see Testnet rounds for why the live counts exceed the 8-round table).
 
-## Prior work and hackathon scope (Q-003, Q-005)
+## Prior work and hackathon scope
 
 Existed before 1 Nov 2026 (baseline, not part of this submission):
 

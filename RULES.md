@@ -52,7 +52,7 @@ Specification of the implementation in `contract/`. Deadlines are expressed in N
 - Toolchain pinned in `contract/rust-toolchain.toml` (Rust 1.95.0 + `wasm32-unknown-unknown` target) and dependencies locked in `Cargo.lock`; builds run with `--offline`.
 - Deterministic build: `contract/check-reproducible.sh` forces 2 consecutive rebuilds and requires identical bytes (demonstrated on 13 Nov). Artifacts of the current `src/lib.rs` (sha256 `5ac18db0…`, built 14 Nov 05:38): raw wasm `target/wasm32-unknown-unknown/release/contract.wasm` = 222953 B, sha256 `60d6ea078f6648384a115b9e585811c980793bb1aa309c250173e475bf9c55d2`; near-cli copy `target/near/contract.wasm` = 181063 B, sha256 `f054dc77aece86d87339adadc77201044f159ee031b6661f604dacee49cfce48` (= code_hash live on testnet `HB9u9hrh…`).
 - Tests: `cargo test -q --offline` → 111 (38 unit in `src/lib.rs` + 73 integration tests across 42 files (24 near-sandbox + 49 mock-VM) in `tests/`; near-sandbox = `#[tokio::test]` against a real local node, mock-VM = `#[test]` on the near-sdk mock VM or plain offline checks; the wording up to the closing parenthesis is pinned by `contract/tests/test_doc_counts.rs`).
-- Module verifier: `cd producto/contract && cargo near build non-reproducible-wasm && cargo test -q`.
+- Module verifier: `cd contract && cargo near build non-reproducible-wasm && cargo test -q`.
 
 ## 8. Bid limit and closing gas
 
