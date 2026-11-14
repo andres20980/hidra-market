@@ -58,16 +58,18 @@ async function main() {
   const proofPath = process.argv[2] ?? join(here, "..", "out", "testnet_market.json");
   const proof = JSON.parse(readFileSync(proofPath, "utf8"));
   const rpcUrl = process.env.NEAR_RPC_URL ?? proof.rpc ?? "https://test.rpc.fastnear.com";
-  const rpc = async (method, params) => {
+  // Regular RPC nodes prune old transactions (UNKNOWN_TRANSACTION): `tx` lookups fall back to an archival node.
+  const archivalUrl = process.env.NEAR_ARCHIVAL_RPC_URL ?? "https://archival-rpc.testnet.fastnear.com";
+  const rpc = async (method, params, url = rpcUrl) => {
     for (let attempt = 0; ; attempt++) {
-      const res = await fetch(rpcUrl, {
+      const res = await fetch(url, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
       });
       const body = await res.json().catch(() => ({}));
       if (res.status !== 429 && body?.error?.code !== -429) return body;
-      if (attempt >= 5) throw new Error(`RPC ${rpcUrl} rate-limited (429)`);
+      if (attempt >= 5) throw new Error(`RPC ${url} rate-limited (429)`);
       await new Promise((ok) => setTimeout(ok, 1000 * 2 ** attempt));
     }
   };
@@ -82,8 +84,12 @@ async function main() {
   const txStatus = async (hash, signer, winner) => {
     const order = [...new Set([signer, winner, ...candidates].filter(Boolean))];
     for (const sender of order) {
-      const r = await rpc("tx", { tx_hash: hash, sender_account_id: sender, wait_until: "NONE" });
-      const s = outcomeOk(r);
+      let r = await rpc("tx", { tx_hash: hash, sender_account_id: sender, wait_until: "NONE" });
+      let s = outcomeOk(r);
+      if (!s && archivalUrl !== rpcUrl) {
+        r = await rpc("tx", { tx_hash: hash, sender_account_id: sender, wait_until: "NONE" }, archivalUrl);
+        s = outcomeOk(r);
+      }
       if (s) return s;
     }
     return "not-found";

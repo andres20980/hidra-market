@@ -34,16 +34,18 @@ async function main() {
   const outputPath = join(here, "..", "out", "testnet_costs.json");
   const proof = JSON.parse(readFileSync(proofPath, "utf8"));
   const rpcUrl = process.env.NEAR_RPC_URL ?? proof.rpc ?? "https://test.rpc.fastnear.com";
-  const rpc = async (method, params) => {
+  // Regular RPC nodes prune old transactions: `tx` lookups fall back to an archival node.
+  const archivalUrl = process.env.NEAR_ARCHIVAL_RPC_URL ?? "https://archival-rpc.testnet.fastnear.com";
+  const rpc = async (method, params, url = rpcUrl) => {
     for (let attempt = 0; ; attempt++) {
-      const res = await fetch(rpcUrl, {
+      const res = await fetch(url, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
       });
       const body = await res.json().catch(() => ({}));
       if (res.status !== 429 && body?.error?.code !== -429) return body;
-      if (attempt >= 5) throw new Error(`RPC ${rpcUrl} rate-limited (429)`);
+      if (attempt >= 5) throw new Error(`RPC ${url} rate-limited (429)`);
       await new Promise((ok) => setTimeout(ok, 1000 * 2 ** attempt));
     }
   };
@@ -57,11 +59,9 @@ async function main() {
       const senders = [...new Set([tx.signer, round.winner, ...candidates].filter(Boolean))];
       let response;
       for (const sender of senders) {
-        const result = await rpc("tx", {
-          tx_hash: tx.hash,
-          sender_account_id: sender,
-          wait_until: "FINAL",
-        });
+        const query = { tx_hash: tx.hash, sender_account_id: sender, wait_until: "FINAL" };
+        let result = await rpc("tx", query);
+        if (!result?.result?.transaction_outcome && archivalUrl !== rpcUrl) result = await rpc("tx", query, archivalUrl);
         if (result?.result?.transaction_outcome) {
           response = result.result;
           break;
