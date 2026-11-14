@@ -1,0 +1,15 @@
+{
+  "network": "testnet",
+  "rpc": "https://test.rpc.fastnear.com",
+  "market": "market.hidra-mkt-221016.testnet",
+  "action": "deploy_code_only",
+  "wasm_sha256": "e03ef43c9868af183f40aea143907902cc436932e3e7cdec7064ca64e747b597",
+  "wasm_bytes": 179582,
+  "code_hash_before": "91i5HZ5QZ47pbuHPdftX3JSK9uZ4J9HYbdwRBStc2njQ",
+  "code_hash_after": "G6N14y4ff97jSqBbh5ypmJQbrPzZYc8yN5KWJddeswka",
+  "amount_before": "3197324726078217800000000",
+  "amount_after": "3195984197986635200000000",
+  "tx": "2NZTKEdvFYPbwisk9MTpLkiPrU5x4gHuodNLoz7hP8Eq",
+  "nearblocks": "https://testnet.nearblocks.io/txns/2NZTKEdvFYPbwisk9MTpLkiPrU5x4gHuodNLoz7hP8Eq",
+  "code_changed": true
+}

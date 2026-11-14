@@ -129,8 +129,13 @@ pub struct Contract {
 const MAX_ID_LEN: usize = 64;
 /// Max byte length of a submitted result hash stored in state.
 const MAX_RESULT_HASH_LEN: usize = 128;
+/// Max sealed bids per task: close_round reads one reputation per bid, so an
+/// unbounded Sybil flood (~3.9k bids) would push it past 300 Tgas and freeze the
+/// escrow (refund needs Closed). See tests/test_close_round_many_bids.rs.
+pub const MAX_BIDS_PER_TASK: usize = 512;
 /// Fixed safety margin the contract keeps free on top of its staked storage,
 /// so a burst of spam rounds is rejected before it can freeze open escrows.
+const OPEN_ESCROW_KEY: &[u8] = b"e";
 const STORAGE_RESERVE: u128 = 10_000_000_000_000_000_000_000; // 0.01 NEAR
 
 #[near]
@@ -177,6 +182,11 @@ impl Contract {
             winner: None,
             result_hash: None,
         };
+        self.set_open_escrow(
+            self.open_escrow()
+                .checked_add(task.reward.as_yoctonear())
+                .expect("Escrow overflow"),
+        );
         self.tasks.insert(id, task);
         self.require_storage_reserve();
     }
@@ -186,16 +196,36 @@ impl Contract {
     /// storage plus a fixed reserve. Spam rounds grow staked storage faster than
     /// their 1-yocto escrows, so this rejects them before an honest payout can be
     /// frozen by `LackBalanceForState`. Does not change the state layout.
-    fn require_storage_reserve(&self) {
+    /// Running total of Open|Closed rewards under a raw key (no struct layout change).
+    /// Legacy state without the key falls back to one O(tasks) scan.
+    fn open_escrow(&self) -> u128 {
+        match env::storage_read(OPEN_ESCROW_KEY) {
+            Some(bytes) => u128::from_le_bytes(bytes.try_into().expect("Bad escrow total")),
+            None => self
+                .tasks
+                .values()
+                .filter(|task| matches!(task.state, TaskState::Open | TaskState::Closed))
+                .map(|task| task.reward.as_yoctonear())
+                .sum(),
+        }
+    }
+
+    fn set_open_escrow(&mut self, total: u128) {
+        env::storage_write(OPEN_ESCROW_KEY, &total.to_le_bytes());
+    }
+
+    fn release_escrow(&mut self, amount: u128) {
+        self.set_open_escrow(self.open_escrow().saturating_sub(amount));
+    }
+
+    fn require_storage_reserve(&mut self) {
+        // Flush cached writes so storage_usage() includes this call's growth.
+        self.tasks.flush();
+        self.workers.flush();
         let staked = env::storage_byte_cost()
             .as_yoctonear()
             .saturating_mul(env::storage_usage() as u128);
-        let liabilities: u128 = self
-            .tasks
-            .values()
-            .filter(|task| matches!(task.state, TaskState::Open | TaskState::Closed))
-            .map(|task| task.reward.as_yoctonear())
-            .sum();
+        let liabilities = self.open_escrow();
         let own_funds = env::account_balance().as_yoctonear().saturating_sub(liabilities);
         require!(
             own_funds >= staked.saturating_add(STORAGE_RESERVE),
@@ -210,6 +240,7 @@ impl Contract {
             "Worker already registered"
         );
         self.workers.insert(worker, true);
+        self.require_storage_reserve();
     }
 
     pub fn commit_bid(&mut self, task_id: String, commitment: Vec<u8>) {
@@ -230,11 +261,16 @@ impl Contract {
             !task.commitments.iter().any(|entry| entry.worker == worker),
             "Worker already committed"
         );
+        require!(
+            task.commitments.len() < MAX_BIDS_PER_TASK,
+            "Task bid limit reached"
+        );
         task.commitments.push(Commitment {
             worker,
             hash: commitment,
         });
         self.tasks.insert(task_id, task);
+        self.require_storage_reserve();
     }
 
     pub fn reveal_bid(&mut self, task_id: String, price: u64, salt: u32) {
@@ -335,6 +371,7 @@ impl Contract {
         require!(task.state == TaskState::Closed, "Task is not closed");
         require!(task.verifier == verifier, "Only the verifier can attest");
         require!(task.result_hash.is_some(), "Result has not been submitted");
+        self.release_escrow(task.reward.as_yoctonear());
 
         if ok {
             let winner = task.winner.clone().expect("Task has no winner");
@@ -395,6 +432,7 @@ impl Contract {
             env::block_height() >= refund_height,
             "Refund grace period has not elapsed"
         );
+        self.release_escrow(task.reward.as_yoctonear());
 
         if task.result_hash.is_none() {
             if let Some(winner) = task.winner.clone() {

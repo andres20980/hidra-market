@@ -22,6 +22,9 @@
     "testnet:market": "node --env-file=.env scripts/testnet_market_rounds.mjs",
     "testnet:account": "node scripts/create_testnet_account.mjs",
     "verify:testnet": "node scripts/verify_testnet_market.mjs",
+    "verify:testnet:f": "node scripts/verify_testnet_market.mjs out/testnet_market-f.json",
+    "testnet:guard": "node scripts/prove_storage_guard_testnet.mjs",
+    "testnet:reregister": "node --env-file=.env scripts/prove_reregistration_testnet.mjs",
     "testnet:preflight": "node scripts/preflight_testnet_tranche.mjs",
     "prove:round-spam": "node scripts/prove_round_spam_testnet.mjs",
     "baseline:compare": "python3 scripts/baseline_compare.py",
@@ -29,7 +32,8 @@
     "adversarial:view": "node scripts/adversarial_view.mjs",
     "sustain:project": "node scripts/scale_projection.mjs",
     "verify:figures": "node scripts/verify_figures.mjs",
-    "verify:all": "vitest run && node scripts/verify_figures.mjs && python3 scripts/reproduce_checks.py --no-regen"
+    "verify:all": "vitest run && node scripts/verify_figures.mjs && python3 scripts/reproduce_checks.py --no-regen",
+    "trace:repricing": "node scripts/repricing_trace.mjs out/testnet_market-f.json"
   },
   "devDependencies": {
     "near-kit": "^0.20.2",

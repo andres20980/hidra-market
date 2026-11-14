@@ -1,0 +1,546 @@
+{
+  "source": "out/testnet_market.json",
+  "rule": "adjusted = nominal * (alpha+beta)/alpha; lowest adjusted wins (RULES.md:23-24)",
+  "rounds": [
+    {
+      "round": 1,
+      "state": "Refunded",
+      "winner": "worker-1.hidra-mkt-221016.testnet",
+      "winner_nominal": 216,
+      "undercut_but_lost": [
+        "worker-4.hidra-mkt-221016.testnet",
+        "worker-5b.hidra-mkt-221016.testnet"
+      ],
+      "bids": [
+        {
+          "account_id": "worker-1.hidra-mkt-221016.testnet",
+          "nominal": 216,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 432
+        },
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "nominal": 234,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 468
+        },
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "nominal": 216,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 432
+        },
+        {
+          "account_id": "worker-4.hidra-mkt-221016.testnet",
+          "nominal": 208,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 416
+        },
+        {
+          "account_id": "worker-5b.hidra-mkt-221016.testnet",
+          "nominal": 206,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 412
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "state": "Refunded",
+      "winner": "worker-5b.hidra-mkt-221016.testnet",
+      "winner_nominal": 312,
+      "undercut_but_lost": [
+        "worker-2.hidra-mkt-221016.testnet",
+        "worker-3.hidra-mkt-221016.testnet",
+        "worker-4.hidra-mkt-221016.testnet"
+      ],
+      "bids": [
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "nominal": 232,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 464
+        },
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "nominal": 214,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 428
+        },
+        {
+          "account_id": "worker-4.hidra-mkt-221016.testnet",
+          "nominal": 220,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 440
+        },
+        {
+          "account_id": "worker-5b.hidra-mkt-221016.testnet",
+          "nominal": 312,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 624
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "state": "Refunded",
+      "winner": "worker-1.hidra-mkt-221016.testnet",
+      "winner_nominal": 228,
+      "undercut_but_lost": [
+        "worker-4.hidra-mkt-221016.testnet",
+        "worker-2.hidra-mkt-221016.testnet"
+      ],
+      "bids": [
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "nominal": 351,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 702
+        },
+        {
+          "account_id": "worker-4.hidra-mkt-221016.testnet",
+          "nominal": 214,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 428
+        },
+        {
+          "account_id": "worker-5b.hidra-mkt-221016.testnet",
+          "nominal": 327,
+          "alpha": 1,
+          "beta": 2,
+          "multiplier": 3,
+          "adjusted": 981
+        },
+        {
+          "account_id": "worker-1.hidra-mkt-221016.testnet",
+          "nominal": 228,
+          "alpha": 1,
+          "beta": 2,
+          "multiplier": 3,
+          "adjusted": 684
+        },
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "nominal": 212,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 424
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "state": "Refunded",
+      "winner": "worker-1.hidra-mkt-221016.testnet",
+      "winner_nominal": 240,
+      "undercut_but_lost": [
+        "worker-4.hidra-mkt-221016.testnet"
+      ],
+      "bids": [
+        {
+          "account_id": "worker-4.hidra-mkt-221016.testnet",
+          "nominal": 212,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 424
+        },
+        {
+          "account_id": "worker-5b.hidra-mkt-221016.testnet",
+          "nominal": 351,
+          "alpha": 1,
+          "beta": 2,
+          "multiplier": 3,
+          "adjusted": 1053
+        },
+        {
+          "account_id": "worker-1.hidra-mkt-221016.testnet",
+          "nominal": 240,
+          "alpha": 1,
+          "beta": 3,
+          "multiplier": 4,
+          "adjusted": 960
+        },
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "nominal": 309,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 618
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "state": "Settled",
+      "winner": "worker-1.hidra-mkt-221016.testnet",
+      "winner_nominal": 210,
+      "undercut_but_lost": [],
+      "bids": [
+        {
+          "account_id": "worker-5b.hidra-mkt-221016.testnet",
+          "nominal": 333,
+          "alpha": 1,
+          "beta": 2,
+          "multiplier": 3,
+          "adjusted": 999
+        },
+        {
+          "account_id": "worker-1.hidra-mkt-221016.testnet",
+          "nominal": 210,
+          "alpha": 1,
+          "beta": 4,
+          "multiplier": 5,
+          "adjusted": 1050
+        },
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "nominal": 348,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 696
+        },
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "nominal": 327,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 654
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "state": "Settled",
+      "winner": "worker-1.hidra-mkt-221016.testnet",
+      "winner_nominal": 176,
+      "undercut_but_lost": [],
+      "bids": [
+        {
+          "account_id": "worker-1.hidra-mkt-221016.testnet",
+          "nominal": 176,
+          "alpha": 2,
+          "beta": 4,
+          "multiplier": 3,
+          "adjusted": 528
+        },
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "nominal": 354,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 708
+        },
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "nominal": 360,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 720
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "state": "Refunded",
+      "winner": "worker-4.hidra-mkt-221016.testnet",
+      "winner_nominal": 309,
+      "undercut_but_lost": [],
+      "bids": [
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "nominal": 324,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 648
+        },
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "nominal": 315,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 630
+        },
+        {
+          "account_id": "worker-4.hidra-mkt-221016.testnet",
+          "nominal": 309,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 618
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "state": "Settled",
+      "winner": "worker-1.hidra-mkt-221016.testnet",
+      "winner_nominal": 152,
+      "undercut_but_lost": [],
+      "bids": [
+        {
+          "account_id": "worker-3.hidra-mkt-221016.testnet",
+          "nominal": 348,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 696
+        },
+        {
+          "account_id": "worker-4.hidra-mkt-221016.testnet",
+          "nominal": 476,
+          "alpha": 1,
+          "beta": 2,
+          "multiplier": 3,
+          "adjusted": 1428
+        },
+        {
+          "account_id": "worker-5b.hidra-mkt-221016.testnet",
+          "nominal": 321,
+          "alpha": 1,
+          "beta": 2,
+          "multiplier": 3,
+          "adjusted": 963
+        },
+        {
+          "account_id": "worker-1.hidra-mkt-221016.testnet",
+          "nominal": 152,
+          "alpha": 3,
+          "beta": 4,
+          "multiplier": 2.3333333333333335,
+          "adjusted": 354.6666666666667
+        },
+        {
+          "account_id": "worker-2.hidra-mkt-221016.testnet",
+          "nominal": 342,
+          "alpha": 1,
+          "beta": 1,
+          "multiplier": 2,
+          "adjusted": 684
+        }
+      ]
+    }
+  ],
+  "mismatches": [
+    {
+      "round": 1,
+      "replay": "worker-5b.hidra-mkt-221016.testnet",
+      "chain": "worker-1.hidra-mkt-221016.testnet"
+    },
+    {
+      "round": 2,
+      "replay": "worker-3.hidra-mkt-221016.testnet",
+      "chain": "worker-5b.hidra-mkt-221016.testnet"
+    },
+    {
+      "round": 3,
+      "replay": "worker-2.hidra-mkt-221016.testnet",
+      "chain": "worker-1.hidra-mkt-221016.testnet"
+    },
+    {
+      "round": 4,
+      "replay": "worker-4.hidra-mkt-221016.testnet",
+      "chain": "worker-1.hidra-mkt-221016.testnet"
+    },
+    {
+      "round": 5,
+      "replay": "worker-3.hidra-mkt-221016.testnet",
+      "chain": "worker-1.hidra-mkt-221016.testnet"
+    }
+  ],
+  "final_reputation_mismatch": [
+    "worker-1.hidra-mkt-221016.testnet",
+    "worker-2.hidra-mkt-221016.testnet",
+    "worker-3.hidra-mkt-221016.testnet",
+    "worker-4.hidra-mkt-221016.testnet"
+  ],
+  "multiplier_timeline": {
+    "worker-1.hidra-mkt-221016.testnet": [
+      {
+        "round": 1,
+        "multiplier": 2
+      },
+      {
+        "round": 3,
+        "multiplier": 3
+      },
+      {
+        "round": 4,
+        "multiplier": 4
+      },
+      {
+        "round": 5,
+        "multiplier": 5
+      },
+      {
+        "round": 6,
+        "multiplier": 3
+      },
+      {
+        "round": 8,
+        "multiplier": 2.3333333333333335
+      }
+    ],
+    "worker-2.hidra-mkt-221016.testnet": [
+      {
+        "round": 1,
+        "multiplier": 2
+      },
+      {
+        "round": 2,
+        "multiplier": 2
+      },
+      {
+        "round": 3,
+        "multiplier": 2
+      },
+      {
+        "round": 4,
+        "multiplier": 2
+      },
+      {
+        "round": 5,
+        "multiplier": 2
+      },
+      {
+        "round": 6,
+        "multiplier": 2
+      },
+      {
+        "round": 7,
+        "multiplier": 2
+      },
+      {
+        "round": 8,
+        "multiplier": 2
+      }
+    ],
+    "worker-3.hidra-mkt-221016.testnet": [
+      {
+        "round": 1,
+        "multiplier": 2
+      },
+      {
+        "round": 2,
+        "multiplier": 2
+      },
+      {
+        "round": 3,
+        "multiplier": 2
+      },
+      {
+        "round": 5,
+        "multiplier": 2
+      },
+      {
+        "round": 6,
+        "multiplier": 2
+      },
+      {
+        "round": 7,
+        "multiplier": 2
+      },
+      {
+        "round": 8,
+        "multiplier": 2
+      }
+    ],
+    "worker-4.hidra-mkt-221016.testnet": [
+      {
+        "round": 1,
+        "multiplier": 2
+      },
+      {
+        "round": 2,
+        "multiplier": 2
+      },
+      {
+        "round": 3,
+        "multiplier": 2
+      },
+      {
+        "round": 4,
+        "multiplier": 2
+      },
+      {
+        "round": 7,
+        "multiplier": 2
+      },
+      {
+        "round": 8,
+        "multiplier": 3
+      }
+    ],
+    "worker-5b.hidra-mkt-221016.testnet": [
+      {
+        "round": 1,
+        "multiplier": 2
+      },
+      {
+        "round": 2,
+        "multiplier": 2
+      },
+      {
+        "round": 3,
+        "multiplier": 3
+      },
+      {
+        "round": 4,
+        "multiplier": 3
+      },
+      {
+        "round": 5,
+        "multiplier": 3
+      },
+      {
+        "round": 8,
+        "multiplier": 3
+      }
+    ]
+  },
+  "final_reputations": {
+    "worker-1.hidra-mkt-221016.testnet": {
+      "a": 4,
+      "b": 4
+    },
+    "worker-5b.hidra-mkt-221016.testnet": {
+      "a": 1,
+      "b": 2
+    },
+    "worker-4.hidra-mkt-221016.testnet": {
+      "a": 1,
+      "b": 2
+    }
+  },
+  "ok": false
+}

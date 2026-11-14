@@ -1,0 +1,28 @@
+{
+  "network": "testnet",
+  "rpc": "https://test.rpc.fastnear.com",
+  "market": "market.hidra-mkt-221016.testnet",
+  "worker": "worker-5b.hidra-mkt-221016.testnet",
+  "attack": "register_worker re-call to reset Beta",
+  "tx": "B2tkFYLQJnGQPZ4DdcwcoUrDbeKc1gzbse2Tv65rNRJw",
+  "nearblocks": "https://testnet.nearblocks.io/txns/B2tkFYLQJnGQPZ4DdcwcoUrDbeKc1gzbse2Tv65rNRJw",
+  "reputation_before": [
+    "1",
+    "3",
+    "0.25"
+  ],
+  "reputation_after": [
+    "1",
+    "3",
+    "0.25"
+  ],
+  "require_message": "Worker already registered",
+  "failure_excerpt": "{\"Failure\":{\"ActionError\":{\"index\":0,\"kind\":{\"FunctionCallError\":{\"ExecutionError\":\"Smart contract panicked: Worker already registered\"}}}}} Smart contract panicked: Worker already registered",
+  "rejected": true,
+  "require_message_seen": true,
+  "reputation_unchanged": true,
+  "multiplier_before": 4,
+  "multiplier_after": 4,
+  "fresh_identity_multiplier": 2,
+  "pass": true
+}

@@ -1,4 +1,4 @@
-// testnet_market_rounds.mjs v1.1 - LIVE replay of the real Hidra ledger on NEAR testnet.
+// testnet_market_rounds.mjs v1.2 - LIVE replay of the real Hidra ledger on NEAR testnet.
 // Runs the deterministic plan from market_plan.mjs on market.<root>: 5 worker sub-accounts (each a real
 // brain), each with ONE limited FunctionCall key, bidding sealed in >=6 rounds. Winners whose real
 // LOCKED draw succeeds settle; the rest refund via attest(ok=false), so Beta reputations diverge and
@@ -53,11 +53,19 @@ const rootAccount = new Account(root, provider, rootKey);
 
 const rpc = async (method, params) => {
   for (let attempt = 0; ; attempt++) {
+    // read-only RPC: retrying transient network errors is safe (never used for signed txs)
     const res = await fetch(rpcUrl, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
+    }).catch((e) => {
+      if (attempt >= 5) throw e;
+      return null;
     });
+    if (!res) {
+      await new Promise((ok) => setTimeout(ok, 2000 * 2 ** attempt));
+      continue;
+    }
     const body = await res.json().catch(() => ({}));
     if (res.status !== 429 && body?.error?.code !== -429) return body;
     if (attempt >= 5) throw new Error(`RPC ${rpcUrl} rate-limited (429)`);
@@ -122,15 +130,7 @@ const selectedWorkers = loadWorkers(SWARM, { offset: workerOffset });
 // unique MARKET_RUN; continue reputations from the frozen first tranche so predictions stay faithful.
 const extraRounds = Number(process.env.MARKET_ROUNDS ?? 8);
 if (!Number.isInteger(extraRounds) || extraRounds < 1) throw new Error("MARKET_ROUNDS must be a positive integer");
-let initialRep = null;
-if (marketRun !== "c" && workerOffset === 0) {
-  const priorFile = join(OUT, "testnet_market.json");
-  if (existsSync(priorFile)) {
-    const prior = JSON.parse(readFileSync(priorFile, "utf8"));
-    initialRep = Object.fromEntries((prior.reputations ?? []).map((r) => [r.index, { alpha: r.alpha, beta: r.beta }]));
-  }
-}
-const plan = planRounds(selectedWorkers, { rounds: extraRounds, initialRep });
+
 const workers = {};
 for (const w of selectedWorkers) {
   let tag = `worker-${w.index}`;
@@ -178,6 +178,19 @@ for (const w of selectedWorkers) {
   }
 }
 
+// Beta reputation on-chain is append-only, so a later tranche must start from the CURRENT chain
+// state (not a frozen file) to keep expected_winner == on-chain winner. Tuple [alpha,beta,mean] or object.
+let initialRep = null;
+if (marketRun !== "c") {
+  initialRep = {};
+  for (const w of Object.values(workers)) {
+    const rep = await view("get_reputation", { account: w.account_id });
+    const [alpha, beta] = Array.isArray(rep) ? rep : [rep.alpha, rep.beta];
+    initialRep[w.index] = { alpha: Number(alpha), beta: Number(beta) };
+  }
+}
+const plan = planRounds(selectedWorkers, { rounds: extraRounds, initialRep });
+
 // --- run the deterministic rounds ---
 const proof = {
   network: "testnet",
@@ -188,6 +201,7 @@ const proof = {
   seed: 479,
   reward_per_round: `${REWARD} NEAR`,
   workers: Object.values(workers).map(({ account, ...rest }) => rest),
+  initial_reputations: initialRep,
   rounds: [],
 };
 for (const r of plan.rounds) {
@@ -232,6 +246,7 @@ for (const r of plan.rounds) {
     reward_yocto: settled?.reward ?? null,
     txs,
   });
+  writeFileSync(join(OUT, proofFileName(marketRun)), JSON.stringify({ ...proof, partial: true }, null, 2) + "\n");
   console.log(`round ${r.round}: ${settled?.state} winner=${winnerId} (ok=${r.attest_ok})`);
 }
 

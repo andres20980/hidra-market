@@ -121,4 +121,16 @@ describe('plan del mercado vivo en testnet (sin red)', () => {
     const others = cont.reputations.filter((r) => r.index !== 1);
     expect(best.mean).toBeGreaterThan(Math.max(...others.map((o) => o.mean)));
   });
+
+  it('el tramo vivo arranca de la reputacion ACTUAL on-chain (tupla con u64 en texto) y es determinista', () => {
+    // forma real de get_reputation tras el primer tramo + 1 ronda diag (append-only): alpha/beta llegan como texto
+    const chain = { 1: { alpha: '9', beta: '6' }, 2: { alpha: '1', beta: '2' }, 3: { alpha: '1', beta: '2' }, 4: { alpha: '1', beta: '3' }, 5: { alpha: '1', beta: '2' } };
+    const a = planRounds(workers, { rounds: 6, initialRep: chain });
+    const b = planRounds(workers, { rounds: 6, initialRep: chain });
+    expect(a).toEqual(b);
+    expect(a.rounds.map((r) => `${r.winner}:${r.state}`)).toEqual(['1:Refunded', '5:Refunded', '1:Refunded', '1:Refunded', '1:Settled', '1:Settled']);
+    expect(a.reputations.map((r) => [r.index, r.alpha, r.beta])).toEqual([[1, 11, 9], [2, 1, 2], [3, 1, 2], [4, 1, 3], [5, 1, 3]]);
+    expect(a.settled_count).toBeGreaterThanOrEqual(1);
+    expect(a.refunded_count).toBeGreaterThanOrEqual(1);
+  });
 });

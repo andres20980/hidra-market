@@ -1,4 +1,4 @@
-// redeploy_code_testnet.mjs v1.0 - redeploy ONLY the contract code to an already-initialised market account.
+// redeploy_code_testnet.mjs v1.2 - redeploy ONLY the contract code to an already-initialised market account.
 // No createAccount, no init, no state wipe: a single DeployContract action signed by the market's full-access key
 // (same keypair as the root account, added at creation). Credentials ONLY from .env; no key is printed.
 // Guard: refuses to run unless the local wasm sha256 matches the expected LISTO-DEPLOY hash and layout=igual.
@@ -15,7 +15,7 @@ const SWARM = join(HERE, "..");
 const OUT = join(SWARM, "out");
 mkdirSync(OUT, { recursive: true });
 
-const EXPECTED_SHA256 = "770bf013ca041b1200b2d470778017e827407def9b7f9eea827644787650b467";
+const EXPECTED_SHA256 = "aaa5eb6a72d2d7e81ee3c23e2eebd3b89f31b9de2b7378f849d64036a5176160";
 
 const need = (k) => {
   const v = process.env[k];

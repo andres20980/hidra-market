@@ -1,0 +1,26 @@
+{
+  "network": "testnet",
+  "rpc": "https://test.rpc.fastnear.com",
+  "market": "market.hidra-mkt-221016.testnet",
+  "guard": "require_storage_reserve (post_task, register_worker, commit_bid)",
+  "require_message": "Storage reserve exhausted: would risk freezing open escrows",
+  "code_hash": "CV93pzSGJS4FZuZb1eMon7qsrn584KWKXtVyeEc49pfR",
+  "block_height": 277582980,
+  "wasm_bytes": 180887,
+  "wasm_sha256": "aaa5eb6a72d2d7e81ee3c23e2eebd3b89f31b9de2b7378f849d64036a5176160",
+  "require_message_embedded": true,
+  "methods_exported": [
+    "post_task",
+    "register_worker",
+    "commit_bid"
+  ],
+  "expected_wasm_sha256": "aaa5eb6a72d2d7e81ee3c23e2eebd3b89f31b9de2b7378f849d64036a5176160",
+  "deploy_tx": "GJoE5zeyJBZBuyVR1QarLZHRciUit2kq5wQ68pffrj8w",
+  "deploy_nearblocks": "https://testnet.nearblocks.io/txns/GJoE5zeyJBZBuyVR1QarLZHRciUit2kq5wQ68pffrj8w",
+  "storage_usage_bytes": 198873,
+  "amount_near": "3.193285",
+  "margin_to_reserve_near": "1.194555",
+  "margin_bytes": 119455,
+  "guard_satisfied": true,
+  "live_code_matches_listo_deploy": true
+}
