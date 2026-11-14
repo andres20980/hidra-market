@@ -78,3 +78,18 @@ Para la sección de sostenibilidad del README raíz:
 - Reputación final on-chain: worker-1 (14,8 % LOCKED real) Beta(11,9); los otros cuatro siguen en Beta(1,2)–(1,3), así que pagan entre 3× y 4× más por cada puja.
 - `npm run verify:testnet:f` → mismo verificador de solo lectura sobre el 2º tramo (`out/testnet_market-f.json`, rondas que arrancan de la reputación on-chain del 1º): `OK 6/6 rounds, 74 txs` (14-nov). Ambos tramos juntos: 14 rondas y 172 tx verificables sin claves.
 - `npm run trace:repricing` → re-ejecuta offline (0 NEAR) las 6 rondas del 2º tramo con la regla `precio × (α+β)/α` y comprueba que ganador y Beta final coinciden con la cadena: `OK 6/6 replay==chain`. Se ve encarecerse al que falla: worker-5b pasa de 3× a 4× tras fallar la ronda 2; worker-1 sube 1,67×→2,0× con 3 fallos y baja a 1,9× al acertar (`out/repricing_trace-f.json`).
+
+## 14-nov 05:10 · compatibilidad con `require(price > 0)` (hallazgo test_zero_price_bid del contrato)
+- `test/zero_price_compat.test.js`: el plan determinista (200 semillas, también con reputación extrema) y las pujas reveladas on-chain ya publicadas (`out/testnet_market.json` mín. 152, `-f` mín. 180, `live_proof` 80) son todas > 0 → la guarda propuesta no cambia ninguna cifra ni el replay testnet. Texto para el README: «Ninguna puja del enjambre es 0; el contrato puede exigir price > 0 sin alterar el replay (test/zero_price_compat.test.js).»
+
+## 14-nov 05:40 · prueba on-chain del arreglo de precio 0 (PREPARADA, no ejecutada)
+- `npm run testnet:zeroprice -- --check`: preflight sin tx (código vivo == wasm local, `"Price must be > 0"` en src y en el código vivo, saldo raíz). Hoy: live_has_guard=false (aún 0563f913), así que el script real se niega a correr.
+- Tras el LISTO-DEPLOY con price>0 y el redespliegue: `npm run testnet:zeroprice` → worker-1 revela a 0 y queda rechazado con el require; worker-2 (precio 3) gana y se liquida. Prueba en `out/testnet_zero_price.json`. Coste ≈0,05 NEAR + gas.
+- Línea para el README (cuando exista el hash): «Una puja a precio 0 (que antes ganaba siempre ignorando la reputación) es rechazada on-chain: tx <hash>.»
+
+## Redeploy f054dc77 + prueba on-chain de puja a precio 0 (14-nov 05:5x)
+- Redeploy solo código (sin init, estado intacto): wasm sha256 `f054dc77…ce48`, code_hash `N3TPry8E…` → `HB9u9hrh…uh24w`, tx [`8uYCFN5T…34srE`](https://testnet.nearblocks.io/txns/8uYCFN5TUsJdV7meoviBYz6GbJxmxNwSvSUxxVs34srE). Registro: `swarm/out/testnet_redeploy.json` (el anterior 0563f913 queda en `out/testnet_redeploy_0563f913.json`).
+- Línea para README raíz: «Una puja revelada a precio 0 se rechaza on-chain (`Smart contract panicked: Price must be > 0`), tx [`DSw8EFwm…ihwex`](https://testnet.nearblocks.io/txns/DSw8EFwmCt5QjoDzTpYs2bYLJH1Tn6zgnCELxQ6ihwex); la misma ronda la gana el pujador honesto y queda `Settled`. Reprodúcelo: `cd swarm && npm run testnet:zeroprice` → `out/testnet_zero_price.json`.»
+- Tras el redeploy: `npm run verify:testnet` OK 8/8 (98 tx), `verify:testnet:f` OK 6/6 (74 tx), vitest 113/113.
+
+- 14-nov 06:05 · `npm run testnet:guard` actualizado al código vivo f054dc77… (code_hash HB9u9hrh…, tx 8uYCFN5T…): OK, require_message=true, margen 1,182143 NEAR; prueba de 0563f913 archivada en out/testnet_storage_guard-0563f913.json.

@@ -1,4 +1,4 @@
-// prove_storage_guard_testnet.mjs v1.1
+// prove_storage_guard_testnet.mjs v1.2
 // Read-only (0 NEAR, no keys) proof that the code LIVE on the market account is byte-for-byte the
 // LISTO-DEPLOY wasm whose storage-reserve guard now covers post_task, register_worker and commit_bid
 // (contract/src/lib.rs; offline rejections in contract/tests/test_registration_spam.rs and test_round_spam.rs).
@@ -14,9 +14,9 @@ import { REQUIRE_MESSAGE, reserveState } from "./prove_round_spam_testnet.mjs";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, "..", "out");
 
-export const EXPECTED_WASM_SHA256 = "0563f913313df7ffd840d553cd91dd61a82b9ce44c8ac64cae8007bf61ef1bc4";
-export const EXPECTED_CODE_HASH = "N3TPry8EDKAHJLAtDmbLPTZptX15SzSaLTE13bUzoqM";
-export const DEPLOY_TX = "9N7DbWyzgBjqLKnCxdeYDGF5uio2bSJkQYAWjF9obrY1";
+export const EXPECTED_WASM_SHA256 = "f054dc77aece86d87339adadc77201044f159ee031b6661f604dacee49cfce48";
+export const EXPECTED_CODE_HASH = "HB9u9hrhmkdWm6X6d8SsKYWCFvQCugWX4mPcmT3uh24w";
+export const DEPLOY_TX = "8uYCFN5TUsJdV7meoviBYz6GbJxmxNwSvSUxxVs34srE";
 export const GUARDED_METHODS = ["post_task", "register_worker", "commit_bid"];
 
 export const inspectCode = (codeBase64) => {

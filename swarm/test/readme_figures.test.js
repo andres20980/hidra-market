@@ -1,6 +1,9 @@
-// test/readme_figures.test.js v1.0
+// test/readme_figures.test.js v1.1
 // Guard against prose<->data drift: every headline number printed in
 // swarm/README.md must be derivable from the artefacts in out/. Offline, 0 NEAR.
+// Root README.md figures (USD 23.57 paid, USD 21.35 lost = 91%, 22,957 runs,
+// outcomes table, 40x headline, testnet rounds) are guarded in
+// test/root_readme_figures.test.js, recomputed from data/hidra_week.jsonl.
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 

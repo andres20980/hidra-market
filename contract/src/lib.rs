@@ -284,6 +284,7 @@ impl Contract {
             env::block_height() >= task.commit_end && env::block_height() < task.reveal_end,
             "Reveal window is closed"
         );
+        require!(price > 0, "Price must be > 0");
         let commitment_index = task
             .commitments
             .iter()

@@ -25,6 +25,7 @@
     "verify:testnet:f": "node scripts/verify_testnet_market.mjs out/testnet_market-f.json",
     "testnet:guard": "node scripts/prove_storage_guard_testnet.mjs",
     "testnet:reregister": "node --env-file=.env scripts/prove_reregistration_testnet.mjs",
+    "testnet:zeroprice": "node --env-file=.env scripts/prove_zero_price_testnet.mjs",
     "testnet:preflight": "node scripts/preflight_testnet_tranche.mjs",
     "prove:round-spam": "node scripts/prove_round_spam_testnet.mjs",
     "baseline:compare": "python3 scripts/baseline_compare.py",

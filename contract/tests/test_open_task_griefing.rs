@@ -1,4 +1,4 @@
-// test_open_task_griefing.rs v1.0
+// test_open_task_griefing.rs v1.1
 // Adversarial: many minimum-deposit open tasks consume storage backed by shared escrow.
 const SANDBOX_VERSION: &str = "2.14.0";
 use near_api::{Account, Contract, NetworkConfig, Signer};
@@ -62,17 +62,24 @@ async fn minimum_deposit_open_task_spam_cannot_freeze_honest_escrow() -> testres
     let worker = create_account(&sandbox, "worker.sandbox").await?;
     let attacker = create_account(&sandbox, "attacker.sandbox").await?;
     let market_id: near_sdk::AccountId = "market.sandbox".parse()?;
+    let target_dir = std::env::var("CARGO_TARGET_DIR").unwrap_or_else(|_| "target".to_string());
+    let wasm = std::fs::read(format!(
+        "{target_dir}/wasm32-unknown-unknown/release/contract.wasm"
+    ))?;
+    // Fund only the code's storage stake plus FREE_AFTER_CODE so the storage
+    // reserve guard trips within SPAM_TASKS (keeps `make verify` fast).
+    const FREE_AFTER_CODE: u128 = 150_000_000_000_000_000_000_000; // 0.15 NEAR
+    let byte_cost = 10_000_000_000_000_000_000_u128;
     sandbox
         .create_account(market_id.clone())
-        .initial_balance(NearToken::from_near(3))
+        .initial_balance(NearToken::from_yoctonear(
+            wasm.len() as u128 * byte_cost + FREE_AFTER_CODE,
+        ))
         .send()
         .await?;
     let contract = Contract("market.sandbox".parse()?);
-    let target_dir = std::env::var("CARGO_TARGET_DIR").unwrap_or_else(|_| "target".to_string());
     Contract::deploy(contract.account_id().clone())
-        .use_code(std::fs::read(format!(
-            "{target_dir}/wasm32-unknown-unknown/release/contract.wasm"
-        ))?)
+        .use_code(wasm)
         .with_init_call("init", json!({"cap_per_agent": 10_000_u128}))?
         .with_signer(signer.clone())
         .send_to(&network)
@@ -145,7 +152,8 @@ async fn minimum_deposit_open_task_spam_cannot_freeze_honest_escrow() -> testres
 
     let mut posted = 0;
     let mut rejected = None;
-    for n in 0..100 {
+    const SPAM_TASKS: u32 = 100;
+    for n in 0..SPAM_TASKS {
         let id = format!("spam-{n:03}{}", "x".repeat(56));
         match call(
             &contract,
@@ -177,6 +185,12 @@ async fn minimum_deposit_open_task_spam_cannot_freeze_honest_escrow() -> testres
     )
     .await?;
     println!("open-task spam accepted={posted}; last rejection={rejected:?}");
+    assert!(
+        rejected
+            .as_deref()
+            .is_some_and(|e| e.contains("Storage reserve exhausted")),
+        "expected the storage-reserve guard to reject spam within {SPAM_TASKS} tasks, got {posted}: {rejected:?}"
+    );
     assert!(
         settlement.is_ok(),
         "open-task spam froze honest escrow after {posted} tasks; spam rejection={rejected:?}: {}",

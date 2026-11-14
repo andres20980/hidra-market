@@ -1,4 +1,4 @@
-// test_round_spam.rs v2.0
+// test_round_spam.rs v2.1
 // Adversarial: many minimum-deposit rounds must not freeze an honest payout.
 // FIXED: post_task now enforces a storage reserve (own funds >= staked storage
 // + reserve), so spam rounds are rejected before they can freeze open escrows.
@@ -65,17 +65,24 @@ async fn distinct_minimum_deposit_rounds_cannot_freeze_honest_payout() -> testre
     let worker = create_account(&sandbox, "worker.sandbox").await?;
     let attacker = create_account(&sandbox, "attacker.sandbox").await?;
     let market_id: near_sdk::AccountId = "market.sandbox".parse()?;
+    let target_dir = std::env::var("CARGO_TARGET_DIR").unwrap_or_else(|_| "target".to_string());
+    let wasm = std::fs::read(format!(
+        "{target_dir}/wasm32-unknown-unknown/release/contract.wasm"
+    ))?;
+    // Fund only the code's storage stake plus FREE_AFTER_CODE, so the guard
+    // trips after tens of spam rounds instead of ~235 (keeps `make verify` fast).
+    const FREE_AFTER_CODE: u128 = 250_000_000_000_000_000_000_000; // 0.25 NEAR
+    let byte_cost = 10_000_000_000_000_000_000_u128;
     sandbox
         .create_account(market_id.clone())
-        .initial_balance(NearToken::from_near(3))
+        .initial_balance(NearToken::from_yoctonear(
+            wasm.len() as u128 * byte_cost + FREE_AFTER_CODE,
+        ))
         .send()
         .await?;
     let contract = Contract("market.sandbox".parse()?);
-    let target_dir = std::env::var("CARGO_TARGET_DIR").unwrap_or_else(|_| "target".to_string());
     Contract::deploy(contract.account_id().clone())
-        .use_code(std::fs::read(format!(
-            "{target_dir}/wasm32-unknown-unknown/release/contract.wasm"
-        ))?)
+        .use_code(wasm)
         .with_init_call("init", json!({"cap_per_agent": 10_000_000_000_000_000_000_u128}))?
         .with_signer(signer.clone())
         .send_to(&network)
@@ -206,7 +213,7 @@ async fn distinct_minimum_deposit_rounds_cannot_freeze_honest_payout() -> testre
     )
     .await?;
     assert!(
-        posted < SPAM_ROUNDS
+        (10..SPAM_ROUNDS).contains(&posted)
             && rejected
                 .as_deref()
                 .is_some_and(|error| error.contains("Storage reserve exhausted")),

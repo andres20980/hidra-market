@@ -14,7 +14,7 @@ Especificación de la implementación en `contract/`. Los plazos se expresan en 
 - Solo trabajadores registrados pueden llamar `commit_bid`. Se admite un compromiso por trabajador y tarea, de exactamente 32 bytes (SHA-256), mientras `altura < commit_end`.
 - El precio de la puja es un `u64` en miliNEAR (80 = 0,08 NEAR): es la oferta del trabajador; el pago liberado es siempre la recompensa en escrow.
 - El compromiso se calcula como `SHA-256(precio_u64_be || sal_u32_be || cuenta_utf8)`: precio `u64` y sal `u32` en big-endian, seguidos de los bytes UTF-8 del identificador de cuenta, sin separadores.
-- `reveal_bid(precio, sal)` solo se acepta en `[commit_end, reveal_end)`. Debe hacerlo la cuenta del compromiso y el hash recalculado debe coincidir; en caso contrario se rechaza. Cada compromiso válido se revela una sola vez.
+- `reveal_bid(precio, sal)` solo se acepta en `[commit_end, reveal_end)`. Debe hacerlo la cuenta del compromiso y el hash recalculado debe coincidir; en caso contrario se rechaza. Cada compromiso válido se revela una sola vez. El precio revelado debe ser mayor que cero (`Price must be > 0`): una puja a 0 tendría precio ajustado 0 con cualquier reputación y anularía la ponderación Beta (`contract/tests/test_zero_price_bid.rs`).
 - Una duración cero es válida: `commit_len=0` impide comprometer y `reveal_len=0` impide revelar.
 
 ## 3. Cierre y selección del ganador
@@ -47,9 +47,13 @@ Especificación de la implementación en `contract/`. Los plazos se expresan en 
 5. Ganador → `submit_result(hash)`; verificador → `attest(ok)`.
 6. Si `ok=true` y el tope lo permite, cobra el ganador y aumenta `alpha`; si `ok=false`, se reembolsa al publicador y aumenta `beta`. Si vence el plazo sin atestación, cualquier cuenta activa el reembolso.
 
-## 7. Reproducibilidad del artefacto (verificado 13-nov 03:41 UTC)
+## 7. Reproducibilidad del artefacto (actualizado 14-nov 04:00)
 
 - Toolchain fijado en `contract/rust-toolchain.toml` (Rust 1.95.0 + target `wasm32-unknown-unknown`) y dependencias congeladas en `Cargo.lock`; builds con `--offline`.
-- Build determinista demostrado con `contract/check-reproducible.sh` (2 rebuilds seguidos, bytes idénticos): wasm crudo `target/wasm32-unknown-unknown/release/contract.wasm` = 220193 B, sha256 `95fa620b96ddfd99617302f59bcd90d43febb1720b79faa1230b0395b78d9b50`; artefacto que copia near-cli `target/near/contract.wasm` = 178726 B, sha256 `14946d7597840fb7f3735776f7ec21086549f9d8a10cda923fc6bf6cbe0d9445`.
-- Tests: `cargo test -q --offline` 43/43 en verde (35 unitarios + 8 de integración near-sandbox), 0 warnings.
+- Build determinista: `contract/check-reproducible.sh` fuerza 2 rebuilds seguidos y exige bytes idénticos (demostrado el 13-nov). Artefactos del `src/lib.rs` vigente (sha256 `ed33dc3c…`, build 14-nov 02:02): wasm crudo `target/wasm32-unknown-unknown/release/contract.wasm` = 222912 B, sha256 `df52a31b3ba162b44d3926109d2609249ecc89966a1af7cad396266beb84d949`; copia de near-cli `target/near/contract.wasm` = 181028 B, sha256 `0563f913313df7ffd840d553cd91dd61a82b9ce44c8ac64cae8007bf61ef1bc4`.
+- Tests: `cargo test -q --offline` → 111 (38 unitarios en `src/lib.rs` + 73 de integración near-sandbox en 42 ficheros de `tests/`).
 - Verificador del módulo: `cd producto/contract && cargo near build non-reproducible-wasm && cargo test -q`.
+
+## 8. Límite de pujas y gas del cierre
+
+- Tope de 512 compromisos por tarea (`MAX_BIDS_PER_TASK`; el 513.º se rechaza con `Task bid limit reached`). El gas de `close_round` crece ~96 Ggas por puja (medido en sandbox: 2,5 Tgas con 4 pujas, ~51 Tgas en el tope): quien cierre una ronda llena debe adjuntar ≥ 60 Tgas. Si se queda sin gas, la llamada revierte entera y la tarea sigue cerrable con más gas (`contract/tests/test_close_round_gas_sandbox.rs`).

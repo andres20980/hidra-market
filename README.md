@@ -52,7 +52,7 @@ Requirements: Rust (toolchain pinned in `contract/rust-toolchain.toml`) with [`c
 
 | Do | See |
 | --- | --- |
-| `make verify` | Contract wasm built; 61 Rust tests pass (36 unit + 25 near-sandbox integration); 30 swarm tests; web typecheck, 113+1 web tests (one more, against the live testnet RPC, runs with `LIVE_CONTRACT` set) and build. Last line `verify: OK`. 45-70 s with warm caches; the first build downloads crates and npm packages. |
+| `make verify` | Contract wasm built; 111 Rust tests pass (38 unit + 73 near-sandbox integration); 109 swarm tests; web typecheck, 113+1 web tests (one more, against the live testnet RPC, runs with `LIVE_CONTRACT` set) and build. Last line `verify: OK`. About 10 min with warm caches (the near-sandbox suites dominate, ~585 s measured); the first build downloads crates and npm packages. |
 | `make demo` | In about 50 s, with no LLM calls and no external network: the deterministic simulator and its horizon sweep, a real round on near-sandbox (commit → reveal → close → submit → attest), an on-chain check of the worker's limited key, the web build, and the summary below. |
 | `make testnet` | Without `swarm/.env`: exit code 2 and a message saying what to set. With it: `worker-1.<account>.testnet` keeps exactly one function-call key for the four worker methods, with a 0.25 NEAR allowance, checked on-chain. |
 | `make testnet-deploy` | Deploys the market to testnet and plays one live round to `Settled` in about 3 minutes ([`docs/TESTNET_DEPLOY.md`](docs/TESTNET_DEPLOY.md); `npm run testnet:account` in `swarm/` gets a faucet account first). |
@@ -104,7 +104,7 @@ Existed before 1 Nov 2026 (baseline, not part of this submission):
 Built during the hackathon window, from scratch, in this directory:
 
 - [`RULES.md`](RULES.md): auction, escrow, reputation and spending-cap rules, written before the contract.
-- [`contract/`](contract/): Rust contract (near-sdk 5.30): sealed-bid reverse auction with commit-reveal, escrow, attestation, refunds, Beta(α, β) reputation, per-agent spending cap, views. 61 tests (36 unit + 25 near-sandbox).
+- [`contract/`](contract/): Rust contract (near-sdk 5.30): sealed-bid reverse auction with commit-reveal, escrow, attestation, refunds, Beta(α, β) reputation, per-agent spending cap, views. 111 tests (38 unit + 73 near-sandbox).
 - [`swarm/`](swarm/): ledger exporter and anonymiser, deterministic simulator (market vs round-robin) and horizon sweep, near-sandbox scripts (one round, five rounds, limited-key worker), testnet account, deployment and live-round scripts.
 - [`web/`](web/): static page (Vite + TypeScript, no backend) for simulation replay and live contract views.
 - `Makefile`, this README and [`docs/`](docs/).

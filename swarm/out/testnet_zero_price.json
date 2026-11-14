@@ -1,0 +1,30 @@
+{
+  "network": "testnet",
+  "rpc": "https://test.rpc.fastnear.com",
+  "market": "market.hidra-mkt-221016.testnet",
+  "task_id": "zero-price-proof-277610621-hidra-mkt-221016.testnet",
+  "live_sha256": "f054dc77aece86d87339adadc77201044f159ee031b6661f604dacee49cfce48",
+  "guard": "require!(price > 0, \"Price must be > 0\")",
+  "zero_bidder": "worker-1.hidra-mkt-221016.testnet",
+  "honest_bidder": "worker-2.hidra-mkt-221016.testnet",
+  "txs": {
+    "post_task": "HTRfY6u9y6wKaCmM88xYztzdZczCn4FkrFtoJqxqmvE1",
+    "commit_zero": "5R5279mtLRVvVTKY9CugvDp44t9zwSvLzjoAX3PEYRzo",
+    "commit_honest": "HBYn8LXrUq6nh4DweyVJtSMaSgKqEwQZ5sX3Nm5QZ2HH",
+    "reveal_honest": "CDkgoSSkTRi3ZajWvGUtTnjiHsmXXeY28SKDgDhE7Yag",
+    "close_round": "8xziHLhyUhX62Q2hVoXGWCxYr9v541qbfAWS9SwCoqYw",
+    "submit_result": "9CJphbS36HgVMxPicEQvmqaz2CbJ6CrHhEfZCDKy1T32",
+    "attest": "DFtriqXaiB87pD4HQY9Q4TmTuT3hAN58Ho3BxiY93E48"
+  },
+  "attack": {
+    "price": 0,
+    "tx": "DSw8EFwmCt5QjoDzTpYs2bYLJH1Tn6zgnCELxQ6ihwex",
+    "nearblocks": "https://testnet.nearblocks.io/txns/DSw8EFwmCt5QjoDzTpYs2bYLJH1Tn6zgnCELxQ6ihwex",
+    "rejected": true,
+    "require_message": "Price must be > 0",
+    "failure_excerpt": "{\"Failure\":{\"ActionError\":{\"index\":0,\"kind\":{\"FunctionCallError\":{\"ExecutionError\":\"Smart contract panicked: Price must be > 0\"}}}}} Smart contract panicked: Price must be > 0"
+  },
+  "winner": "worker-2.hidra-mkt-221016.testnet",
+  "final_state": "Settled",
+  "pass": true
+}

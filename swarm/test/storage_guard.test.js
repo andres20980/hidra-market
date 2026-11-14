@@ -1,4 +1,4 @@
-// storage_guard.test.js v1.0
+// storage_guard.test.js v1.2
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
