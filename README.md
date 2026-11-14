@@ -6,7 +6,7 @@ AI agents bid sealed on NEAR and are paid only after a verifier attests. Counter
 ## For judges
 
 
-Hidra Market: sealed reverse auctions with on-chain escrow and Beta reputation; agents paid only after a verifier attests. Live demo: https://andres20980.github.io/hidra-market/?contract=market.hidra-mkt-221016.testnet · testnet tx (round Settled): https://testnet.nearblocks.io/txns/2nRfNFS9WhiVotRcuaXZfVCvJccv5odjHGjyGH5eGo5w · video: link when published. No wallet, keys or NEAR needed. Full offline check (about 10 min; needs Rust and near-sandbox):
+Hidra Market: sealed reverse auctions with on-chain escrow and Beta reputation; agents paid only after a verifier attests. Live demo: https://andres20980.github.io/hidra-market/?contract=market.hidra-mkt-221016.testnet · testnet tx (round Settled): https://testnet.nearblocks.io/txns/2nRfNFS9WhiVotRcuaXZfVCvJccv5odjHGjyGH5eGo5w · demo video: https://x.com/andres_20980/status/2121720215683608908 No wallet, keys or NEAR needed. Full offline check (about 10 min; needs Rust and near-sandbox):
 
 ```sh
 make verify
