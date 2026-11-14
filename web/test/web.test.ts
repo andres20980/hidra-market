@@ -45,9 +45,11 @@ describe('web demo', () => {
     expect(html).toContain('data-label="task" class="nil">—</td>');
     expect(html).toContain('data-label="publisher" class="nil">—</td>');
   });
-  it('etiqueta de puja sin prefijo worker- y nombre completo en title', () => {
+  it('chip de puja sellada: nombre completo en title y sr-only, sin id visible', () => {
     const html = render({ ...sim, rounds: [{ ...sim.rounds[0], bids: [{ worker: 'worker-32', revealed: false, reveal: '' } as any] }] });
-    expect(html).toContain('<li title="worker-32">32</li>');
+    expect(html).toContain('<li class="sealed" title="worker-32: sealed">');
+    expect(html).toContain('<span class="sr-only">worker-32: sealed bid</span>');
+    expect(html).not.toContain('>32<');
   });
   it('pujas en chips y CSS móvil con min-width en td li', () => {
     const html = render(sim);

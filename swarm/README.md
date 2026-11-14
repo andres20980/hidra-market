@@ -1,11 +1,34 @@
-# swarm — simulador, replay del ledger y cliente NEAR
+<!-- README.md v1.1 -->
+# swarm — simulator, ledger replay and NEAR client
 
-- `npm ci && npm test` → pruebas fijan las cifras del simulador (seed 42, 200 rondas, 20 workers, 5 publicadores).
-- `npm run sim` → escribe `out/sim.json`; ves coste/verificado del mercado (100) vs round-robin (4000).
-- `npm run sandbox:round` → ronda completa en near-sandbox (commit→reveal→close→submit→attest) hasta `Settled` → `out/sandbox_round.json`.
-- `npm run sandbox:multi` → 5 rondas reales en near-sandbox (5 publicadores + 20 workers) → `out/multi_round.json`.
-- `npm run client:sandbox` → worker-1 queda solo con key FunctionCall limitada a `register_worker,commit_bid,reveal_bid,submit_result`; ves `OK: ... solo tiene key FunctionCall`.
+## In English (summary for judges)
+
+This module is documented in Spanish below; the figures there are pinned by `test/readme_figures.test.js`, so the body stays as is. Every command is offline and needs no NEAR account unless marked *testnet*.
+
+| Command | What you see | Source |
+|---|---|---|
+| `npm ci && npm test` | the simulator figures are pinned (seed 42, 200 rounds, 20 workers, 5 publishers) | `test/` |
+| `npm run verify:all` | single offline gate: all vitest files, `FIGURES OK 5/5`, `reproduce_checks: 6/6 OK` | `package.json` |
+| `npm run baseline:compare` | real swarm spend: 386 verified results out of 22,957 runs, 90.55% of spend unverified; escrow rule on the same outcomes is 10.6x cheaper per verified result | `out/baseline_compare.json` |
+| `npm run sandbox:round` | one full round in near-sandbox (commit → reveal → close → submit → attest) ending `Settled` | `out/sandbox_round.json` |
+| `npm run client:sandbox` | worker-1 holds only a FunctionCall key limited to `register_worker, commit_bid, reveal_bid, submit_result` | `out/client_worker_sandbox.json` |
+| `npm run market:plan` | deterministic preview of the live market: 8 rounds, 3 `Settled` / 5 `Refunded` | `out/market_plan.json` |
+| `npm run verify:testnet` | read-only RPC re-check (no keys, 0 NEAR) of every tx, task state and Beta reputation on `market.hidra-mkt-221016.testnet` | `out/testnet_market.json` |
+| `npm run testnet:costs` | measured gas: 0.002572 NEAR per round on average | `out/testnet_costs.json` |
+| `npm run adversarial:view` | a failing worker pays a ×4.0 price multiplier vs ×1.56 for a reliable one | `out/adversarial_view.json` |
+| `npm run testnet:guard` | sha256 of the deployed code equals the reproducible wasm; storage-reserve guard satisfied | `out/testnet_storage_guard.json` |
+
+On-chain security fixes (oversized result hash rejected, round-spam storage reserve, no reputation laundering by re-registering) are listed in Spanish below with their tx hashes; the English version with tests is in the root `README.md` § Red team.
+
+---
+
+
 - `npm run verify:swarm` → todo lo anterior.
+- `npm ci && npm test` → installs dependencies and runs tests (seed 42, 200 rounds, 20 workers, 5 publishers).
+- `npm run sim` → writes `out/sim.json`; simulated benchmark: market cost/verified (100) vs round-robin (4000).
+- `npm run sandbox:round` → runs a full near-sandbox round (commit → reveal → close → submit → attest) ending in `Settled`; results saved in `out/sandbox_round.json`.
+- `npm run sandbox:multi` → executes 5 real near-sandbox rounds (5 publishers + 20 workers); results saved in `out/multi_round.json`.
+- `npm run client:sandbox` → worker-1 runs with a FunctionCall key limited to `register_worker, commit_bid, reveal_bid, submit_result`; output shows `OK: ... only has key FunctionCall`.
 - `npm run sim:horizon` → `out/horizon.json`: mercado frente a round-robin a 200, 1.000 y 5.000 rondas (semillas 42, 7, 1234).
 - `npm run sim:multiseed` → `out/multiseed.json`: intervalo multi-semilla (5 semillas x 200/1.000/5.000 rondas) de la cifra principal.
 - `npm run baseline:compare` → `out/baseline_compare.json`: tres baselines de coste/verificado sobre datos reales: gasto actual del enjambre ($23,57 por 386 verificados = $0,0611/verificado, 90,55% del gasto sin verificar) frente a la regla de escrow del mercado sobre los mismos outcomes ($2,23 = 10,6x menos) y la gobernanza mercado vs round-robin del simulador con IC95.
@@ -28,7 +51,7 @@
 - `test/contract_source_pins.test.js` → candado proof↔fuente del contrato (offline, 0 NEAR): lee `contract/src/lib.rs` y verifica que el mensaje `Storage reserve exhausted: …` y la constante `STORAGE_RESERVE = 0,01 NEAR` que publica el prover de spam coinciden literalmente con el `require!` del contrato congelado; si el contrato cambiara el texto o la reserva sin actualizar el proof, el test falla. Ata la narrativa on-chain a la fuente verificable.
 - `test/readme_figures.test.js` → candado prosa↔datos (offline, 0 NEAR): cada cifra de titular impresa en este README (coste total/medio, overhead y proyección, coste/verificado y ahorro, multiplicadores adversariales) se deriva de su `out/*.json`; si el texto y el dato divergen, el test falla. Entra en `npm test` y en `verify:all`.
 - `CONTRIBUTING.md` → guía de mantenimiento del módulo (sostenibilidad): reproducir cada titular con un comando, política del dataset congelado, cómo extender el mercado, disciplina de testnet (tope 2,5 NEAR, claves solo por `.env`) y seguridad. `test/contributing_guide.test.js` ata la guía a los scripts reales de `package.json` y falla si cita un `npm run` inexistente o pierde una regla.
-- `npm run verify:all` → puerta única offline y sin cuenta NEAR para un jurado en un clon limpio: encadena los 77 tests vitest, `verify:figures` (`FIGURES OK 5/5`) y `reproduce:check` (`reproduce_checks: 6/6 OK`); falla con código ≠ 0 en la primera discrepancia. 13-nov: verde de extremo a extremo.
+- `npm run verify:all` → puerta única offline y sin cuenta NEAR para un jurado en un clon limpio: encadena los 113 tests vitest (25 ficheros), `verify:figures` (`FIGURES OK 5/5`) y `reproduce:check` (`reproduce_checks: 6/6 OK`); falla con código ≠ 0 en la primera discrepancia. 14-nov 08:35: verde de extremo a extremo (113/113, FIGURES OK 5/5, reproduce_checks 6/6).
 - `data/hidra_week.jsonl` → replay anónimo del ledger real; `npm run sim` → `out/sim.json` (coste/verificado mercado vs round-robin).
 
 Sandbox: `export NEAR_SANDBOX_BIN_PATH=<ruta>/near-sandbox` si near-kit no lo descarga. Si falta, `sandbox:round` y `client:worker` hacen SKIP (exit 0) y `verify:swarm` no falla.
@@ -41,7 +64,7 @@ Testnet: credenciales solo por `.env` (ver `.env.example`).
 - `coste_estimado` (USD): 0 si `cost_tier=free`; si `paid`, `segundos x 0,0002` (el ledger no trae tokens ni precio).
 - `worker_rates.json` y `workers_top20.json`: tasas LOCKED por worker derivadas del dataset (196 workers, top-20 por volumen); alimentan el simulador y `reproduce` las re-deriva cada vez para detectar que esten desactualizadas.
 
-## Cifras del simulador (semilla 42, 200 rondas, 20 workers, 5 publicadores)
+## Simulated benchmark scenario (semilla 42, 200 rondas, 20 workers, 5 publicadores)
 - Mercado (subasta sellada inversa + escrow): 4 verificados, coste 400 -> 100 por verificado.
 - Round-robin sobre los mismos datos: 5 verificados, coste 20.000 -> 4.000 por verificado (paga tambien lo no verificado).
 - `npm run sandbox:multi`: 5 rondas reales en near-sandbox, 5/5 `Settled` (`out/multi_round.json`).
@@ -49,7 +72,7 @@ Testnet: credenciales solo por `.env` (ver `.env.example`).
   (`npm run sim:multiseed`, 5 semillas: 42, 7, 1234, 2024, 11):
   - mercado coste/verificado = 100 en las 5 semillas (el escrow R12/R14 solo paga `Settled`; un fallo es `Refunded` sin coste).
   - round-robin coste/verificado = 4.000-10.000 (media 7.667) en la misma muestra y 1 semilla con 0 verificados
-    pagando 20.000 igual: el titular 40x es la semilla 42; el minimo-maximo de las semillas es 40x-100x.
+    pagando 20.000 igual: simulated benchmark scenario, 40x en la semilla 42; el minimo-maximo de las semillas es 40x-100x.
   - El minimo-maximo de 5 semillas no es un intervalo: cada media lleva ademas IC95% t-Student
     (`resumen.<horizonte>.<clave>.ic95` en `out/multiseed.json`): factor coste mercado/RR 76,7x
     [30,4-122,9] a 200 rondas, 61,2x [50,9-71,4] a 1.000 y 62,0x [54,5-69,6] a 5.000; ratio de

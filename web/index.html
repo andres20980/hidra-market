@@ -18,6 +18,8 @@
       content="Cost per verified result: market vs round-robin. Local offline demo with sim.json; live mode over testnet RPC."
     />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:image" content="/og.png" />
+    <meta name="twitter:image" content="/og.png" />
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23101418'/%3E%3Crect%20x='7'%20y='15'%20width='4'%20height='11'%20rx='1'%20fill='%2358a6ff'/%3E%3Crect%20x='14'%20y='9'%20width='4'%20height='17'%20rx='1'%20fill='%233fb950'/%3E%3Crect%20x='21'%20y='12'%20width='4'%20height='14'%20rx='1'%20fill='%23d29922'/%3E%3C/svg%3E"
@@ -25,6 +27,52 @@
   </head>
   <body>
     <div id="app"></div>
+    <!-- Static jury content (lane web: text and data; lane diseno: layout). Sources: swarm/out/testnet_*.json -->
+    <section id="video" aria-labelledby="video-title" hidden>
+      <h2 id="video-title">Video</h2>
+    </section>
+    <section id="headline-real" aria-labelledby="headline-real-title">
+      <h2 id="headline-real-title"><span class="hr-kicker">10.6x cheaper per verified result on real swarm data (22,957 runs)<span class="sr-only">: </span></span>How the real-ledger estimate is calculated</h2>
+      <p id="headline-real-detail">The swarm spent an estimated USD 23.5734 for 386 verified results (USD 0.061071 each). Paying only verified results through escrow, the same outcomes cost USD 2.2268 (USD 0.005769 each): 90.55% of the spend avoided. Counterfactual: same historical outcomes, escrow payment rule; not a measurement of the deployed swarm. The replay above is a simulated benchmark scenario in reward units.</p>
+      <pre id="headline-real-cmd"><code>cd swarm &amp;&amp; npm run baseline:compare</code></pre>
+    </section>
+    <section id="trust" aria-labelledby="trust-title">
+      <h2 id="trust-title">Why you can trust it</h2>
+      <ul id="trust-cards">
+        <li><span class="trust-num">111</span><span class="trust-label">Rust tests pass</span><span class="trust-note">38 unit + 73 near-sandbox integration, run by <code>make verify</code>.</span><a href="https://github.com/andres20980/hidra-market/tree/main/contract/tests" target="_blank" rel="noopener">contract/tests</a></li>
+        <li><span class="trust-num">3</span><span class="trust-label">real bugs found and fixed</span><span class="trust-note">Storage griefing, round spam and zero price: found by our red team, fixed on-chain.</span><a href="#red-team">See the fixes</a></li>
+        <li><span class="trust-num">8 + 6</span><span class="trust-label">verifiable testnet rounds</span><span class="trust-note">Re-checked with no keys and 0 NEAR: <code>npm run verify:testnet</code> (8) and <code>verify:testnet:f</code> (6).</span><a href="#testnet-rounds">See the 8 rounds</a><a href="https://testnet.nearblocks.io/address/market.hidra-mkt-221016.testnet" target="_blank" rel="noopener">nearblocks</a></li>
+      </ul>
+    </section>
+    <section id="testnet-rounds" aria-labelledby="testnet-rounds-title">
+      <h2 id="testnet-rounds-title">8 rounds you can check <span class="nw">on-chain</span> <span class="tag-live">real testnet</span></h2>
+      <p id="testnet-rounds-note">Not the simulated replay above: every link is a real attest transaction on <a href="https://testnet.nearblocks.io/address/market.hidra-mkt-221016.testnet" target="_blank" rel="noopener">market.hidra-mkt-221016.testnet</a>. Rounds the verifier rejects are refunded, never paid.</p>
+      <ul id="testnet-rounds-list">
+        <li class="tr-refund"><span class="tr-n">Round 1</span> <span class="tr-state">Refunded</span> <span class="tr-w">worker-1</span> <a href="https://testnet.nearblocks.io/txns/52qXc3Kk1qyAJx29WfgFwK4JdL5buY9d6HRUzuDykUvH" target="_blank" rel="noopener" aria-label="Round 1 attest transaction on nearblocks (opens in a new tab)">52qXc3Kk&hellip;</a></li>
+        <li class="tr-refund"><span class="tr-n">Round 2</span> <span class="tr-state">Refunded</span> <span class="tr-w">worker-5b</span> <a href="https://testnet.nearblocks.io/txns/yBfi2UwiTECn9UqQ1rsrUJUvzYv1NMTHDY3ri64S24P" target="_blank" rel="noopener" aria-label="Round 2 attest transaction on nearblocks (opens in a new tab)">yBfi2Uwi&hellip;</a></li>
+        <li class="tr-refund"><span class="tr-n">Round 3</span> <span class="tr-state">Refunded</span> <span class="tr-w">worker-1</span> <a href="https://testnet.nearblocks.io/txns/BNzNFZMpgU41TczNMaWC3L1QfY2pQHBBxQvcdHv5Z4pQ" target="_blank" rel="noopener" aria-label="Round 3 attest transaction on nearblocks (opens in a new tab)">BNzNFZMp&hellip;</a></li>
+        <li class="tr-refund"><span class="tr-n">Round 4</span> <span class="tr-state">Refunded</span> <span class="tr-w">worker-1</span> <a href="https://testnet.nearblocks.io/txns/J3PBA5aVbTqqGBsETdAw1r9UnBMY4Yky2Kt3oMwhsjgZ" target="_blank" rel="noopener" aria-label="Round 4 attest transaction on nearblocks (opens in a new tab)">J3PBA5aV&hellip;</a></li>
+        <li class="tr-paid"><span class="tr-n">Round 5</span> <span class="tr-state">Paid</span> <span class="tr-w">worker-1</span> <a href="https://testnet.nearblocks.io/txns/2nRfNFS9WhiVotRcuaXZfVCvJccv5odjHGjyGH5eGo5w" target="_blank" rel="noopener" aria-label="Round 5 attest transaction on nearblocks (opens in a new tab)">2nRfNFS9&hellip;</a></li>
+        <li class="tr-paid"><span class="tr-n">Round 6</span> <span class="tr-state">Paid</span> <span class="tr-w">worker-1</span> <a href="https://testnet.nearblocks.io/txns/3wvLGeoFfrUCb6Bdv25esXX9u79chANoyt245LAtDmQx" target="_blank" rel="noopener" aria-label="Round 6 attest transaction on nearblocks (opens in a new tab)">3wvLGeoF&hellip;</a></li>
+        <li class="tr-refund"><span class="tr-n">Round 7</span> <span class="tr-state">Refunded</span> <span class="tr-w">worker-4</span> <a href="https://testnet.nearblocks.io/txns/4kDQH5Fxum9QvGZsY4p1tZNoUiyzy9roQPHTLMkxb8a8" target="_blank" rel="noopener" aria-label="Round 7 attest transaction on nearblocks (opens in a new tab)">4kDQH5Fx&hellip;</a></li>
+        <li class="tr-paid"><span class="tr-n">Round 8</span> <span class="tr-state">Paid</span> <span class="tr-w">worker-1</span> <a href="https://testnet.nearblocks.io/txns/5PZ5roYpusmt2zVkkCHAH3SF2dqNH9AbY2Cvu7bXqGY4" target="_blank" rel="noopener" aria-label="Round 8 attest transaction on nearblocks (opens in a new tab)">5PZ5roYp&hellip;</a></li>
+      </ul>
+    </section>
+    <section id="red-team" aria-labelledby="red-team-title">
+      <h2 id="red-team-title">Red team: what we found and fixed</h2>
+      <p>An adversarial agent lane attacked the contract with near-sandbox tests before release. Three real issues; each is fixed, pinned by a test and replayed against the upgraded testnet contract.</p>
+      <ul id="red-team-list">
+        <li id="rt-storage"><strong>Storage griefing</strong> <span class="rt-desc">An oversized task id or result hash made the contract pay the storage stake and could freeze an honest escrow. Fix: task id ≤ 64 B, result hash ≤ 128 B. Test: <code>contract/<wbr>tests/<wbr>test_storage_griefing.rs</code>.</span> <span class="rt-tx">Testnet: 129-byte hash rejected, round still Settled — <a href="https://testnet.nearblocks.io/txns/4D9PY6cTmEGYXHbKGT7vzdVcjLEzuK7TyEszcMKmk6K2" target="_blank" rel="noopener">4D9PY6cT…</a></span></li>
+        <li id="rt-spam"><strong>Round spam</strong> <span class="rt-desc">Many minimum-deposit rounds could drain the balance that backs open escrows. Fix: <code>post_task</code> keeps a storage reserve. Test: <code>contract/<wbr>tests/<wbr>test_round_spam.rs</code>.</span> <span class="rt-tx">Testnet: guarded code deployed — <a href="https://testnet.nearblocks.io/txns/3jzCb1cVQ8L1edn5uNKGUUSRjiG4FoX8Ft7ouYm4yAEa" target="_blank" rel="noopener">3jzCb1cV…</a></span></li>
+        <li id="rt-zero-price"><strong>Zero price</strong> <span class="rt-desc">A bid of 0 scored 0 and won whatever the reputation. Fix: reveal requires price &gt; 0. Test: <code>contract/<wbr>tests/<wbr>test_zero_price_bid.rs</code>.</span> <span class="rt-tx">Testnet: price-0 reveal rejected, honest bidder paid — <a href="https://testnet.nearblocks.io/txns/DSw8EFwmCt5QjoDzTpYs2bYLJH1Tn6zgnCELxQ6ihwex" target="_blank" rel="noopener">DSw8EFwm…</a></span></li>
+      </ul>
+    </section>
+    <section id="reproduce" aria-labelledby="reproduce-title">
+      <h2 id="reproduce-title">Reproduce it in 3 commands</h2>
+      <pre id="reproduce-commands" tabindex="0" aria-label="Commands to reproduce the results"><code><span class="cmd">cd swarm &amp;&amp; npm ci &amp;&amp; npm run verify:all   </span><span class="note"># tests + every figure recomputed</span>
+<span class="cmd">npm run verify:testnet                     </span><span class="note"># read-only RPC, no keys: 8 rounds, 98 txs</span>
+<span class="cmd">cd .. &amp;&amp; make demo                         </span><span class="note"># local near-sandbox + 60 s demo</span></code></pre>
+    </section>
     <noscript>
       <div style="max-width:40rem;margin:3rem auto;padding:1.5rem;font:1rem/1.5 system-ui,sans-serif">
         <h1>Hidra Market</h1>
@@ -35,7 +83,7 @@
         </p>
         <p>
           Code and data:
-          <a href="https://github.com/andres20980/hidra-market">github.com/andres20980/hidra-market</a>
+          <a href="https://github.com/andres20980/hidra-market" target="_blank" rel="noopener">github.com/andres20980/hidra-market</a>
         </p>
       </div>
     </noscript>

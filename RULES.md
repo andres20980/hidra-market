@@ -50,7 +50,7 @@ Especificación de la implementación en `contract/`. Los plazos se expresan en 
 ## 7. Reproducibilidad del artefacto (actualizado 14-nov 04:00)
 
 - Toolchain fijado en `contract/rust-toolchain.toml` (Rust 1.95.0 + target `wasm32-unknown-unknown`) y dependencias congeladas en `Cargo.lock`; builds con `--offline`.
-- Build determinista: `contract/check-reproducible.sh` fuerza 2 rebuilds seguidos y exige bytes idénticos (demostrado el 13-nov). Artefactos del `src/lib.rs` vigente (sha256 `ed33dc3c…`, build 14-nov 02:02): wasm crudo `target/wasm32-unknown-unknown/release/contract.wasm` = 222912 B, sha256 `df52a31b3ba162b44d3926109d2609249ecc89966a1af7cad396266beb84d949`; copia de near-cli `target/near/contract.wasm` = 181028 B, sha256 `0563f913313df7ffd840d553cd91dd61a82b9ce44c8ac64cae8007bf61ef1bc4`.
+- Build determinista: `contract/check-reproducible.sh` fuerza 2 rebuilds seguidos y exige bytes idénticos (demostrado el 13-nov). Artefactos del `src/lib.rs` vigente (sha256 `5ac18db0…`, build 14-nov 05:38): wasm crudo `target/wasm32-unknown-unknown/release/contract.wasm` = 222953 B, sha256 `60d6ea078f6648384a115b9e585811c980793bb1aa309c250173e475bf9c55d2`; copia de near-cli `target/near/contract.wasm` = 181063 B, sha256 `f054dc77aece86d87339adadc77201044f159ee031b6661f604dacee49cfce48` (= code_hash vivo en testnet `HB9u9hrh…`).
 - Tests: `cargo test -q --offline` → 111 (38 unitarios en `src/lib.rs` + 73 de integración near-sandbox en 42 ficheros de `tests/`).
 - Verificador del módulo: `cd producto/contract && cargo near build non-reproducible-wasm && cargo test -q`.
 

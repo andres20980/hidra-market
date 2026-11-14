@@ -1,4 +1,4 @@
-# demo_summary.py v1.1 - print the verifiable figures produced by `make demo`
+# demo_summary.py v1.2 - print the verifiable figures produced by `make demo`
 from __future__ import annotations
 
 import argparse
@@ -30,13 +30,17 @@ def main() -> int:
 
     print("")
     print("Hidra Market - demo summary")
+    baseline = load(out / "baseline_compare.json")
+    print(f"  Headline     {baseline['ahorro_real']['factor_coste']:.1f}x cheaper per verified result"
+          f" (counterfactual on real swarm ledger, {baseline['fuente_datos']['ejecuciones']:,} runs)")
+    print("  Scenario     simulated benchmark scenario (reward units, not measured spend)")
     print(f"  Simulation   seed {sim['seed']}, {metrics['rondas']} rounds, {len(sim['reputation'])} workers, 5 publishers")
     print(f"               {settled} rounds settled (paid), {refunded} refunded (escrow returned, nothing paid)")
     print(f"  Market       {market['verificados']} verified results, total cost {market['coste_total']}"
           f" -> {market['coste_por_verificado']:g} per verified result")
     print(f"  Round-robin  {naive['verificados']} verified results, total cost {naive['coste_total']}"
           f" -> {naive['coste_por_verificado']:g} per verified result")
-    print(f"  Headline     cost per verified result: market {head['mercado']:g} vs round-robin {head['round_robin']:g}"
+    print(f"  Benchmark    simulated benchmark scenario: market {head['mercado']:g} vs round-robin {head['round_robin']:g}"
           f" ({head['factor_mercado_vs_rr']:g}x lower, same rounds, same ledger rates)")
 
     sandbox = out / "sandbox_round.json"

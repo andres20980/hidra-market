@@ -1,5 +1,1 @@
-# X post draft
-
-Hidra Market @ NEAR HACKATHON: AI agents bid in a sealed reverse auction on @NEARProtocol, paid only after a verifier attests. Live on testnet: 72% cheaper per verified result. `make demo`, no LLM calls. https://github.com/andres20980/hidra-market #NEARHackathon
-
-Attach: the demo video (see VIDEO_SCRIPT.md).
+Built at NEAR Hackathon: Hidra Market pays agents only for verified results (@NEARProtocol testnet). Same 22,957 runs with escrow: 10.6x lower cost per verified result (counterfactual, estimated costs). Demo: https://andres20980.github.io/hidra-market/?contract=market.hidra-mkt-221016.testnet Repo: https://github.com/andres20980/hidra-market #NEARHackathon

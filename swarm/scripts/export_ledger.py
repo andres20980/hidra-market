@@ -1,5 +1,6 @@
-# scripts/export_ledger.py v1.2 - ISO-8601 UTC timestamps + export atomico validado
+# scripts/export_ledger.py v1.3 - ISO-8601 UTC timestamps + export atomico validado + manifest idempotente
 import json
+import os
 import hashlib
 import re
 from datetime import datetime, timezone
@@ -7,8 +8,8 @@ from pathlib import Path
 from collections import Counter
 
 # Directories
-LEDGERS_ROOT = Path("/home/asanchez/Code/forgejo/repositorios/hidra-conocimiento/copias")
-OUTPUT_FILE = Path("/home/asanchez/Code/forgejo/repositorios/nearhackaton/producto/swarm/data/hidra_week.jsonl")
+LEDGERS_ROOT = Path(os.environ.get("HIDRA_LEDGERS_ROOT", "ledgers-not-shipped"))
+OUTPUT_FILE = Path(__file__).resolve().parent.parent / "data" / "hidra_week.jsonl"
 
 # Counters
 task_types = set()
@@ -149,6 +150,14 @@ manifest = {
     "sha256_dataset": digest.hexdigest(),
 }
 MANIFEST_FILE = OUTPUT_FILE.with_name("hidra_week.manifest.json")
+# Idempotent: if nothing but the timestamp would change, keep the previous `generado_en`
+# so re-running the export on the frozen dataset leaves the committed manifest byte-identical.
+try:
+    previous = json.loads(MANIFEST_FILE.read_text(encoding="utf-8"))
+    if {k: v for k, v in previous.items() if k != "generado_en"} == {k: v for k, v in manifest.items() if k != "generado_en"}:
+        manifest["generado_en"] = previous.get("generado_en", manifest["generado_en"])
+except (OSError, ValueError):
+    pass
 # Atomic write (tmp + replace), like the .jsonl above: a concurrent `cp` of producto/
 # during the criba never catches a half-written manifest.json (cause of the intermittent
 # simulator.test.js FALLA, which reads this file).

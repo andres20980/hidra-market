@@ -22,7 +22,7 @@ Methods: `init(cap_per_agent)`, `post_task` (payable: the deposit is the escrowe
 
 ## Reproducing the cold-cache check (clean copy, no network, read-only `$HOME`)
 
-Copy `producto/` to a fresh directory (no `contract/target`, no registry cache) and run:
+Copy the repository root to a fresh directory (no `contract/target`, no registry cache) and run:
 
 ```bash
 time PATH="$HOME/.cargo/bin:$PATH" timeout 600 make verify
@@ -34,11 +34,11 @@ time PATH="$HOME/.cargo/bin:$PATH" timeout 600 make verify
 - Tests: **111** (38 unit in `src/lib.rs` + 73 near-sandbox integration across 42 files in `tests/`), offline; red-team suite added 13-nov (last full green run 111/111 on 14-nov 07:00, `cargo test --offline`).
 - Local re-run with a warm cache: 27.4 s (24 + 2 + 1 + 5) before the 3 limit tests; 26.8 s (27 + 2 + 1 + 5) after them; 32 + 2 + 1 + 5 after the view-gas-cap test (12-nov 20:45).
 - Rebuild determinism: `./check-reproducible.sh` forces two consecutive rebuilds and requires byte-identical output (shown on 12-nov 21:43).
-  Current artefacts (build 14-nov 02:02 of the current `src/lib.rs`): `target/wasm32-unknown-unknown/release/contract.wasm`
-  **222912 bytes**, sha256 `df52a31b3ba162b44d3926109d2609249ecc89966a1af7cad396266beb84d949` — the raw file `make verify` deploys
-  (`Makefile:16`); `target/near/contract.wasm` is the near-cli copy (wasm-opt'ed, 181028 bytes, sha256 `0563f913313df7ff...`).
+  Current artefacts (build 14-nov 05:38 of the current `src/lib.rs`; clean rebuild 14-nov 14:55 byte-identical): `target/wasm32-unknown-unknown/release/contract.wasm`
+  **222953 bytes**, sha256 `60d6ea078f6648384a115b9e585811c980793bb1aa309c250173e475bf9c55d2` — the raw file `make verify` deploys
+  (`Makefile:16`); `target/near/contract.wasm` is the near-cli copy (wasm-opt'ed, 181063 bytes, sha256 `f054dc77aece86d87339adadc77201044f159ee031b6661f604dacee49cfce48`, the code live on testnet: code_hash `HB9u9hrhmkdWm6X6d8SsKYWCFvQCugWX4mPcmT3uh24w` = base58 of that sha256, see `swarm/out/testnet_storage_guard.json`).
 - Reproducibility check anyone can re-run: `./check-reproducible.sh` (offline, no network, no writable `$HOME`):
   two rebuilds, prints sizes and hashes, exits 0 only if both builds are byte-identical
   (12-nov 21:44 measurement: exit 0, `REPRODUCIBLE`).
 
-Source of the clean-copy measurement: `hidra/agentes/juez/ESTADO.md` (12-nov 16:28 / 16:45, screening Q-017).
+Source of the clean-copy measurement: internal screening log, 12-nov 16:28 / 16:45 (reproduce with the commands above).

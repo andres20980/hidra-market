@@ -1,14 +1,17 @@
-// e2e/smoke.spec.ts v1.1 — browser smoke over the built local route (no network): headline, rounds, badge, theme, demo replay
+// e2e/smoke.spec.ts v1.3 — browser smoke over the built local route (no network): headline, rounds, badge, theme, demo replay
 import { test, expect } from '@playwright/test';
 
 test.describe('web smoke (built dist)', () => {
   test('headline, rounds, workers and sandbox badge are rendered', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/Hidra Market/);
-    const headline = page.locator('[data-testid="cost-per-result"]');
+    const headline = page.locator('[data-testid="hero-bars"]');
     await expect(headline).toBeVisible({ timeout: 20_000 });
-    await expect(headline).toContainText('Coste por resultado verificado');
+    await expect(headline).toContainText('Cost per verified result');
     await expect(page.locator('[data-testid="rounds"] tbody tr').first()).toBeVisible();
+    const workerDetails = page.locator('details.worker-details');
+    await expect(workerDetails.locator('summary')).toBeVisible();
+    await workerDetails.locator('summary').click();
     await expect(page.locator('[data-testid="workers"] tbody tr').first()).toBeVisible();
     await expect(page.locator('[data-testid="sandbox-badge"]')).toContainText('near-sandbox');
   });

@@ -1,25 +1,27 @@
-/* style.css v1.20 — NEAR palette (green accent), dark default, unified control card, replay, hero */
+/* style.css v1.97 — NEAR palette (green accent), dark default, unified control card, replay, hero */
 :root {
   --bg: #f6f7f9; --fg: #17202a; --panel: #fff; --muted: #5b6b7b; --line: #d8dee6;
-  --accent: #0a7d55; --ok: #157347; --bad: #b02a37; --warn: #8a5a00; --info: #0b6bcb;
+  --accent: #0a7d55; --ok: #157347; --bad: #b02a37; --warn: #8a5a00; --info: #0a5aa8;
   --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --flash: color-mix(in srgb, var(--accent) 14%, transparent);
   color-scheme: light;
 }
 [data-theme='dark'] {
-  --bg: #0b0f14; --fg: #e8edf3; --panel: #141b24; --muted: #8fa0b2; --line: #273341;
+  --bg: #0b0f14; --fg: #e8edf3; --panel: #121821; --muted: #8fa0b2; --line: #273341;
   --accent: #00ec97; --ok: #4cc38a; --bad: #ff7b84; --warn: #f0b24a; --info: #6db3f2;
+  --flash: color-mix(in srgb, var(--accent) 22%, transparent);
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--fg); transition: background 0.3s, color 0.3s; 
   font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
-#app { max-width: 960px; margin: 0 auto; padding: 0.75rem 0.75rem 3rem; }
+#app { max-width: 960px; margin: 0 auto; padding: 0.75rem 0.75rem 0; }
 .skip-link { position: absolute; top: -3rem; left: 0.75rem; z-index: 10; padding: 0.5rem 0.75rem;
   color: var(--fg); background: var(--panel); border: 2px solid var(--accent); border-radius: 0.25rem; }
 .skip-link:focus { top: 0.75rem; }
 #view:focus { outline: 3px solid var(--accent); outline-offset: 3px; }
 h1 { font-size: clamp(1.05rem, 4.5vw, 1.5rem); line-height: 1.3; margin: 0.5rem 0 1rem; }
-h2 { font-size: clamp(0.9rem, 3.4vw, 1.05rem); line-height: 1.35; margin: 1.5rem 0 0.5rem; }
+h2 { font-size: clamp(1.1rem, 4vw, 1.25rem); letter-spacing: -0.01em; line-height: 1.35; margin: 1.5rem 0 0.5rem; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
   justify-content: space-between; margin-bottom: 0.5rem; }
 .badge { font: 0.75rem var(--mono); background: var(--panel); border: 1px solid var(--line);
@@ -32,9 +34,9 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 section { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; transition: background 0.3s, border-color 0.3s; 
   padding: 0.75rem; }
 section:has(> .round-details) { margin-bottom: 1rem; }
-.how > h2 { margin-top: 0.25rem; }
+.how > h2, .intro > h2 { margin-top: 0; }
 .controls #sandbox-badge { flex: 1 1 100%; white-space: nowrap; }
-.round-details > summary { cursor: pointer; font-size: 1rem; font-weight: 600; margin: 0 0 0.5rem; list-style-position: inside; }
+.round-details > summary { cursor: pointer; font-size: clamp(1.1rem, 4vw, 1.25rem); font-weight: 700; letter-spacing: -0.01em; margin: 0 0 0.5rem; list-style-position: inside; }
 .round-details > summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
 .round-details[open] > summary { margin-bottom: 0.75rem; }
 table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
@@ -60,7 +62,7 @@ td .num, .num { font-family: var(--mono); }
 .replay { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0 0 0.75rem; }
 .replay .status { font: 0.78rem var(--mono); color: var(--muted); flex: 1 1 12rem; min-width: 0; }
 tr.flash > td { animation: flash 900ms ease-out 1; }
-@keyframes flash { from { background: color-mix(in srgb, var(--accent) 35%, transparent); } to { background: transparent; } }
+@keyframes flash { from { background: var(--flash); } to { background: transparent; } }
 @media (prefers-reduced-motion: reduce) { tr.flash > td { animation: none; background: color-mix(in srgb, var(--accent) 18%, transparent); } }
 @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
 .footer {
@@ -91,7 +93,7 @@ tr.flash > td { animation: flash 900ms ease-out 1; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* v0.8: tablas con scroll horizontal en pantallas estrechas (legible en móvil) */
-.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-wrap { position: relative; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .table-wrap:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .table-wrap table { min-width: 34rem; }
 
@@ -108,7 +110,7 @@ tr.flash > td { animation: flash 900ms ease-out 1; }
 .spinner-wrap { display: flex; align-items: center; justify-content: center; gap: 0.6rem; padding: 2.5rem 0; color: var(--muted); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (max-width: 600px) {
-  .flash { background-color: color-mix(in srgb, var(--accent) 30%, transparent); }
+  .flash { background-color: var(--flash); }
 }
 
 @media (prefers-reduced-motion: reduce) { body, section { transition: none; } }
@@ -117,22 +119,24 @@ tr.flash > td { animation: flash 900ms ease-out 1; }
 /* v1.2: hero / portada — one product-looking header above the replay */
 .hero { display: grid; grid-template-columns: 1fr; gap: 1.25rem; margin: 0.5rem 0 1.25rem; padding: 1.5rem;
   background: var(--panel); border: 1px solid var(--line); border-radius: 16px; }
-@media (min-width: 720px) { .hero { grid-template-columns: 1.15fr 1fr; align-items: center; gap: 2rem; } }
-.hero-title { font: 700 clamp(1.8rem, 6vw, 2.6rem)/1.1 system-ui, sans-serif; letter-spacing: -0.02em; margin: 0 0 0.4rem; }
+@media (min-width: 720px) { .hero { grid-template-columns: 1.3fr 1fr; align-items: center; gap: 2rem; } }
+.hero-title { font: 700 clamp(1.8rem, 6vw, 2.6rem)/1.1 system-ui, sans-serif; letter-spacing: -0.02em; margin: 0 0 0.4rem; white-space: normal; overflow-wrap: anywhere; }
 .hero-tag { font-size: clamp(0.95rem, 2.6vw, 1.1rem); color: var(--muted); margin: 0 0 1rem; max-width: 34rem; }
 .hero-cta { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1rem; }
+.hero-cta .btn { min-width: 13.7rem; justify-content: center; }
 .btn { display: inline-flex; align-items: center; gap: 0.3rem; text-decoration: none; font: inherit; line-height: 1;
   color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 0.6rem 1rem; }
 .btn:hover { border-color: var(--accent); }
 .btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
 .hero-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; margin: 0; padding: 0; }
-.hero-badges li { font: 0.72rem var(--mono); color: var(--muted); background: var(--bg);
-  border: 1px solid var(--line); border-radius: 999px; padding: 0.2rem 0.6rem; }
+.hero-badges li { font: 0.68rem var(--mono); color: var(--muted); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 999px; padding: 0.2rem 0.5rem; }
 @media (max-width: 480px) { .hero-badges { gap: 0.3rem; } .hero-badges li { font-size: 0.66rem; padding: 0.18rem 0.45rem; white-space: nowrap; } }
 .hero-figure { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 1rem; }
 .hero-figure-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.9rem; }
 .hero-figure-head .k { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
-.factor-chip { font-size: 0.82rem; font-weight: 600; color: var(--bg); background: var(--accent);
+.factor-chip { font-size: 0.82rem; font-weight: 600; color: color-mix(in srgb, var(--accent) 80%, var(--fg)); background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
   border-radius: 999px; padding: 0.2rem 0.6rem; white-space: nowrap; flex-shrink: 0; }
 .bar-row { display: grid; grid-template-columns: 5.5rem 1fr auto; align-items: center; gap: 0.6rem; margin: 0.5rem 0; }
 .bar-label { font-size: 0.8rem; color: var(--muted); }
@@ -158,22 +162,27 @@ tr.empty td { color: var(--muted); font-size: 0.85rem; }
   background: linear-gradient(90deg, var(--line) 0%, color-mix(in srgb, var(--line) 35%, transparent) 50%, var(--line) 100%);
   background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
 .skel.skel-full { width: 100%; }
+.skel-row td > .skel { display: block; }
+.rep-track > .skel { display: block; height: 100%; }
 @keyframes shimmer { to { background-position: -200% 0; } }
 @media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
 
 /* v1.3: per-worker reputation bar (Beta mean + sample size as confidence) */
-.rep { display: flex; align-items: center; gap: 0.5rem; min-width: 9rem; }
+.rep { display: flex; align-items: baseline; gap: 0.5rem; min-width: 9rem; }
+.rep > .rep-track { align-self: center; }
 .rep-track { flex: 1 1 4rem; height: 0.55rem; background: var(--line); border-radius: 999px; overflow: hidden; }
 .rep-fill { height: 100%; background: var(--accent); border-radius: 999px; }
 .rep-val { font: 0.8rem var(--mono); min-width: 2.6rem; text-align: right; }
 
 /* v1.3: How it works — 4 steps with simple SVG icons */
-.how { margin: 1.5rem 0; }
-.how-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.75rem; list-style: none; margin: 0; padding: 0; }
+.how { margin: 1rem 0; padding: 1rem; }
+.how-steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; list-style: none; margin: 0; padding: 0; }
+@media (min-width: 900px) { .how-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .how-step { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 0.9rem; }
 .how-step svg { width: 1.6rem; height: 1.6rem; stroke: var(--accent); fill: none; stroke-width: 1.8; display: block; margin-bottom: 0.5rem; }
 .how-step .t { font-weight: 600; margin: 0 0 0.25rem; }
 .how-step .d { font-size: 0.85rem; color: var(--muted); margin: 0; }
+@media (max-width: 480px) { .how-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; } .how-step { padding: 0.65rem; } .how-step svg { width: 1.25rem; height: 1.25rem; margin-bottom: 0.3rem; } .how-step .d { font-size: 0.76rem; } }
 
 /* v1.3: footer links */
 .footer-links { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
@@ -184,8 +193,8 @@ tr.empty td { color: var(--muted); font-size: 0.85rem; }
 /* v1.4: one product-looking control card (segmented speed, styled live/theme buttons) */
 .controls { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
   padding: 0.65rem 0.8rem; margin: 0 0 1.25rem; display: flex; flex-direction: column; gap: 0.65rem; }
-.controls .toolbar { margin: 0; }
-.controls .replay { margin: 0; padding-top: 0.65rem; border-top: 1px solid var(--line); }
+.controls .toolbar { margin: 0; padding-top: 0.65rem; border-top: 1px solid var(--line); }
+.controls .replay { margin: 0; }
 .speed-controls { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
 .speed-controls .btn-speed { border: 0; border-right: 1px solid var(--line); border-radius: 0;
   background: transparent; color: var(--muted); padding: 0.35rem 0.65rem; font: 0.82rem var(--mono); }
@@ -197,6 +206,11 @@ tr.empty td { color: var(--muted); font-size: 0.85rem; }
 .stats-mini > span { font: 0.8rem var(--mono); color: var(--muted); }
 .btn-live { text-decoration: none; font-size: 0.82rem; padding: 0.35rem 0.7rem; }
 .btn-live:hover { border-color: var(--accent); color: var(--accent); }
+/* the hero already carries the Live CTA: no duplicate in the playback card */
+.hero ~ .controls .btn-live { display: none; }
+/* live view: no replay to drive, so speed is hidden and play/restart become a way back to the demo */
+.controls.is-live .speed-controls { display: none; }
+.btn-back { font-size: 0.85rem; padding: 0.4rem 0.8rem; }
 .btn-theme { color: var(--muted); font-size: 0.82rem; padding: 0.35rem 0.7rem; }
 #replay-toggle { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
 #replay-toggle:hover { filter: brightness(1.08); }
@@ -221,6 +235,8 @@ th .unit { color: var(--muted); font-weight: 400; font-size: 0.85em; }
   table.rounds tr { border: 1px solid var(--line); border-radius: 8px; padding: 8px 16px; margin: 0 0 8px; background: var(--panel); }
   table.rounds td { display: grid; grid-template-columns: 5.5rem 1fr; gap: 8px; align-items: start; padding: 4px 0; border: 0; white-space: normal; overflow-wrap: anywhere; text-wrap: balance; }
   table.rounds td::before { content: attr(data-label); color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  table.rounds td[data-label="#"] { display: block; font-weight: 600; padding: 2px 0 6px; }
+  table.rounds td[data-label="#"]::before { content: "Round "; color: var(--muted); font-size: inherit; text-transform: none; letter-spacing: 0; font-weight: 400; }
   table.rounds tr.empty td { display: block; }
   table.rounds tr.empty td::before { content: none; }
   table.rounds tr.skel-row { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 16px; }
@@ -231,18 +247,18 @@ th .unit { color: var(--muted); font-weight: 400; font-size: 0.85em; }
 }
 /* v1.8: inline elements inside the rep track need a box; currency already in the header on phones */
 .rep-track, .rep-fill { display: block; }
-@media (max-width: 480px) { table.workers .cur { display: none; } }
+table.workers td .cur { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 /* v1.9: status chip hugs its label in phone cards; empty fields collapse */
 @media (max-width: 480px) {
   table.rounds td > .chip { justify-self: start; }
   table.rounds td.nil { display: none; }
 }
 /* v1.10: bid cloud collapses to 5 chips + "+N" on phones (desktop keeps the full list) */
-td li.more { display: none; }
-@media (max-width: 480px) {
-  table.rounds td li.x { display: none; }
-  table.rounds td li.more { display: inline-block; color: var(--muted); border-style: dashed; }
-}
+/* v1.30: collapse on every width (20 chips wrapped to 2 lines per row at 1280) */
+table.rounds td li.x { display: none; }
+table.rounds td li.more { display: inline-block; color: var(--muted); border-style: dashed; }
+table.rounds td li.sealed { color: var(--muted); border-style: dotted; letter-spacing: .05em; }
+table.rounds td li.win { color: var(--accent); border-color: var(--accent); font-weight: 700; opacity: 1; }
 /* v1.11: active round highlights the whole phone card (border + background), not just the cells */
 @media (max-width: 480px) {
   table.rounds tr { transition: border-color 300ms ease, box-shadow 300ms ease; }
@@ -256,8 +272,11 @@ td li.more { display: none; }
 }
 /* v1.12: hero figure head — label may wrap, factor chip never splits */
 .hero-figure-head .k { min-width: 0; }
+/* v1.49: label never splits; if label + chip do not fit, the chip drops whole to its own line */
+.hero-figure-head { flex-wrap: wrap; row-gap: 0.4rem; }
+.hero-figure-head .k { white-space: nowrap; }
 /* v1.15: sandbox badge keeps winner name on phones (smaller, wraps instead of ellipsis) */
-/* v1.13: phone controls in 2 rows (speed+live+theme, then play/restart); long labels collapse */
+/* v1.13/v1.36: phone controls in 2 rows (play/restart+status first, then speed+live+theme); long labels collapse */
 @media (max-width: 480px) {
   .controls .toolbar { flex-wrap: nowrap; gap: 0.4rem; }
   .controls .stats-mini { flex-wrap: nowrap; gap: 0.4rem; }
@@ -266,7 +285,7 @@ td li.more { display: none; }
   .btn-live, .btn-theme { padding: 0.35rem 0.55rem; white-space: nowrap; }
   .controls .replay > button { padding: 0.35rem 0.8rem; font-size: 0.9rem; }
   .controls #sandbox-badge { flex: 1 1 100%; font-size: 0.7rem; letter-spacing: -0.01em; white-space: normal; overflow-wrap: anywhere; text-wrap: balance; }
-  .controls #replay-status { flex: 1 1 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .controls #replay-status { flex: 1 1 100%; white-space: normal; line-height: 1.4; min-height: 2.8em; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
 }
 
 /* v1.18: frame-0 empty state reads as live (pulsing accent dot), not as "nothing here" */
@@ -282,3 +301,246 @@ table.workers tr.more-row td { padding: 0.5rem 0; border-bottom: 0; text-align: 
 .more-btn:hover { border-color: currentColor; }
 .more-btn:focus-visible { outline: 2px solid var(--accent, #00ec97); outline-offset: 2px; }
 @media (max-width: 480px) { table.workers tr.more-row { display: block; } table.workers tr.more-row td { display: block; } }
+/* v1.21: first screen — live CTA in the hero, explorer link under the figure, tighter hero on phones */
+.btn-onchain { gap: 0.5rem; }
+.btn-onchain .live-dot { margin-right: 0; }
+.btn-onchain:hover { color: var(--accent); }
+.btn-primary.btn-onchain:hover { color: var(--bg); filter: brightness(1.08); }
+.btn-primary .live-dot { background: var(--bg); }
+.hero-figure-foot { margin: 0.8rem 0 0; font-size: 0.75rem; color: var(--muted); }
+.hero-figure-foot a { color: var(--accent); text-underline-offset: 2px; }
+@media (max-width: 480px) {
+  .hero { padding: 1rem; gap: 1rem; margin-bottom: 1rem; }
+  .hero-tag { margin-bottom: 0.5rem; }
+  .hero-cta { gap: 0.5rem; margin-bottom: 0.5rem; }
+  .hero-cta .btn { padding: 0.55rem 0.8rem; font-size: 0.92rem; flex: 1 1 auto; justify-content: center; min-width: 0; }
+  .hero-figure { padding: 0.55rem; }
+  .hero-figure-head { margin-bottom: 0.4rem; }
+  .hero-figure-head .k { font-size: 0.72rem; letter-spacing: 0.01em; }
+  .factor-chip { font-size: 0.78rem; padding: 0.2rem 0.5rem; }
+  .hero-big { margin-bottom: 0.45rem; }
+  .hero-scenario { margin-top: 0.45rem; }
+  .hero-scenario + .hero-figure-foot { margin-top: 0.3rem; }
+}
+/* v1.21: static jury sections (red team, reproduce) aligned with #app, red-team findings as cards, no overflow */
+body > section { box-sizing: border-box; max-width: calc(960px - 1.5rem); margin: 0 auto 1rem; padding: 1rem; }
+@media (max-width: 984px) { body > section { margin-left: 0.75rem; margin-right: 0.75rem; } }
+body > section > h2 { margin-top: 0; }
+body > section > p { color: var(--muted); font-size: 0.9rem; margin: 0 0 0.75rem; max-width: 46rem; }
+#red-team-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; list-style: none; margin: 0; padding: 0; }
+#red-team-list li { background: var(--bg); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 12px;
+  padding: 0.9rem; font-size: 0.85rem; color: var(--muted); min-width: 0; overflow-wrap: anywhere; }
+/* v1.58: testnet tx line pinned to card bottom so hash links align across the row */
+#red-team-list li { display: flex; flex-direction: column; }
+#red-team-list .rt-tx { display: block; margin-top: auto; padding-top: 0.6rem; border-top: 1px solid var(--line); font-size: 0.85rem; }
+#red-team-list .rt-desc { margin-bottom: 0.75rem; }
+#red-team-list strong { display: block; color: var(--fg); font-size: 0.95rem; margin-bottom: 0.3rem; }
+#red-team-list a, body > section a { color: var(--accent); font-family: var(--mono); text-underline-offset: 2px; }
+/* v1.42: inline code in trust/red-team cards 0.8em (~10.5 px) -> 0.92em (~12 px) */
+body > section code { font: 0.92em var(--mono); color: var(--fg); }
+#reproduce-commands { margin: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 0.9rem;
+  overflow-x: auto; font: 0.8rem/1.6 var(--mono); }
+/* v1.41: inner <code> no longer shrinks to 0.8em of 0.8rem (~10 px) */
+#reproduce-commands code { font-size: inherit; }
+#reproduce-commands:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+/* v1.39: phones get each comment on its own muted line instead of a cut-off horizontal scroll */
+#reproduce-commands .note { color: var(--muted); }
+@media (max-width: 480px) {
+  #reproduce-commands .cmd { white-space: normal; font-size: 0.72rem; }
+  #reproduce-commands .note { display: block; font-size: 0.72rem; }
+}
+/* v1.22: "Why you can trust it" stat cards */
+#trust-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; list-style: none; margin: 0; padding: 0; }
+#trust-cards li { display: flex; flex-direction: column; gap: 0.3rem; background: var(--bg); border: 1px solid var(--line); border-radius: 12px;
+  padding: 1rem; min-width: 0; overflow-wrap: anywhere; }
+.trust-num { font: 700 2rem/1.1 var(--mono); word-spacing: -0.3em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.trust-label { color: var(--fg); font-weight: 600; font-size: 0.95rem; }
+.trust-note { color: var(--muted); font-size: 0.82rem; flex: 1; }
+.trust-note code { white-space: nowrap; }
+/* v1.68: link breathes off the note when stacked (was 5 px gap at 375) */
+#trust-cards a { align-self: flex-start; font-size: 0.8rem; margin-top: 0.45rem; }
+#trust-cards a:focus-visible, body > section a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+@media (max-width: 480px) {
+  .table-wrap table.workers { table-layout: fixed; }
+  table.workers th:nth-child(1) { width: 27%; } table.workers th:nth-child(2) { width: 24%; }
+  table.workers th:nth-child(3) { width: 14%; } table.workers th:nth-child(4) { width: 16%; }
+  table.workers th:nth-child(5) { width: 19%; }
+  table.workers td:first-child { max-width: none; }
+  table.workers th { font-size: 0.68rem; overflow-wrap: normal; }
+  table.workers .rep-track { min-width: 1.25rem; } table.workers .rep-val { min-width: 0; font-size: 0.7rem; }
+  table.workers td:nth-child(2) { padding-right: 0.5rem; }
+  table.workers tr.more-row { display: table-row; } table.workers tr.more-row td { display: table-cell; }
+}
+/* v1.28: drop all-empty task/publisher columns (simulation runs carry neither) */
+table.rounds.no-task th:nth-child(2), table.rounds.no-task td:nth-child(2),
+table.rounds.no-publisher th:nth-child(3), table.rounds.no-publisher td:nth-child(3) { display: none; }
+/* v1.29: rounds list is newest-first and capped, so the page stays short while the replay runs */
+.round-details:not(.worker-details) > .table-wrap { max-height: 26rem; overflow-y: auto; overscroll-behavior: contain; }
+.round-details:not(.worker-details) th { background: var(--panel); z-index: 1; }
+@media (max-width: 480px) { .round-details:not(.worker-details) > .table-wrap { max-height: 32rem; } }
+/* worker leaderboard: compact rep bar, right-aligned mono numbers */
+table.workers .rep-track { max-width: 8rem; }
+table.workers th:nth-child(n+3), table.workers td:nth-child(n+3) { text-align: right; font-variant-numeric: tabular-nums; }
+table.workers td:nth-child(3), table.workers td:nth-child(4) { font-family: var(--mono); }
+table.workers td { vertical-align: baseline; }
+/* rounds: price column in mono, right-aligned like the leaderboard figures */
+table.rounds td[data-label="price"] { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+@media (min-width: 481px) { table.rounds th:nth-child(6), table.rounds td[data-label="price"] { text-align: right; padding-right: 1.5rem; } }
+@media (min-width: 481px) { table.rounds td[data-label="bids"] { width: 1%; white-space: nowrap; padding-right: 2rem; } table.rounds td[data-label="bids"] ul { flex-wrap: nowrap; } }
+table.workers tr.more-row td { text-align: center; }
+/* v1.32: fixed column widths on wide screens, so the rep. bar sits next to its number without a dead gap */
+@media (min-width: 481px) {
+  table.workers { table-layout: fixed; }
+  table.workers th:nth-child(1) { width: 38%; } table.workers th:nth-child(2) { width: 22%; }
+  table.workers th:nth-child(3), table.workers th:nth-child(4) { width: 12%; } table.workers th:nth-child(5) { width: 16%; }
+}
+
+/* v1.33: sandbox proof reads as a separate fact (pill chip), not as replay state */
+.controls #sandbox-badge.status { flex: 0 1 auto; max-width: 100%; padding: 0.15rem 0.6rem; border: 1px solid color-mix(in srgb, var(--ok) 55%, var(--line)); border-radius: 999px; color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, var(--panel)); }
+@media (max-width: 480px) { .controls #sandbox-badge.status { border-radius: 0.6rem; } .controls #sandbox-badge.status { overflow-wrap: normal; } }
+@media (max-width: 480px) {
+  .replay .status {
+    flex: 1 1 8rem;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+@media (min-width: 481px) { .controls #replay-status { flex: 1 1 22rem; } }
+/* hero "Watch the replay" anchor: smooth jump (reduced-motion block forces auto) and breathing room above the controls card */
+html { scroll-behavior: smooth; }
+#replay { scroll-margin-top: 5rem; }
+/* v1.35: footer stacks centered on phones (links were wrapping ragged beside the credit) */
+@media (max-width: 480px) { .footer-content { flex-direction: column; align-items: center; gap: 0.5rem; } .footer-links { gap: 0.5rem 1rem; } }
+/* v1.48: on phones the header unit stays for screen readers only, so the worker header is one line */
+@media (max-width: 480px) { table.workers th .unit { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }
+/* v1.50: speed segment and theme toggle share one height on the toolbar row */
+.controls .toolbar .speed-controls, .controls .toolbar #theme-toggle { box-sizing: border-box; height: 2.05rem; }
+.controls .toolbar .speed-controls .btn-speed { height: 100%; }
+
+/* v1.56: 3-card grids (trust, red team) never orphan a card: 1 column, 3 from 720 px (was auto-fit 2+1 at 600/768) */
+@media (min-width: 720px) { #trust-cards, #red-team-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* v1.57: footer links as a balanced 2x2 grid on phones (was 3+1 with an orphan link) */
+@media (max-width: 480px) { .footer-links { display: grid; grid-template-columns: repeat(2, auto); justify-content: center; justify-items: center; gap: 0.5rem 1.5rem; } }
+/* v1.59: desktop control card in one row: replay left, speed + theme right (no third row) */
+@media (min-width: 900px) {
+  .controls { flex-direction: row; align-items: flex-start; gap: 1rem; }
+  .controls .replay { flex: 1 1 auto; min-width: 0; }
+  .controls .toolbar { flex: 0 0 auto; flex-wrap: nowrap; padding-top: 0; border-top: 0; }
+}
+
+/* live mode: long task ids wrap instead of pushing the table wider than its card */
+@media (min-width: 481px) { table.rounds td[data-label="task"] { white-space: normal; overflow-wrap: anywhere; min-width: 10rem; max-width: 18rem; } }
+/* position: relative keeps the sr-only suffix inside the scrolling table (it was stretching the page to 7.8k px at 375) */
+.acct { white-space: nowrap; position: relative; }
+/* v1.66: live card below 900 px: theme sits beside "Back to replay" (was alone in its own row under a divider) */
+@media (max-width: 899px) {
+  .controls.is-live { flex-direction: row; align-items: flex-start; gap: 0.5rem; }
+  .controls.is-live .replay { flex: 1 1 0; min-width: 0; }
+  .controls.is-live .toolbar { flex: 0 0 auto; padding-top: 0; border-top: 0; }
+}
+/* v1.70: footer row aligns with the card column (was 800px, narrower than the 936px cards) */
+.footer-content { box-sizing: border-box; max-width: calc(960px - 1.5rem); padding: 0 1rem; }
+@media (max-width: 984px) { .footer-content { padding: 0 0.75rem; } }
+/* v1.71: real headline figure (10.6x on swarm data) as the big number; replay scenario as a small labelled line */
+.hero-big { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.25rem 0.6rem; margin: 0 0 0.75rem; color: var(--fg); font-size: 0.95rem; line-height: 1.3; }
+.hero-x { font-size: clamp(2.4rem, 9vw, 3.2rem); font-weight: 800; line-height: 1; color: var(--accent); letter-spacing: -0.02em; }
+.hero-big-sub { display: block; font-size: 0.75rem; color: var(--muted); }
+.hero-figure .bar-row { grid-template-columns: 6.6rem 1fr auto; }
+.hero-scenario { margin: 0.75rem 0 0; font-size: 0.75rem; color: var(--muted); }
+.hero-scenario .tag { font: 600 0.65rem var(--mono); text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted);
+  border: 1px dashed var(--line); border-radius: 999px; padding: 0.1rem 0.4rem; margin-right: 0.25rem; }
+.hero-scenario + .hero-figure-foot { margin-top: 0.4rem; }
+.hero-figure-foot a { white-space: nowrap; }
+.hero-scenario .num { white-space: nowrap; }
+.hero-scenario .scen-fig { display: inline-block; white-space: nowrap; }
+
+/* round lifecycle bar (hero): 5-step stepper in one row; done = accent bar, now = accent bar + bold label, refunded = amber */
+.stages { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.3rem; list-style: none; margin: 0 0 1rem; padding: 0;
+  max-width: 34rem; font: 600 0.72rem/1.2 system-ui, sans-serif; }
+.stages li { color: var(--muted); padding-top: 0.45rem; border-top: 4px solid var(--line); border-radius: 2px;
+  transition: border-color 0.25s, color 0.25s; }
+.stages li.done { color: var(--fg); border-top-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.stages li.now { color: var(--accent); border-top-color: var(--accent); }
+.stages li.refunded { color: var(--warn); border-top-color: var(--warn); }
+@media (min-width: 481px) { .stages { max-width: 38rem; grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.4fr); } }
+@media (min-width: 1000px) { .stages li[data-end] { white-space: nowrap; } }
+@media (max-width: 480px) {
+  .stages { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.35rem 0.2rem; }
+  .stages li { line-height: 1.25; hyphens: none; }
+  .stages li[data-end] { grid-column: span 2; }
+}
+@media (prefers-reduced-motion: reduce) { .stages li { transition: none; } }
+/* v1.74: #headline-real repeats the hero figure -> read as its receipt: card-title scale, figures in mono, command as a code block */
+#headline-real > h2 { font-size: 1rem; font-weight: 600; letter-spacing: 0; }
+/* v1.97: the claim is a kicker above the title, so the heading no longer reads as a second headline */
+.hr-kicker { display: block; margin-bottom: 0.2rem; font-family: var(--mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent); }
+@media (max-width: 480px) {
+  #headline-real > h2 {
+    font-size: clamp(1rem, 6vw, 1.1rem);
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+#headline-real-factor, #headline-real-runs { font-family: var(--mono); color: var(--accent); }
+#headline-real-cmd { margin: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 0.6rem 0.9rem;
+  overflow-x: auto; font: 0.8rem/1.6 var(--mono); }
+#headline-real-cmd code { font-size: inherit; }
+#headline-real-cmd code::before { content: "$ "; color: var(--muted); user-select: none; }
+
+/* v1.56: real testnet rounds list, visually separate from the simulated replay; 1 column on phones, no overflow */
+#testnet-rounds-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 0.5rem; list-style: none; margin: 0; padding: 0; }
+#testnet-rounds-list li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.6rem; background: var(--bg); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; padding: 0.5rem 0.75rem; min-width: 0; }
+#testnet-rounds-list li.tr-refund { border-left-color: var(--warn); }
+#testnet-rounds-list li.tr-paid { border-left-color: var(--ok); }
+#testnet-rounds-list .tr-state { display: inline-flex; align-items: center; gap: 0.3rem; font: 0.75rem var(--mono); border-radius: 999px; padding: 0.05rem 0.5rem; border: 1px solid currentColor; white-space: nowrap; align-self: center; }
+#testnet-rounds-list .tr-state::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: currentColor; }
+#testnet-rounds-list .tr-paid .tr-state { color: var(--ok); }
+#testnet-rounds-list .tr-refund .tr-state { color: var(--warn); }
+#testnet-rounds-list .tr-n { font-weight: 600; }
+#testnet-rounds-list .tr-w, #testnet-rounds-list a { font-family: var(--mono); font-size: 0.85rem; overflow-wrap: anywhere; }
+#testnet-rounds-note { overflow-wrap: anywhere; }
+#testnet-rounds-title .tag-live { display: inline-block; vertical-align: middle; margin-left: 8px; padding: 2px 8px; border-radius: 999px; font: 600 0.7rem var(--mono); text-transform: uppercase; letter-spacing: 0.04em; color: #fff; background: var(--accent); white-space: nowrap; }
+:root[data-theme="dark"] #testnet-rounds-title .tag-live { color: #0b0f14; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) #testnet-rounds-title .tag-live { color: #0b0f14; } }
+/* v1.81: label the sandbox chip as a separate end-to-end run so it does not read as the replay's current round */
+.controls #sandbox-badge.status::before { content: "contract e2e \00B7\00A0"; color: var(--muted); font-weight: 400; }
+/* v1.83: compact phone round card: "Round N ... status" header, winner + price on one line, bids below (~180 -> ~110 px per round) */
+@media (max-width: 480px) {
+  table.rounds tr:not(.empty):not(.skel-row) { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "id status" "win price" "bids bids"; column-gap: 12px; align-items: center; padding: 8px 12px; }
+  table.rounds tr:not(.empty):not(.skel-row) > td { display: flex; gap: 6px; align-items: baseline; padding: 2px 0; grid-column: 1 / -1; }
+  table.rounds tr:not(.empty):not(.skel-row) > td.nil { display: none; }
+  table.rounds tr:not(.empty):not(.skel-row) > td[data-label="#"] { grid-area: id; padding: 0; }
+  table.rounds tr:not(.empty):not(.skel-row) > td[data-label="status"] { grid-area: status; justify-self: end; }
+  table.rounds tr:not(.empty):not(.skel-row) > td[data-label="status"]::before { content: none; }
+  table.rounds tr:not(.empty):not(.skel-row) > td[data-label="winner"] { grid-area: win; }
+  table.rounds tr:not(.empty):not(.skel-row) > td[data-label="price"] { grid-area: price; justify-self: end; font-family: var(--mono, ui-monospace, monospace); }
+  table.rounds tr:not(.empty):not(.skel-row) > td[data-label="bids"] { grid-area: bids; align-items: flex-start; }
+  table.rounds tr:not(.empty):not(.skel-row) > td::before { flex: none; }
+}
+.round-details > summary .src-tag { display: inline-block; vertical-align: middle; margin-left: 8px; padding: 2px 8px; border-radius: 999px; font: 600 0.7rem var(--mono); text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+.src-tag.src-sim { color: var(--muted); border: 1px dashed currentColor; }
+.src-tag.src-live { color: #fff; background: var(--accent); }
+:root[data-theme="dark"] .src-tag.src-live { color: #0b0f14; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .src-tag.src-live { color: #0b0f14; } }
+.nw { white-space: nowrap; }
+
+.sum-hint { display: inline-block; white-space: nowrap; margin-left: 0.5rem; font-size: 0.8rem; font-weight: 400; color: var(--muted); }
+.worker-details[open] .sum-hint { display: none; }
+
+.rounds-note { margin: -0.25rem 0 0.75rem; max-width: 46rem; font-size: 0.85rem; line-height: 1.45; color: var(--muted); }
+.rounds-note strong { color: var(--fg); font-weight: 600; }
+/* v1.96: footer credit on phones stacks on two lines without a dangling separator */
+@media (max-width: 480px) { .foot-sep { display: none; } .foot-name { display: block; } }
+
+@media (max-width: 480px) {
+  .hero-title {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+}

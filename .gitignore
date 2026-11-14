@@ -1,4 +1,4 @@
-# .gitignore v1.0
+# .gitignore v1.1
 # Build outputs
 target/
 node_modules/
@@ -26,3 +26,13 @@ __pycache__/
 test_*.txt
 verification_*.txt
 build_output.txt
+# Coordination belongs outside the public product.
+RELEVO*.md
+ESTADO*.md
+TAREA*.md
+INTEGRAR*.md
+COORDINADOR*.md
+CLAUDE.md
+AGENTS.md
+payload*.json
+.local-notes/
