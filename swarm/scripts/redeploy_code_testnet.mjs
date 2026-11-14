@@ -15,7 +15,7 @@ const SWARM = join(HERE, "..");
 const OUT = join(SWARM, "out");
 mkdirSync(OUT, { recursive: true });
 
-const EXPECTED_SHA256 = "aaa5eb6a72d2d7e81ee3c23e2eebd3b89f31b9de2b7378f849d64036a5176160";
+const EXPECTED_SHA256 = "0563f913313df7ffd840d553cd91dd61a82b9ce44c8ac64cae8007bf61ef1bc4";
 
 const need = (k) => {
   const v = process.env[k];

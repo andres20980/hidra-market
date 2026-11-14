@@ -36,7 +36,7 @@ Especificación de la implementación en `contract/`. Los plazos se expresan en 
 
 ## 5. Vistas
 
-`get_task(id)`, `list_tasks(from, limit)`, `get_round(task_id)` y `get_reputation(account)` exponen tareas, rondas y reputación; `get_reputation` devuelve `alpha`, `beta` y media como cadenas JSON. `list_tasks` devuelve como máximo 100 tareas por llamada (tope de gas de la vista).
+`get_task(id)`, `list_tasks(from, limit)`, `get_round(task_id)` y `get_reputation(account)` exponen tareas, rondas y reputación; `get_reputation` devuelve `alpha`, `beta` y media como cadenas JSON. `list_tasks` devuelve como máximo 100 tareas por llamada (tope de gas de la vista) y corta la página al superar 8.192 compromisos+pujas acumulados (siempre al menos una tarea; el cliente pagina con `from += len`), para no superar los 4 MiB de respuesta de NEAR.
 
 ## 6. Secuencia textual de una ronda
 

@@ -9,6 +9,9 @@ const REFUND_GRACE_BLOCKS: u64 = 100;
 /// RULES.md 5: `list_tasks` returns at most 100 tasks per call (view gas cap),
 /// independently of `cap_per_agent`.
 const MAX_LIST_TASKS: usize = 100;
+/// Commitments + bids returned per `list_tasks` page: keeps the JSON (<= ~220 B
+/// per entry) far below the 4 MiB `max_length_returned_data` under bid floods.
+pub const MAX_LIST_ENTRIES: usize = 8_192;
 
 #[derive(
     Debug,
@@ -461,10 +464,16 @@ impl Contract {
         let limit = usize::try_from(limit).unwrap_or(usize::MAX);
         let effective_limit = limit.min(MAX_LIST_TASKS);
 
+        let mut entries = 0usize;
         self.tasks
             .iter()
             .skip(from)
             .take(effective_limit)
+            .take_while(|(_, task)| {
+                let first = entries == 0;
+                entries += task.commitments.len() + task.bids.len();
+                first || entries <= MAX_LIST_ENTRIES
+            })
             .map(|(_, task)| task.clone())
             .collect()
     }

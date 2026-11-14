@@ -14,9 +14,9 @@ import { REQUIRE_MESSAGE, reserveState } from "./prove_round_spam_testnet.mjs";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, "..", "out");
 
-export const EXPECTED_WASM_SHA256 = "aaa5eb6a72d2d7e81ee3c23e2eebd3b89f31b9de2b7378f849d64036a5176160";
-export const EXPECTED_CODE_HASH = "CV93pzSGJS4FZuZb1eMon7qsrn584KWKXtVyeEc49pfR";
-export const DEPLOY_TX = "GJoE5zeyJBZBuyVR1QarLZHRciUit2kq5wQ68pffrj8w";
+export const EXPECTED_WASM_SHA256 = "0563f913313df7ffd840d553cd91dd61a82b9ce44c8ac64cae8007bf61ef1bc4";
+export const EXPECTED_CODE_HASH = "N3TPry8EDKAHJLAtDmbLPTZptX15SzSaLTE13bUzoqM";
+export const DEPLOY_TX = "9N7DbWyzgBjqLKnCxdeYDGF5uio2bSJkQYAWjF9obrY1";
 export const GUARDED_METHODS = ["post_task", "register_worker", "commit_bid"];
 
 export const inspectCode = (codeBase64) => {
